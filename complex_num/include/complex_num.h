@@ -5,9 +5,8 @@
 namespace complex_num
 {
 
-class complex
+struct complex
 {
-public:
     double re_ = 0;
     double im_ = 0;
 
