@@ -11,9 +11,9 @@ class complex
     double im_ = 0;
 
 public:
-    complex () {}
-    complex (double re): re_ {re} {}
-    complex (double re, double im): re_ {re}, im_ {im} {}
+    //complex () {}
+    //complex (double re = 0.0): re_ {re} {}
+    complex (double re = 0.0, double im = 0.0): re_ {re}, im_ {im} {}
     complex (const complex& other): re_ {other.re_}, im_ {other.im_} {}
 
     complex operator+ (const complex& add)  const {return complex (re_ + add.re_, im_ + add.im_);}
@@ -22,7 +22,7 @@ public:
 
     complex operator- (const complex& sub)  const {return complex (re_ + sub.re_, im_ + sub.im_);}
     complex operator- (const double   sub)  const {return *this - complex (sub);}
-    complex operator- ()                    const {return complex (re_, - im_);}
+    complex operator- ()                    const {return complex (- re_, - im_);}
     
     complex operator* (const complex& mul) const {
         return complex (re_ * mul.re_ - im_ * mul.im_, re_ * mul.im_ + im_ * mul.re_);}

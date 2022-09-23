@@ -2,7 +2,7 @@ CC 		= g++
 CFLAGS 	= -c -Wall -Wextra
 
 all: main.o complex_num.o
-	$(CC) main.cpp src/complex_num.cpp -o main -lgtest -pthread
+	$(CC) main.o complex_num.o -o main -lgtest -pthread
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
