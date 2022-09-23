@@ -22,6 +22,9 @@ TEST (complex, test1)
     ASSERT_TRUE (a < b);
     
     ASSERT_EQ (b, complex_num::complex (4, 2));
+    
+    a = 1 - b;
+    ASSERT_EQ (a, complex_num::complex (-3, -2));
 }
 
 TEST (complex, test2)
