@@ -12,11 +12,14 @@ int main ()
 TEST (complex, test1)
 {
     complex_num::complex a (1, 2);
-    complex_num::complex b = -a;
-    ASSERT_TRUE (b == -a);
+    complex_num::complex b = a;
+    ASSERT_TRUE (b == a);
     b = b + 3;
-
-    ASSERT_EQ (b, complex_num::complex (4, -2));
+    
+    ASSERT_TRUE (b != a);
+    ASSERT_TRUE (b > a);
+    ASSERT_TRUE (a < b);
+    ASSERT_EQ (b, complex_num::complex (4, 2));
 }
 
 TEST (complex, test2)
@@ -24,12 +27,15 @@ TEST (complex, test2)
     complex_num::complex a;
     ASSERT_EQ (a, complex_num::complex (0, 0));
 
+    complex_num::complex b (1, -1);
     a = a * a;
     ASSERT_EQ (a, complex_num::complex (0, 0));
 
+    ASSERT_EQ (a * b, complex_num::complex(0));
+    
     a = 4;
-    complex_num::complex b = a;
-    ASSERT_EQ (b, complex_num::complex (4, 0));
+    complex_num::complex c = a;
+    ASSERT_EQ (c, complex_num::complex (4, 0));
 }
 
 TEST (complex, test3)

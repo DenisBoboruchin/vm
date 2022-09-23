@@ -24,10 +24,9 @@ public:
     complex operator- (const double   sub)  const {return *this - complex (sub);}
     complex operator- ()                    const {return complex (re_, - im_);}
     
-    complex operator* (const complex& mul) const 
-    {
-        return complex (re_ * mul.re_ - im_ * mul.im_, re_ * mul.im_ + im_ * mul.re_);
-    }
+    complex operator* (const complex& mul) const {
+        return complex (re_ * mul.re_ - im_ * mul.im_, re_ * mul.im_ + im_ * mul.re_);}
+
     complex operator* (const double mul) const {return (*this * complex(mul));}
 
     complex operator/ (const complex& div) const 
@@ -49,20 +48,15 @@ public:
     
     bool    operator==  (const complex& b) const {return ((re_ == b.re_) && (im_ == b.im_));}
     bool    operator!=  (const complex& b) const {return !(*this == b);}
-    bool    operator<   (const complex& b) const 
-    {
-        return (re_ * re_ + im_ * im_) < (b.re_ * b.re_ + b.im_ * b.im_);
-    }
+    
+    bool    operator<   (const complex& b) const { 
+        return (re_ * re_ + im_ * im_) < (b.re_ * b.re_ + b.im_ * b.im_);}
 
-    bool    operator>   (const complex& b) const 
-    {
-        return (re_ * re_ + im_ * im_) > (b.re_ * b.re_ + b.im_ * b.im_);
-    }
+    bool    operator>   (const complex& b) const {
+        return (re_ * re_ + im_ * im_) > (b.re_ * b.re_ + b.im_ * b.im_);}
 
-    friend std::ostream& operator<< (std::ostream& os, const complex_num::complex& cmplx)
-    {
-        return os << '(' << cmplx.re_ << ',' << cmplx.im_ << ')' << std::endl;
-    }
+    friend std::ostream& operator<< (std::ostream& os, const complex_num::complex& cmplx){
+        return os << '(' << cmplx.re_ << ',' << cmplx.im_ << ')' << std::endl;}
 };
 
 }
