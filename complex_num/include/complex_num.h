@@ -41,7 +41,7 @@ struct complex
         return complex (real, img);
     }
 
-    complex operator=   (const complex& b) 
+    complex& operator=   (const complex& b) 
     {
         re_ = b.re_;
         im_ = b.im_;
