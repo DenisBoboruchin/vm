@@ -7,10 +7,10 @@ namespace complex_num
 
 class complex
 {
+public:
     double re_ = 0;
     double im_ = 0;
 
-public:
     //complex () {}
     //complex (double re = 0.0): re_ {re} {}
     complex (double re = 0.0, double im = 0.0): re_ {re}, im_ {im} {}
