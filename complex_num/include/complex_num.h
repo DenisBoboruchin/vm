@@ -41,27 +41,27 @@ struct complex
 };
 
 
-static complex operator- (const double dbl, const complex& cmplx)
+inline complex operator- (const double dbl, const complex& cmplx)
 {
     return complex (dbl) - cmplx;
 }
 
-static complex operator+ (const double dbl, const complex& cmplx)
+inline complex operator+ (const double dbl, const complex& cmplx)
 {
     return complex (dbl) + cmplx;
 }
 
-static complex operator* (const double dbl, const complex& cmplx)
+inline complex operator* (const double dbl, const complex& cmplx)
 {
     return complex (dbl) * cmplx;
 }
 
-static complex operator/ (const double dbl, const complex& cmplx)
+inline complex operator/ (const double dbl, const complex& cmplx)
 {
     return complex (dbl) / cmplx;
 }   
 
-static std::ostream& operator<< (std::ostream& os, const complex& cmplx)
+inline std::ostream& operator<< (std::ostream& os, const complex& cmplx)
 {
     return os << '(' << cmplx.re_ << ',' << cmplx.im_ << ')' << std::endl;
 }
