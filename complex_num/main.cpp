@@ -18,7 +18,7 @@ TEST (complex, test1)
     
     ASSERT_TRUE (b == a);
     b = b + 3;
-    //b = 2 + b;
+    b = 2 + b;
 
     ASSERT_TRUE (b != a);
     ASSERT_TRUE (b > a);
@@ -26,7 +26,7 @@ TEST (complex, test1)
     
     ASSERT_EQ (b, complex_num::complex (6, 2));
     
-    //a = 1 - b;
+    a = 1 - b;
     ASSERT_EQ (a, complex_num::complex (-5, -2));
 }
 
@@ -42,7 +42,7 @@ TEST (complex, test2)
 
     ASSERT_EQ (a * b, complex_num::complex (0));
     
-    //b = 2 * b;
+    b = 2 * b;
     ASSERT_EQ (b, complex_num::complex (2, -2));
 
     a = 4;
