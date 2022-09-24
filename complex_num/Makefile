@@ -1,7 +1,7 @@
+INC_DIR = include
+
 CC 		= g++
 CFLAGS 	= -c -Wall -Wextra -I$(INC_DIR)
-
-INC_DIR = include
 
 all: main.o complex_num.o
 	$(CC) main.o complex_num.o -o main -lgtest
