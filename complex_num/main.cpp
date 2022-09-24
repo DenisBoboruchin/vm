@@ -6,7 +6,7 @@ int main ()
 {
     ::testing::InitGoogleTest();
 
-    std::cout << complex_num::complex (1, 2) << std::endl;
+    //std::cout << complex_num::complex (1, 2) << std::endl;
 
     return RUN_ALL_TESTS ();
 }
@@ -18,7 +18,7 @@ TEST (complex, test1)
     
     ASSERT_TRUE (b == a);
     b = b + 3;
-    b = 2 + b;
+    //b = 2 + b;
 
     ASSERT_TRUE (b != a);
     ASSERT_TRUE (b > a);
@@ -26,7 +26,7 @@ TEST (complex, test1)
     
     ASSERT_EQ (b, complex_num::complex (6, 2));
     
-    a = 1 - b;
+    //a = 1 - b;
     ASSERT_EQ (a, complex_num::complex (-5, -2));
 }
 
@@ -42,7 +42,7 @@ TEST (complex, test2)
 
     ASSERT_EQ (a * b, complex_num::complex (0));
     
-    b = 2 * b;
+    //b = 2 * b;
     ASSERT_EQ (b, complex_num::complex (2, -2));
 
     a = 4;
@@ -56,7 +56,8 @@ TEST (complex, test3)
     complex_num::complex b (0, 3);
     
     ASSERT_EQ (a + b, complex_num::complex (3, 3));
-
+    ASSERT_EQ (a.abs (), 3);
+    
     a = a + b;
 
     ASSERT_EQ (a / complex_num::complex (1, 1), complex_num::complex (3, 0));

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 
 namespace complex_num
 {
@@ -31,17 +32,38 @@ struct complex
         
     bool operator== (const complex& b) const;
     bool operator!= (const complex& b) const;
-    
+ 
+    double square_abs () const;
+    double abs () const;
+
     bool operator< (const complex& b) const;
     bool operator> (const complex& b) const;
 };
 
-complex operator- (const double dbl, const complex& cmplx);
-complex operator+ (const double dbl, const complex& cmplx);
+/*
+complex operator- (const double dbl, const complex& cmplx)
+{
+    return complex (dbl) - cmplx;
+}
 
-complex operator* (const double dbl, const complex& cmplx);
-complex operator/ (const double dbl, const complex& cmplx);
+complex operator+ (const double dbl, const complex& cmplx)
+{
+    return complex (dbl) + cmplx;
+}
 
-std::ostream& operator<< (std::ostream& os, const complex& cmplx);
+complex operator* (const double dbl, const complex& cmplx)
+{
+    return complex (dbl) * cmplx;
+}
 
+complex operator/ (const double dbl, const complex& cmplx)
+{
+    return complex (dbl) / cmplx;
+}   
+
+std::ostream& operator<< (std::ostream& os, const complex& cmplx)
+{
+    return os << '(' << cmplx.re_ << ',' << cmplx.im_ << ')' << std::endl;
+}
+*/
 }

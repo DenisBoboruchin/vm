@@ -11,7 +11,7 @@ complex_num::complex complex_num::complex::operator+ (const complex_num::complex
     return complex_num::complex (re_ + add.re_, im_ + add.im_);
 }
 
-complex_num::complex complex_num::complex::operator+ (const double   add)  const 
+complex_num::complex complex_num::complex::operator+ (const double add)  const 
 {
     return *this + complex_num::complex (add);
 }
@@ -26,9 +26,9 @@ complex_num::complex complex_num::complex::operator- (const complex_num::complex
     return complex_num::complex (re_ - sub.re_, im_ - sub.im_);
 }
 
-complex_num::complex complex_num::complex::operator- (const double   sub)  const 
+complex_num::complex complex_num::complex::operator- (const double sub)  const 
 {
-    return (*this - complex_num::complex (sub));
+    return *this - complex_num::complex (sub);
 }
 
 complex_num::complex complex_num::complex::operator- () const 
@@ -43,7 +43,7 @@ complex_num::complex complex_num::complex::operator* (const complex_num::complex
 
 complex_num::complex complex_num::complex::operator* (const double mul) const 
 {
-    return (*this * complex_num::complex(mul));
+    return *this * complex_num::complex(mul);
 }
 
 complex_num::complex complex_num::complex::operator/ (const complex_num::complex& div) const 
@@ -57,7 +57,7 @@ complex_num::complex complex_num::complex::operator/ (const complex_num::complex
 
 complex_num::complex complex_num::complex::operator/ (const double div) const
 {
-    return (*this / complex_num::complex (div));
+    return *this / complex_num::complex (div);
 }
 
 complex_num::complex& complex_num::complex::operator= (const complex_num::complex& b) 
@@ -70,7 +70,7 @@ complex_num::complex& complex_num::complex::operator= (const complex_num::comple
 
 bool complex_num::complex::operator== (const complex_num::complex& b) const 
 {
-    return ((re_ == b.re_) && (im_ == b.im_));
+    return (re_ == b.re_) && (im_ == b.im_);
 }
 
 bool complex_num::complex::operator!= (const complex_num::complex& b) const
@@ -78,42 +78,23 @@ bool complex_num::complex::operator!= (const complex_num::complex& b) const
     return !(*this == b);
 }
 
+double complex_num::complex::square_abs () const
+{
+    return re_ * re_ + im_ * im_;
+}
+
+double complex_num::complex::abs () const
+{
+    return sqrt (this->square_abs ());
+}
+
 bool complex_num::complex::operator< (const complex_num::complex& b) const 
 { 
-    return (re_ * re_ + im_ * im_) < (b.re_ * b.re_ + b.im_ * b.im_);
+    return (this->square_abs ()) < (b.square_abs ());
 }
 
 bool complex_num::complex::operator> (const complex_num::complex& b) const 
 {
-    return (re_ * re_ + im_ * im_) > (b.re_ * b.re_ + b.im_ * b.im_);
+    return (this->square_abs ()) > (b.square_abs ());
 }
 
-namespace complex_num
-{
-
-complex operator+ (const double dbl, const complex& cmplx) 
-{
-    return complex (dbl) + cmplx;
-}
-
-complex operator- (const double dbl, const complex& cmplx) 
-{
-    return (complex (dbl) - cmplx);
-}
-
-complex operator* (const double dbl, const complex& cmplx)
-{
-    return (complex (dbl) * cmplx);
-}
-
-complex operator/ (const double dbl, const complex& cmplx)
-{
-    return (complex (dbl) / cmplx);
-}   
-
-std::ostream& operator<< (std::ostream& os, const complex& cmplx)
-{
-    return os << '(' << cmplx.re_ << ',' << cmplx.im_ << ')' << std::endl;
-}
-
-}
