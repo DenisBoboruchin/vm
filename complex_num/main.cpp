@@ -6,7 +6,7 @@ int main ()
 {
     ::testing::InitGoogleTest();
 
-    //std::cout << complex_num::complex (1, 2) << std::endl;
+    std::cout << complex_num::complex (1, 2) << std::endl;
 
     return RUN_ALL_TESTS ();
 }
