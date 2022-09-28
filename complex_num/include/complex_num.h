@@ -40,30 +40,17 @@ struct complex
     bool operator> (const complex& b) const;
 };
 
-
+/*
 inline complex operator- (const double dbl, const complex& cmplx)
 {
     return complex (dbl) - cmplx;
 }
+*/
 
-inline complex operator+ (const double dbl, const complex& cmplx)
-{
-    return complex (dbl) + cmplx;
-}
+complex operator- (const double dbl, const complex& cmplx);
+complex operator+ (const double dbl, const complex& cmplx);
+complex operator* (const double dbl, const complex& cmplx);
+complex operator/ (const double dbl, const complex& cmplx);
 
-inline complex operator* (const double dbl, const complex& cmplx)
-{
-    return complex (dbl) * cmplx;
-}
-
-inline complex operator/ (const double dbl, const complex& cmplx)
-{
-    return complex (dbl) / cmplx;
-}   
-
-inline std::ostream& operator<< (std::ostream& os, const complex& cmplx)
-{
-    return os << '(' << cmplx.re_ << ',' << cmplx.im_ << ')' << std::endl;
-}
-
+std::ostream& operator<< (std::ostream& os, const complex& cmplx);
 }
