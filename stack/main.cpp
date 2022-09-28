@@ -21,5 +21,9 @@ int main ()
 
     stack = stack2;
 
+    stack2 = my_containers::stack<int> (22);
+
+    std::cout << stack2.size () << '\n';
+
     return 0;
 }

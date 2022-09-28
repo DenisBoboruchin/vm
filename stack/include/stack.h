@@ -15,18 +15,19 @@ const int CAPACITY_ADDED = 100;
 template <typename T> class stack 
 {
 public:
-    stack (size_t capacity): capacity_ {capacity}
+    stack (size_t capacity = MIN_CAPACITY): capacity_ {capacity}
     {
         data_ = new T[capacity];
     }
 
     stack (const stack& other)
     {
-        capacity_ = other.capacity_;
-        size_ = other.size_;
-    
-        data_ = new T[capacity_];
-        memcpy (data_, other.data_, sizeof (T));
+        *this = other;
+    }
+
+    stack (stack&& other)
+    {
+        *this = std::move(other);
     }
 
     ~stack ()
@@ -41,6 +42,23 @@ public:
 
         data_ = new T[capacity_];
         memcpy (data_, other.data_, sizeof (T));
+
+        return *this;
+    }
+
+    stack& operator= (stack&& other)
+    {
+        std::cout << "move operator=" << '\n';
+        if (this != &other)
+        {
+            delete [] data_;
+            
+            capacity_ = other.capacity_;
+            size_ = other.size_;
+            data_ = other.data_;
+
+            other.data_ = nullptr;
+        }
 
         return *this;
     }
