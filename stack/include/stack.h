@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <cstring>
 
@@ -18,18 +20,29 @@ public:
         data_ = new T[capacity];
     }
 
-    stack (stack& other)
+    stack (const stack& other)
     {
         capacity_ = other.capacity_;
         size_ = other.size_;
     
-        data_ = new T[other.capacity_];
+        data_ = new T[capacity_];
         memcpy (data_, other.data_, sizeof (T));
     }
 
     ~stack ()
     {
         delete [] data_;
+    }
+
+    stack& operator= (const stack& other) 
+    {
+        capacity_ = other.capacity_;
+        size_ = other.size_;
+
+        data_ = new T[capacity_];
+        memcpy (data_, other.data_, sizeof (T));
+
+        return *this;
     }
 
     void push (const T& elem)

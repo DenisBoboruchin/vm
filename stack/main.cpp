@@ -14,10 +14,12 @@ int main ()
     std::cout << stack.top () << '\n';
     std::cout << "size: " << stack.size () << '\n';
 
-    my_containers::stack<int> stack2 = stack;
+    my_containers::stack<int> stack2 {stack};
     
     stack2.push (5);
     std::cout << stack2.top () << "\nsize: " << stack2.size () << '\n';
+
+    stack = stack2;
 
     return 0;
 }

@@ -9,8 +9,8 @@ all: main.o stack.o
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
 
-stack.o: src/stack.cpp include/include.h
-	$(CC) $(CFLAGS) src/stack.cpp include/stack.h
+stack.o: src/stack.cpp
+	$(CC) $(CFLAGS) src/stack.cpp
 	
 clean:
 	rm *.o main
