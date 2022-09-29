@@ -48,7 +48,6 @@ public:
 
     stack& operator= (stack&& other)
     {
-        std::cout << "move operator=" << '\n';
         if (this != &other)
         {
             delete [] data_;
@@ -97,16 +96,10 @@ private:
     void check_size_ ()
     {
         if (size_ == capacity_)
-        {
             this->resize_up_ ();
-        }
 
         else if (size_ < size_t (capacity_ / 2))
-        {
-            if (size_ > 2 * MIN_CAPACITY)
-                //this->resize_down_ ();
-            {}
-        }
+            this->resize_down_ ();
     }
 
     void resize_up_ ()
@@ -130,6 +123,19 @@ private:
 
             data_ = new_data;
         }
+    }
+
+    void resize_down_ ()
+    {
+        if (size_ > 2 * MIN_CAPACITY)
+        {
+            T* new_data = new T[int (capacity_ / CAPACITY_FACTOR)];
+
+            memcpy (new_data, data_, sizeof (T));
+            delete [] data_;
+
+            data_ = new_data;
+        }   
     }
 
     size_t capacity_ = 0;
