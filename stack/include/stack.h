@@ -9,7 +9,8 @@ namespace my_containers
 const size_t MIN_CAPACITY = 10;
 const size_t BIG_CAPACITY = 500;
 
-const double CAPACITY_FACTOR = 1.4;
+const double CAPACITY_FACTOR_DOWN = 1.4;
+const double CAPACITY_FACTOR_UP = 1.6;
 const int CAPACITY_ADDED = 100;
 
 template <typename T> class stack 
@@ -22,7 +23,11 @@ public:
 
     stack (const stack& other)
     {
-        *this = other;
+        capacity_ = other.capacity_;
+        size_ = other.size_;
+
+        data_ = new T[capacity_];
+        memcpy (data_, other.data_, sizeof (T));
     }
 
     stack (stack&& other)
@@ -39,7 +44,8 @@ public:
     {
         capacity_ = other.capacity_;
         size_ = other.size_;
-
+        
+        delete [] data_;
         data_ = new T[capacity_];
         memcpy (data_, other.data_, sizeof (T));
 
@@ -90,7 +96,7 @@ public:
     size_t size () const
     {
         return size_;
-    }       
+    }      
 
 private:
     void check_size_ ()
@@ -106,7 +112,7 @@ private:
     {
         if (capacity_ < size_t (BIG_CAPACITY))
         {
-            T* new_data = new T[int (capacity_ * CAPACITY_FACTOR)];   
+            T* new_data = new T[int (capacity_ * CAPACITY_FACTOR_UP)];   
 
             memcpy (new_data, data_, sizeof (T));
             delete [] data_;
@@ -129,7 +135,7 @@ private:
     {
         if (size_ > 2 * MIN_CAPACITY)
         {
-            T* new_data = new T[int (capacity_ / CAPACITY_FACTOR)];
+            T* new_data = new T[int (capacity_ / CAPACITY_FACTOR_DOWN)];
 
             memcpy (new_data, data_, sizeof (T));
             delete [] data_;
@@ -138,6 +144,7 @@ private:
         }   
     }
 
+private:
     size_t capacity_ = 0;
     size_t size_ = 0;
 

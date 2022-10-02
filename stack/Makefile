@@ -1,7 +1,7 @@
 INC_DIR = include
 
 CC = g++
-CFLAGS = -c -Wall -Wextra -Werror -I$(INC_DIR)
+CFLAGS = -c -g -Wall -Wextra -Werror -I$(INC_DIR)
 
 all: main.o stack.o
 	$(CC) main.o stack.o -o main
