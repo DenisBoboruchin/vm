@@ -6,11 +6,9 @@
 namespace my_containers
 {
 
-const size_t MIN_CAPACITY = 32;
-const size_t BIG_CAPACITY = 8096;
-
+const size_t MIN_CAPACITY = 128;
 const double CAPACITY_FACTOR = 2;
-const int CAPACITY_ADDED = 4048;
+const int RATIO_TO_RESIZE_DOWN = 4;
 
 template <typename T> class stack 
 {
@@ -85,7 +83,7 @@ public:
 
     bool empty () const
     {
-        return size_ == 0;
+        return size_;
     }
 
     size_t size () const
@@ -99,18 +97,13 @@ private:
         if (size_ == capacity_)
             this->resize_up_ ();
 
-        else if (size_ < size_t (capacity_ / 4))
+        else if (size_ < size_t (capacity_ / RATIO_TO_RESIZE_DOWN))
             this->resize_down_ ();
     }
 
     void resize_up_ ()
     {
-        T* new_data = nullptr;
-
-        if (capacity_ < size_t (BIG_CAPACITY))
-            new_data = new T[int (capacity_ * CAPACITY_FACTOR)];   
-        else
-            new_data = new T[capacity_ + size_t (CAPACITY_ADDED)];
+        T* new_data = new T[int (capacity_ * CAPACITY_FACTOR)];   
 
         memcpy (new_data, data_, sizeof (T));
         delete [] data_;
