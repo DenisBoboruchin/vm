@@ -6,12 +6,11 @@
 namespace my_containers
 {
 
-const size_t MIN_CAPACITY = 10;
-const size_t BIG_CAPACITY = 500;
+const size_t MIN_CAPACITY = 32;
+const size_t BIG_CAPACITY = 8096;
 
-const double CAPACITY_FACTOR_DOWN = 1.4;
-const double CAPACITY_FACTOR_UP = 1.6;
-const int CAPACITY_ADDED = 100;
+const double CAPACITY_FACTOR = 2;
+const int CAPACITY_ADDED = 4048;
 
 template <typename T> class stack 
 {
@@ -56,13 +55,9 @@ public:
     {
         if (this != &other)
         {
-            //delete [] data_;
-            
             capacity_ = other.capacity_;
             size_ = other.size_;
             std::swap(data_, other.data_);
-
-           // other.data_ = nullptr;
         }
 
         return *this;
@@ -72,8 +67,8 @@ public:
     {
         this->check_size_ ();
 
-        size_++;
         data_[size_] = elem;
+        size_++;
     }
 
     void pop ()
@@ -83,7 +78,7 @@ public:
         size_--;
     }
 
-    T& top () const
+    T& top () const &
     {
         return data_[size_];
     }
@@ -104,38 +99,30 @@ private:
         if (size_ == capacity_)
             this->resize_up_ ();
 
-        else if (size_ < size_t (capacity_ / 2))
+        else if (size_ < size_t (capacity_ / 4))
             this->resize_down_ ();
     }
 
     void resize_up_ ()
     {
+        T* new_data = nullptr;
+
         if (capacity_ < size_t (BIG_CAPACITY))
-        {
-            T* new_data = new T[int (capacity_ * CAPACITY_FACTOR_UP)];   
-
-            memcpy (new_data, data_, sizeof (T));
-            delete [] data_;
-
-            data_ = new_data;
-        }
-
+            new_data = new T[int (capacity_ * CAPACITY_FACTOR)];   
         else
-        {
-            T* new_data = new T[capacity_ + size_t (CAPACITY_ADDED)];
+            new_data = new T[capacity_ + size_t (CAPACITY_ADDED)];
 
-            memcpy (new_data, data_, sizeof (T));   
-            delete [] data_;
+        memcpy (new_data, data_, sizeof (T));
+        delete [] data_;
 
-            data_ = new_data;
-        }
+        data_ = new_data;
     }
 
     void resize_down_ ()
     {
         if (size_ > 2 * MIN_CAPACITY)
         {
-            T* new_data = new T[int (capacity_ / CAPACITY_FACTOR_DOWN)];
+            T* new_data = new T[int (capacity_ / CAPACITY_FACTOR)];
 
             memcpy (new_data, data_, sizeof (T));
             delete [] data_;
