@@ -56,23 +56,16 @@ public:
     {
         if (this != &other)
         {
-            delete [] data_;
+            //delete [] data_;
             
             capacity_ = other.capacity_;
             size_ = other.size_;
-            data_ = other.data_;
+            std::swap(data_, other.data_);
 
-            other.data_ = nullptr;
+           // other.data_ = nullptr;
         }
 
         return *this;
-    }
-
-    static void swap (T& first, T& second)
-    {
-        T temp = std::move (first);
-        first = std::move (second);
-        second = std::move (temp);
     }
 
     void push (const T& elem)
