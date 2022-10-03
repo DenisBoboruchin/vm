@@ -68,6 +68,13 @@ public:
         return *this;
     }
 
+    static void swap (T& first, T& second)
+    {
+        T temp = std::move (first);
+        first = std::move (second);
+        second = std::move (temp);
+    }
+
     void push (const T& elem)
     {
         this->check_size_ ();
