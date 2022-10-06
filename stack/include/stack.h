@@ -1,4 +1,5 @@
-#pragma once
+#ifndef STACK_H
+#define STACK_H
 
 #include <iostream>
 #include <cstring>
@@ -109,12 +110,12 @@ template <typename T> void stack<T>::pop ()
 
 template <typename T> T& stack<T>::top () const &
 {
-	return data_[size_];
+	return data_[size_ - 1];
 }
 
 template <typename T> bool stack<T>::empty () const
 {
-    return size_;
+    return size_ == 0;
 }
 
 template <typename T> size_t stack<T>::size () const
@@ -126,9 +127,6 @@ template <typename T> void stack<T>::check_size_ ()
 {
     if (size_ == capacity_)
         this->resize_up_ ();
-
-    else if (size_ < size_t (capacity_ / RATIO_TO_RESIZE_DOWN))
-        this->resize_down_ ();
 }
 
 template <typename T> void stack<T>::resize_up_ ()
@@ -141,17 +139,7 @@ template <typename T> void stack<T>::resize_up_ ()
     data_ = new_data;
 }
 
-template <typename T> void stack<T>::resize_down_ ()
-{
-    if (size_ > 2 * MIN_CAPACITY)
-    {
-        T* new_data = new T[int (capacity_ / CAPACITY_FACTOR)];
-
-        memcpy (new_data, data_, sizeof (T));
-        delete [] data_;
-
-        data_ = new_data;
-    }   
 }
 
-}
+#endif
+
