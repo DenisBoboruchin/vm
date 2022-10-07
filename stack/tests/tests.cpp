@@ -101,11 +101,11 @@ TEST (stack_bool, top)
     stack0.push (1);
     stack0.push (1);
 
-    /*ASSERT_EQ (stack0.top (), true);
+    ASSERT_EQ (stack0.top (), true);
     
     stack0.pop ();
     ASSERT_EQ (stack0.size_, 1);
-    ASSERT_EQ (stack0.top (), false);
+    ASSERT_EQ (stack0.top (), true);
 
     for (int i = 0; i < 17; i++)
         stack0.push (i % 2);
@@ -120,7 +120,7 @@ TEST (stack_bool, top)
     ASSERT_EQ (stack0.top (), true);    
     stack0.pop ();
     ASSERT_EQ (stack0.top (), false);    
-    stack0.pop ();*/
+    stack0.pop ();
 }
 
 

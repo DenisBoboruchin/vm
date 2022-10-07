@@ -43,14 +43,6 @@ private:
     T* data_ = nullptr;
 };
 
-/*
-template <> class stack<bool>
-{
-private:
-    char* data_ = nullptr;
-};*/
-
-
 template <typename T> stack<T>::stack (size_t capacity): capacity_ {capacity}
 {
     data_ = new T[capacity];
@@ -117,32 +109,15 @@ template <> void stack<bool>::push (const bool& elem)
 {
     this->check_size_ ();
 
-    for (int i = CHAR_BIT - 1; i >= 0; i--)
-    {
-        printf ("%d", elem & (1 << i));
-    }
-
-
     int blocks_bit = size_ / CHAR_BIT;
     int num_bit = size_ % CHAR_BIT;
 
-    printf ("blocks_bit %d\n", blocks_bit);
-    printf ("num_bit %d\n", num_bit);
+    char* char_ptr = (char*) (data_ + blocks_bit);
     if (elem)
-    {
-        printf ("true\n");
-        data_[blocks_bit] |= (1 << 1);
-        printf ("insert %d\n", data_[blocks_bit] & (1 << num_bit));
-    }
+        *(char_ptr) |= (1 << num_bit);
 
     else
-        data_[blocks_bit] &= ~(1 << num_bit);
-
-    for (int i = CHAR_BIT - 1; i >= 0; i--)
-    {
-        printf ("%d", data_[blocks_bit] & (1 << i));
-    }
-    printf ("\n");
+        *(char_ptr) &= ~(1 << num_bit);
 
     size_++;
 }
@@ -163,8 +138,9 @@ template <> bool stack<bool>::top () const &
     int blocks_bit = size / CHAR_BIT;
     int num_bit = size % CHAR_BIT;
 
-    printf ("%d\n", data_[blocks_bit] & (1 << num_bit));
-    return data_[blocks_bit] & (1 << num_bit);
+    char* char_ptr = (char*) (data_ + blocks_bit);
+    
+    return *(char_ptr) & (1 << num_bit);
 }
 
 template <typename T> bool stack<T>::empty () const
