@@ -9,7 +9,6 @@ namespace my_containers
 
 const size_t MIN_CAPACITY = 128;
 const double CAPACITY_FACTOR = 2;
-const int RATIO_TO_RESIZE_DOWN = 4;
 
 
 template <typename T> class stack 
@@ -26,7 +25,7 @@ public:
 
     void push (const T& elem);
     void pop ();
-    T& top () const &;
+    T top () const &;
 
     bool empty () const;
     size_t size () const;     
@@ -45,9 +44,15 @@ private:
 };
 
 
+
 template <typename T> stack<T>::stack (size_t capacity): capacity_ {capacity}
 {
     data_ = new T[capacity];
+}
+
+template <> stack<bool>::stack (size_t capacity): capacity_ {capacity}
+{
+    data_ = new bool[(capacity - 1) / sizeof (bool) + 1];
 }
 
 template <typename T> stack<T>::stack (const stack& other)
@@ -101,16 +106,39 @@ template <typename T> void stack<T>::push (const T& elem)
     size_++;
 }
 
-template <typename T> void stack<T>::pop ()
+
+template <> void stack<bool>::push (const bool& elem)
 {
     this->check_size_ ();
 
+    int blocks_bit = size_ / sizeof (bool);
+    int num_bit = size_ % sizeof (bool);
+
+    if (elem)
+        data_[blocks_bit] |= 1 << num_bit;
+    else
+        data_[blocks_bit] &= ~(1 << num_bit);
+
+    size_++;
+}
+
+template <typename T> void stack<T>::pop ()
+{
     size_--;
 }
 
-template <typename T> T& stack<T>::top () const &
+template <typename T> T stack<T>::top () const &
 {
 	return data_[size_ - 1];
+}
+
+template <> bool stack<bool>::top () const &
+{
+    int size = size_ - 1;
+    int blocks_bit = size / sizeof (bool);
+    int num_bit = size % sizeof (bool);
+
+    return (data_[blocks_bit] & (1 << num_bit));
 }
 
 template <typename T> bool stack<T>::empty () const
@@ -131,9 +159,20 @@ template <typename T> void stack<T>::check_size_ ()
 
 template <typename T> void stack<T>::resize_up_ ()
 {
-    T* new_data = new T[int (capacity_ * CAPACITY_FACTOR)];   
+    capacity_ = capacity_ * CAPACITY_FACTOR;
+    T* new_data = new T[capacity_];   
 
     memcpy (new_data, data_, sizeof (T));
+    delete [] data_;
+
+    data_ = new_data;
+}
+
+template <> void stack<bool>::resize_up_ ()
+{
+    bool* new_data = new bool[(capacity_ * 2 - 1) / sizeof (bool) + 1];
+
+    memcpy (new_data, data_, sizeof (bool));
     delete [] data_;
 
     data_ = new_data;

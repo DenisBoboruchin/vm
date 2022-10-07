@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #define private public
-
 #include "stack.h"
 
 using my_containers::stack;
@@ -33,12 +32,33 @@ TEST (stack_int, constructors)
     ASSERT_EQ (stack3.capacity_, 32);
 }
 
+TEST (stack_bool, default_constructor)
+{
+    stack<bool> stack0 {8};
+    ASSERT_EQ (stack0.capacity_, 8);
+    ASSERT_EQ (stack0.size_, 0);
+}
+
 TEST (stack_int, push)
 {
     stack<int> stack0;
     
-    stack0.push (1);
+    stack0.push (-21);
     ASSERT_EQ (stack0.size_, 1);
+
+    for (int i = 0; i < 100; i++)
+        stack0.push (i);
+
+    ASSERT_EQ (stack0.size_, 101);
+}
+
+TEST (stack_bool, push)
+{
+    stack<bool> stack0;
+    
+    stack0.push (true);
+    stack0.push (false);
+    ASSERT_EQ (stack0.size_, 2);
 }
 
 TEST (stack_int, pop)
@@ -48,6 +68,16 @@ TEST (stack_int, pop)
     stack0.push (1);
     stack0.pop ();
     ASSERT_EQ (stack0.size_, 0);
+}
+
+TEST (stack_bool, pop)
+{
+    stack<bool> stack0;
+
+    stack0.push (true);
+    stack0.push (false);
+    stack0.pop ();
+    ASSERT_EQ (stack0.size_, 1);
 }
 
 TEST (stack_int, top)
@@ -64,7 +94,36 @@ TEST (stack_int, top)
     ASSERT_EQ (stack0.top (), 10);
 }
 
-TEST (stack_int, operator_eq)
+TEST (stack_bool, top)
+{
+    stack<bool> stack0;
+
+    stack0.push (false);
+    stack0.push (true);
+    ASSERT_EQ (stack0.top (), true);
+    
+    stack0.pop ();
+    ASSERT_EQ (stack0.size_, 1);
+    ASSERT_EQ (stack0.top (), false);
+
+    for (int i = 0; i < 17; i++)
+        stack0.push (i % 2);
+
+    ASSERT_EQ (stack0.size_, 18);
+    ASSERT_EQ (stack0.top (), false);    
+    stack0.pop ();
+    ASSERT_EQ (stack0.top (), true);    
+    stack0.pop ();
+    ASSERT_EQ (stack0.top (), false);    
+    stack0.pop ();
+    ASSERT_EQ (stack0.top (), true);    
+    stack0.pop ();
+    ASSERT_EQ (stack0.top (), false);    
+    stack0.pop ();
+}
+
+
+TEST (stack_int, operators_eq)
 {
     stack<int> stack0 {111};
     stack<int> stack1;
@@ -110,4 +169,24 @@ TEST (stack_int, empty)
     stack0.pop ();
     stack0.pop ();
     ASSERT_EQ (stack0.empty (), true);
+}
+
+TEST (stack_int, resize)
+{
+    stack<int> stack0{16};
+    ASSERT_EQ (stack0.capacity_, 16);
+
+    for (int i = 0; i < 16; i++)
+        stack0.push (i);
+    
+    ASSERT_EQ (stack0.capacity_, 16);
+
+    stack0.push (-100);
+    ASSERT_EQ (stack0.size_, 17);
+    ASSERT_EQ (stack0.capacity_, 32);
+
+    for (int i = 0; i < 100; i++)
+        stack0.push (i);
+
+    ASSERT_EQ (stack0.capacity_, 128);
 }
