@@ -4,32 +4,23 @@
 
 int main ()
 {
-    my_containers::stack<int> stack (10);
+    my_containers::stack<int> stack {};
 
-    stack.push (3);
-    stack.push (2);
-    stack.pop ();
+    long int num = 0;
+    std::cin >> num;
 
-    stack.empty ();
-    std::cout << stack.top () << '\n';
-    std::cout << "size: " << stack.size () << '\n';
+    for (int i = 1; i < num + 1; i++)
+        stack.push (i);
 
-    my_containers::stack<int> stack2 {stack};
-    
-    stack2.push (5);
-    std::cout << stack2.top () << "\nsize: " << stack2.size () << '\n';
+    long int sum = 0;
+    for (int i = 1; i < num + 1; i++)
+    {
+        sum += stack.top ();
+        stack.pop ();
+    }
 
-    stack = stack2;
-
-    stack.push (14);
-    std::swap (stack, stack2);
-
-    stack2.push (2);
-    std::cout << stack2.size () << '\n';
-    std::cout << stack2.empty () << '\n';
-    stack2.pop ();
-    stack2.pop ();
-    std::cout << stack2.empty () << '\n';
+    std::cout << "полученная сумма: " << sum << '\n';
+    std::cout << "должно получиться: " << num * (num + 1) / 2 << '\n';
 
     return 0;
 }

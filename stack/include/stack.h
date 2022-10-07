@@ -3,13 +3,13 @@
 
 #include <iostream>
 #include <cstring>
+#include <climits>
 
 namespace my_containers
 {
 
 const size_t MIN_CAPACITY = 128;
 const double CAPACITY_FACTOR = 2;
-
 
 template <typename T> class stack 
 {
@@ -43,6 +43,12 @@ private:
     T* data_ = nullptr;
 };
 
+/*
+template <> class stack<bool>
+{
+private:
+    char* data_ = nullptr;
+};*/
 
 
 template <typename T> stack<T>::stack (size_t capacity): capacity_ {capacity}
@@ -52,7 +58,7 @@ template <typename T> stack<T>::stack (size_t capacity): capacity_ {capacity}
 
 template <> stack<bool>::stack (size_t capacity): capacity_ {capacity}
 {
-    data_ = new bool[(capacity - 1) / sizeof (bool) + 1];
+    data_ = new bool[(capacity - 1) / CHAR_BIT + 1];
 }
 
 template <typename T> stack<T>::stack (const stack& other)
@@ -111,13 +117,32 @@ template <> void stack<bool>::push (const bool& elem)
 {
     this->check_size_ ();
 
-    int blocks_bit = size_ / sizeof (bool);
-    int num_bit = size_ % sizeof (bool);
+    for (int i = CHAR_BIT - 1; i >= 0; i--)
+    {
+        printf ("%d", elem & (1 << i));
+    }
 
+
+    int blocks_bit = size_ / CHAR_BIT;
+    int num_bit = size_ % CHAR_BIT;
+
+    printf ("blocks_bit %d\n", blocks_bit);
+    printf ("num_bit %d\n", num_bit);
     if (elem)
-        data_[blocks_bit] |= 1 << num_bit;
+    {
+        printf ("true\n");
+        data_[blocks_bit] |= (1 << 1);
+        printf ("insert %d\n", data_[blocks_bit] & (1 << num_bit));
+    }
+
     else
         data_[blocks_bit] &= ~(1 << num_bit);
+
+    for (int i = CHAR_BIT - 1; i >= 0; i--)
+    {
+        printf ("%d", data_[blocks_bit] & (1 << i));
+    }
+    printf ("\n");
 
     size_++;
 }
@@ -135,10 +160,11 @@ template <typename T> T stack<T>::top () const &
 template <> bool stack<bool>::top () const &
 {
     int size = size_ - 1;
-    int blocks_bit = size / sizeof (bool);
-    int num_bit = size % sizeof (bool);
+    int blocks_bit = size / CHAR_BIT;
+    int num_bit = size % CHAR_BIT;
 
-    return (data_[blocks_bit] & (1 << num_bit));
+    printf ("%d\n", data_[blocks_bit] & (1 << num_bit));
+    return data_[blocks_bit] & (1 << num_bit);
 }
 
 template <typename T> bool stack<T>::empty () const
@@ -162,7 +188,7 @@ template <typename T> void stack<T>::resize_up_ ()
     capacity_ = capacity_ * CAPACITY_FACTOR;
     T* new_data = new T[capacity_];   
 
-    memcpy (new_data, data_, sizeof (T));
+    memcpy (new_data, data_, sizeof (T) * size_);
     delete [] data_;
 
     data_ = new_data;
@@ -170,9 +196,9 @@ template <typename T> void stack<T>::resize_up_ ()
 
 template <> void stack<bool>::resize_up_ ()
 {
-    bool* new_data = new bool[(capacity_ * 2 - 1) / sizeof (bool) + 1];
+    bool* new_data = new bool[(capacity_ * 2 - 1) / CHAR_BIT + 1];
 
-    memcpy (new_data, data_, sizeof (bool));
+    memcpy (new_data, data_, sizeof (bool) * (size_ - 1));
     delete [] data_;
 
     data_ = new_data;
