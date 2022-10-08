@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #define private public
-#include "stack.h"
+#include "stack.hpp"
 
 using my_containers::stack;
 

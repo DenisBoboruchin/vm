@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include "stack.h"
-#include <stack>
+#include "stack.hpp"
 
 int main ()
 {

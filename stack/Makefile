@@ -1,22 +1,22 @@
 INC_DIR = include
 
 CC = clang++
-CFLAGS = -c -g -Wall -Wextra -Werror -I$(INC_DIR)
+CFLAGS = -c -Wall -Wextra -Werror -I$(INC_DIR)
+TESTFLAGS = -fsanitize=address -g
 
-all: main.o
+all: test stack.gch main.o
 	$(CC) main.o -o main
 
-stack.o: src/stack.cpp
-	$(CC) $(CFLAGS) src/stack.cpp
-	
-main.o: main.cpp
+
+stack.gch: include/stack.hpp
+	$(CC) $(CFLAGS) include/stack.hpp
+
+
+main.o: stack.gch main.cpp
 	$(CC) $(CFLAGS) main.cpp
 
-#clang-tidy: main.cpp include/stack.h
-#	clang-tidy include/stack.h main.cpp
 
-
-test: tests.o
+test: stack.gch tests.o
 	$(CC) tests.o -o test -lgtest
 
 tests.o: tests/tests.cpp
