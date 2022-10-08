@@ -1,8 +1,20 @@
+OPTIONS_SAN = SAN
+SAN_DESC = option sanitizers
+
+OPTIONS_DEFAULT = SAN
+
+#.include <bsd.port.options.mk>
+
 INC_DIR = include
 
 CC = clang++
 CFLAGS = -c -Wall -Wextra -Werror -I$(INC_DIR)
-TESTFLAGS = -fsanitize=address -static-libasan -g
+FLAGSSANITIZE = -fsanitize=address -g
+
+
+#.if ${PORT_OPTIONS:SAN}
+#CFLAGS += FLAGSSAMITSZE
+#.endif
 
 
 all: test stack.gch main.o
