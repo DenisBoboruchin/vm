@@ -2,7 +2,8 @@ INC_DIR = include
 
 CC = clang++
 CFLAGS = -c -Wall -Wextra -Werror -I$(INC_DIR)
-TESTFLAGS = -fsanitize=address -g
+TESTFLAGS = -fsanitize=address -static-libasan -g
+
 
 all: test stack.gch main.o
 	$(CC) main.o -o main
@@ -21,6 +22,15 @@ test: stack.gch tests.o
 
 tests.o: tests/tests.cpp
 	$(CC) $(CFLAGS) tests/tests.cpp
+
+
+clang-tidy: clang-tidy-main clang-tidy-tests
+
+clang-tidy-main:
+	clang-tidy main.cpp -- -I$(INC_DIR)
+
+clang-tidy-tests:
+	clang-tidy tests/tests.cpp -- -I$(INC_DIR)
 
 
 clean:
