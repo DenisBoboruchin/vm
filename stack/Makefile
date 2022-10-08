@@ -33,6 +33,19 @@ clang-tidy-tests:
 	clang-tidy tests/tests.cpp -- -I$(INC_DIR)
 
 
+clang-format: clang-format-main clang-format-stack.hpp clang-format-tests
+
+clang-format-main:
+	clang-format main.cpp
+
+clang-format-stack.hpp:
+	clang-format include/stack.hpp
+
+clang-format-tests:
+	clang-format tests/tests.cpp
+
+
+
 clean:
 	rm *.o include/*.gch main test
 	
