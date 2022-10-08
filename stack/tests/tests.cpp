@@ -20,8 +20,8 @@ TEST (stack_int, constructors)
 
     stack<int> stack1 {32};
     ASSERT_EQ (stack1.size_, 0);
-    ASSERT_EQ (stack1.capacity_, 32);
-    
+    ASSERT_EQ (stack1.capacity_, 32); 
+
     stack<int> stack2 = stack1;
     ASSERT_EQ (stack2.size_, 0);
     ASSERT_EQ (stack2.capacity_, 32);
@@ -190,4 +190,63 @@ TEST (stack_int, resize)
         stack0.push (i);
 
     ASSERT_EQ (stack0.capacity_, 1024);
+}
+
+TEST (stack_int, check_big_data)
+{
+    stack<int> stack {};
+
+    long int num = 100000000;
+
+    for (int i = 1; i < num + 1; i++)
+        stack.push (i);
+
+    long int sum = 0;
+    for (int i = 1; i < num + 1; i++)
+    {
+        sum += stack.top ();
+        stack.pop ();
+    }
+    
+    ASSERT_EQ (sum, num * (num + 1) / 2);
+}
+
+TEST (stack_struct, functional_test)
+{
+    struct T
+    {
+        int a = 0;
+        int b = 1;
+        double c = 10;
+    };
+
+    struct U
+    {
+        T t {};
+        float a = 1;
+    };
+
+    U elem0 {{1, 2, 3}};
+    U elem1 {{10,20,30}, 2};
+    U elem2 {{100, 200, 300}, 3};
+
+    stack<U> stack {};
+    stack.push (elem0);
+    stack.push (elem1);
+    stack.push (elem2);
+
+    U elem3 = stack.top ();
+    ASSERT_EQ (elem3.a, elem2.a);
+    ASSERT_EQ (elem3.t.b, elem2.t.b);
+    stack.pop ();
+    
+    elem3 = stack.top ();
+    ASSERT_EQ (elem3.a, elem1.a);
+    ASSERT_EQ (elem3.t.a, elem1.t.a);
+    stack.pop ();
+
+
+    elem3 = stack.top ();
+    ASSERT_EQ (elem3.a, 1);
+    ASSERT_EQ (elem3.t.c, 3);
 }

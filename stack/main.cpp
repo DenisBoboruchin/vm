@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "stack.h"
+#include <stack>
 
 int main ()
 {
@@ -19,7 +20,7 @@ int main ()
         stack.pop ();
     }
 
-    std::cout << "полученная сумма: " << sum << '\n';
+    std::cout << "полученная сумма:  " << sum << '\n';
     std::cout << "должно получиться: " << num * (num + 1) / 2 << '\n';
 
     return 0;

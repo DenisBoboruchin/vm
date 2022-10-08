@@ -109,13 +109,13 @@ template <> void stack<bool>::push (const bool& elem)
 {
     this->check_size_ ();
 
-    int blocks_bit = size_ / CHAR_BIT;
+    int num_char = size_ / CHAR_BIT;
     int num_bit = size_ % CHAR_BIT;
 
-    char* char_ptr = (char*) (data_ + blocks_bit);
+    char* char_ptr = (char*) (data_ + num_char);
+
     if (elem)
         *(char_ptr) |= (1 << num_bit);
-
     else
         *(char_ptr) &= ~(1 << num_bit);
 
@@ -124,7 +124,8 @@ template <> void stack<bool>::push (const bool& elem)
 
 template <typename T> void stack<T>::pop ()
 {
-    size_--;
+    if (size_ > 0)
+        size_--;
 }
 
 template <typename T> T stack<T>::top () const &
@@ -135,10 +136,10 @@ template <typename T> T stack<T>::top () const &
 template <> bool stack<bool>::top () const &
 {
     int size = size_ - 1;
-    int blocks_bit = size / CHAR_BIT;
+    int num_char = size / CHAR_BIT;
     int num_bit = size % CHAR_BIT;
 
-    char* char_ptr = (char*) (data_ + blocks_bit);
+    char* char_ptr = (char*) (data_ + num_char);
     
     return *(char_ptr) & (1 << num_bit);
 }
