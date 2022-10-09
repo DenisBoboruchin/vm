@@ -1,39 +1,33 @@
-OPTIONS_SAN = SAN
-SAN_DESC = option sanitizers
-
-OPTIONS_DEFAULT = SAN
-
-#.include <bsd.port.options.mk>
-
 INC_DIR = include
 
 CC = clang++
-CFLAGS = -c -Wall -Wextra -Werror -I$(INC_DIR)
-FLAGSSANITIZE = -fsanitize=address -g
+CXXFLAGS = -c -Wall -Wextra -Werror -I$(INC_DIR)
+LDFLAGS = 
 
+FLAGSSANITIZE = -fsanitize=address -fsanitize=undefined
 
-#.if ${PORT_OPTIONS:SAN}
-#CFLAGS += FLAGSSAMITSZE
-#.endif
+LDFLAGS += $(FLAGSSANITIZE)
+CXXFLAGS += $(FLAGSSANITIZE)
+
 
 
 all: test stack.gch main.o
-	$(CC) main.o -o main
+	$(CC) $(LDFLAGS) main.o -o main
 
 
 stack.gch: include/stack.hpp
-	$(CC) $(CFLAGS) include/stack.hpp
+	$(CC) $(CXXFLAGS) include/stack.hpp
 
 
 main.o: stack.gch main.cpp
-	$(CC) $(CFLAGS) main.cpp
-
+	$(CC) $(CXXFLAGS) main.cpp
+	
 
 test: stack.gch tests.o
-	$(CC) tests.o -o test -lgtest
+	$(CC) $(LDFLAGS) tests.o -o test -lgtest
 
 tests.o: tests/tests.cpp
-	$(CC) $(CFLAGS) tests/tests.cpp
+	$(CC) $(CXXFLAGS) tests/tests.cpp
 
 
 clang-tidy: clang-tidy-main clang-tidy-tests
