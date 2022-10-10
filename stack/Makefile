@@ -42,13 +42,13 @@ clang-tidy-tests:
 clang-format: clang-format-main clang-format-stack.hpp clang-format-tests
 
 clang-format-main:
-	clang-format main.cpp
+	clang-format -i main.cpp
 
 clang-format-stack.hpp:
-	clang-format include/stack.hpp
+	clang-format -i include/stack.hpp
 
 clang-format-tests:
-	clang-format tests/tests.cpp
+	clang-format -i tests/tests.cpp
 
 
 
