@@ -1,26 +1,23 @@
-INC_DIR = include
+INC_DIR= include
 
-CC = clang++
-CXXFLAGS = -c -Wall -Wextra -Werror -I$(INC_DIR)
-LDFLAGS = 
+CC= clang++
+CXXFLAGS= -c -Wall -Wextra -Werror -I$(INC_DIR)
+LDFLAGS= 
 
-FLAGSSANITIZE = -fsanitize=address -fsanitize=undefined
+FLAGSSANITIZE= -fsanitize=address -fsanitize=undefined
 
 LDFLAGS += $(FLAGSSANITIZE)
 CXXFLAGS += $(FLAGSSANITIZE)
 
 
-
-all: test stack.gch main.o
-	$(CC) $(LDFLAGS) main.o -o main
-
+all: test stack.gch 
 
 stack.gch: include/stack.hpp
 	$(CC) $(CXXFLAGS) include/stack.hpp
 
 
-main.o: stack.gch main.cpp
-	$(CC) $(CXXFLAGS) main.cpp
+stack_bool.o: stack.gch src/stack_bool.cpp
+	$(CC) $(CXXFLAGS) src/stack_bool.cpp
 	
 
 test: stack.gch tests.o
@@ -30,19 +27,19 @@ tests.o: tests/tests.cpp
 	$(CC) $(CXXFLAGS) tests/tests.cpp
 
 
-clang-tidy: clang-tidy-main clang-tidy-tests
+clang-tidy: clang-tidy-stack.cpp clang-tidy-tests
 
-clang-tidy-main:
-	clang-tidy main.cpp -- -I$(INC_DIR)
+clang-tidy-stack.cpp:
+	clang-tidy src/stack_bool.cpp -- -I$(INC_DIR)
 
 clang-tidy-tests:
 	clang-tidy tests/tests.cpp -- -I$(INC_DIR)
 
 
-clang-format: clang-format-main clang-format-stack.hpp clang-format-tests
+clang-format: clang-format-stack.cpp clang-format-stack.hpp clang-format-tests
 
-clang-format-main:
-	clang-format -i main.cpp
+clang-format-stack.cpp:
+	clang-format -i src/stack_bool.cpp
 
 clang-format-stack.hpp:
 	clang-format -i include/stack.hpp

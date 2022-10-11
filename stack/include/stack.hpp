@@ -7,9 +7,6 @@
 
 namespace my_containers {
 
-const size_t MIN_CAPACITY = 128;
-const double CAPACITY_FACTOR = 2;
-
 template <typename T>
 class stack {
 public:
@@ -28,6 +25,10 @@ public:
 
     bool empty() const;
     size_t size() const;
+    size_t capacity() const;
+
+    static constexpr const size_t MIN_CAPACITY = 128;
+    static constexpr const double CAPACITY_FACTOR = 2;
 
 private:
     void check_size_();
@@ -43,15 +44,15 @@ private:
 };
 
 template <typename T>
+const size_t stack<T>::MIN_CAPACITY;
+
+template <typename T>
+const double stack<T>::CAPACITY_FACTOR;
+
+template <typename T>
 stack<T>::stack(size_t capacity) : capacity_ {capacity}
 {
     data_ = new T[capacity];
-}
-
-template <>
-stack<bool>::stack(size_t capacity) : capacity_ {capacity}
-{
-    data_ = new bool[(capacity - 1) / CHAR_BIT + 1];
 }
 
 template <typename T>
@@ -110,24 +111,6 @@ void stack<T>::push(const T &elem)
     size_++;
 }
 
-template <>
-void stack<bool>::push(const bool &elem)
-{
-    this->check_size_();
-
-    int num_char = size_ / CHAR_BIT;
-    int num_bit = size_ % CHAR_BIT;
-
-    char *char_ptr = reinterpret_cast<char *>(data_ + num_char);
-
-    if (elem)
-        *(char_ptr) |= (1 << num_bit);
-    else
-        *(char_ptr) &= ~(1 << num_bit);
-
-    size_++;
-}
-
 template <typename T>
 void stack<T>::pop()
 {
@@ -141,18 +124,6 @@ T stack<T>::top() const &
     return data_[size_ - 1];
 }
 
-template <>
-bool stack<bool>::top() const &
-{
-    int size = size_ - 1;
-    int num_char = size / CHAR_BIT;
-    int num_bit = size % CHAR_BIT;
-
-    char *char_ptr = reinterpret_cast<char *>(data_ + num_char);
-
-    return *(char_ptr) & (1 << num_bit);
-}
-
 template <typename T>
 bool stack<T>::empty() const
 {
@@ -163,6 +134,12 @@ template <typename T>
 size_t stack<T>::size() const
 {
     return size_;
+}
+
+template <typename T>
+size_t stack<T>::capacity() const
+{
+    return capacity_;
 }
 
 template <typename T>
@@ -179,17 +156,6 @@ void stack<T>::resize_up_()
     T *new_data = new T[capacity_];
 
     memcpy(new_data, data_, sizeof(T) * size_);
-    delete[] data_;
-
-    data_ = new_data;
-}
-
-template <>
-void stack<bool>::resize_up_()
-{
-    bool *new_data = new bool[(capacity_ * 2 - 1) / CHAR_BIT + 1];
-
-    memcpy(new_data, data_, (size_ - 1) / CHAR_BIT + 1);
     delete[] data_;
 
     data_ = new_data;
