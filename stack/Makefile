@@ -20,8 +20,8 @@ stack_bool.o: stack.gch src/stack_bool.cpp
 	$(CC) $(CXXFLAGS) src/stack_bool.cpp
 	
 
-test: stack.gch tests.o
-	$(CC) $(LDFLAGS) tests.o -o test -lgtest
+test: stack_bool.o tests.o
+	$(CC) $(LDFLAGS) stack_bool.o tests.o -o test -lgtest
 
 tests.o: tests/tests.cpp
 	$(CC) $(CXXFLAGS) tests/tests.cpp
@@ -30,10 +30,10 @@ tests.o: tests/tests.cpp
 clang-tidy: clang-tidy-stack.cpp clang-tidy-tests
 
 clang-tidy-stack.cpp:
-	clang-tidy src/stack_bool.cpp -- -I$(INC_DIR)
+	clang-tidy src/stack_bool.cpp -- uses .clang-tidy -I$(INC_DIR)
 
 clang-tidy-tests:
-	clang-tidy tests/tests.cpp -- -I$(INC_DIR)
+	clang-tidy tests/tests.cpp -- uses .clang-tidy -I$(INC_DIR)
 
 
 clang-format: clang-format-stack.cpp clang-format-stack.hpp clang-format-tests
