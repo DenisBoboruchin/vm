@@ -38,10 +38,7 @@ private:
     char *data_ = nullptr;
 };
 
-stack<bool>::stack(size_t capacity) : capacity_ {capacity}
-{
-    data_ = new char[(capacity - 1) / CHAR_BIT + 1];
-}
+stack<bool>::stack(size_t capacity) : capacity_ {capacity}, data_ {new char[(capacity - 1) / CHAR_BIT + 1]} {}
 
 void stack<bool>::push(const bool &elem)
 {
