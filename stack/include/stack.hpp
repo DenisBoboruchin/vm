@@ -50,9 +50,7 @@ template <typename T>
 const double stack<T>::CAPACITY_FACTOR;
 
 template <typename T>
-stack<T>::stack(size_t capacity) : capacity_ {capacity}, data_ {new T[capacity]}
-{
-}
+stack<T>::stack(size_t capacity) : capacity_ {capacity}, data_ {new T[capacity]} {}
 
 template <typename T>
 stack<T>::stack(const stack &other)
