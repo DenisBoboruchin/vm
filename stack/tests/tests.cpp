@@ -13,6 +13,7 @@ int main()
 TEST(stack_int, constructors)
 {
     stack<int> stack0;
+
     ASSERT_EQ(stack0.capacity(), stack<int>::MIN_CAPACITY);
     ASSERT_EQ(stack0.size(), 0);
 

@@ -21,7 +21,7 @@ public:
 
     void push(const T &elem);
     void pop();
-    T top() const &;
+    T &top() const &;
 
     bool empty() const;
     size_t size() const;
@@ -50,7 +50,9 @@ template <typename T>
 const double stack<T>::CAPACITY_FACTOR;
 
 template <typename T>
-stack<T>::stack(size_t capacity) : capacity_ {capacity}, data_ {new T[capacity]} {}
+stack<T>::stack(size_t capacity) : capacity_ {capacity}, data_ {new T[capacity]}
+{
+}
 
 template <typename T>
 stack<T>::stack(const stack &other)
@@ -116,7 +118,7 @@ void stack<T>::pop()
 }
 
 template <typename T>
-T stack<T>::top() const &
+T &stack<T>::top() const &
 {
     return data_[size_ - 1];
 }
