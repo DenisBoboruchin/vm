@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
 set(PROJECT_NAME stack)
 project(${PROJECT_NAME} LANGUAGES CXX)
 
-
 set(SOURCE_TEST tests/tests.cpp)
 set(SOURCE_LIB src/stack_bool.cpp include/stack.hpp) 
 
@@ -11,6 +10,7 @@ include_directories(include)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_LIB})
 
+option(TESTING "Включить тестирование" ON)
 
 #clang-tidy
 find_program(CLANG_TIDY "clang-tidy")
@@ -19,7 +19,7 @@ if(CLANG_TIDY)
     set(CLANG_TIDY_FLAGS
         clang-tidy;
         -format-style=file
-        -dump-config
+        #-dump-config
     )
     set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_FLAGS}")
 endif()
@@ -34,13 +34,13 @@ if(CLANG_FORMAT)
         COMMAND clang-format
         -style=file
         -i
-        -dump-config
+        #-dump-config
         ${ALL_SOURCE_FILES}
     )
 endif()
 
 #tests
-if (ADD_TESTING)
+if (TESTING)
     message ("Include testing")
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})
@@ -57,8 +57,8 @@ endif ()
 if (ADD_SANITIZERS)
     message ("Build with sanitizers")
 
-    target_compile_options (${PROJECT_NAME} PUBLIC -fsanitize=address -fsanitize=undefined -g)
-    set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+    add_compile_options (-fsanitize=address -fsanitize=undefined -g)
+    set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
 endif ()
 
 
