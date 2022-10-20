@@ -12,33 +12,6 @@ add_library(${PROJECT_NAME} STATIC ${SOURCE_LIB})
 
 option(TESTING "Включить тестирование" ON)
 
-#clang-tidy
-find_program(CLANG_TIDY "clang-tidy")
-if(CLANG_TIDY)
-    message (clang-tidy)
-    set(CLANG_TIDY_FLAGS
-        clang-tidy;
-        -format-style=file
-        #-dump-config
-    )
-    set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_FLAGS}")
-endif()
-
-#clang-format
-find_program(CLANG_FORMAT "clang-format")
-if(CLANG_FORMAT)
-    message (clang-format)
-    file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.hpp)
-    add_custom_target(
-        clang_format
-        COMMAND clang-format
-        -style=file
-        -i
-        #-dump-config
-        ${ALL_SOURCE_FILES}
-    )
-endif()
-
 #tests
 if (TESTING)
     message ("Include testing")
@@ -52,6 +25,33 @@ if (TESTING)
 
     add_dependencies (${PROJECT_NAME}_tests ${PROJECT_NAME})
 endif ()
+
+#clang-format
+find_program(CLANG_FORMAT "clang-format")
+if(CLANG_FORMAT)
+    message (clang-format)
+    file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.hpp)
+    add_custom_target(
+        clang_format
+        COMMAND clang-format
+        #-style=file:${CMAKE_SOURCE_DIR}/.clang-format
+        -i
+        -dump-config
+        ${ALL_SOURCE_FILES}
+    )
+endif()
+
+#clang-tidy
+find_program(CLANG_TIDY "clang-tidy")
+if(CLANG_TIDY)
+    message (clang-tidy)
+    set(CLANG_TIDY_FLAGS
+        clang-tidy
+        -format-style=file:${CMAKE_SOURCE_DIR}/.clang-tidy 
+        -dump-config
+    )
+    set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_FLAGS}")
+endif()
 
 #sanitizers
 if (ADD_SANITIZERS)
