@@ -1,7 +1,0 @@
-/home/denis/prog/vm/stack/build/CMakeFiles/stack.dir
-/home/denis/prog/vm/stack/build/CMakeFiles/stack_tests.dir
-/home/denis/prog/vm/stack/build/CMakeFiles/run_stack_tests.dir
-/home/denis/prog/vm/stack/build/CMakeFiles/clang_format.dir
-/home/denis/prog/vm/stack/build/CMakeFiles/test.dir
-/home/denis/prog/vm/stack/build/CMakeFiles/edit_cache.dir
-/home/denis/prog/vm/stack/build/CMakeFiles/rebuild_cache.dir
