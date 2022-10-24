@@ -1,5 +1,5 @@
-#ifndef STACK_H
-#define STACK_H
+#ifndef STACK_HPP
+#define STACK_HPP
 
 #include <iostream>
 #include <cstring>
@@ -10,7 +10,10 @@ namespace my_containers {
 template <typename T>
 class stack {
 public:
-    stack(size_t capacity = MIN_CAPACITY);
+    static constexpr const size_t MIN_CAPACITY = 128;
+    static constexpr const double CAPACITY_FACTOR = 2;
+
+    explicit stack(size_t capacity = MIN_CAPACITY);
     stack(const stack &other);
     stack(stack &&other);
 
@@ -26,9 +29,6 @@ public:
     bool empty() const;
     size_t size() const;
     size_t capacity() const;
-
-    static constexpr const size_t MIN_CAPACITY = 128;
-    static constexpr const double CAPACITY_FACTOR = 2;
 
 private:
     void check_size_();
@@ -51,6 +51,7 @@ const double stack<T>::CAPACITY_FACTOR;
 
 template <typename T>
 stack<T>::stack(size_t capacity) : capacity_ {capacity}, data_ {new T[capacity]}
+
 {
 }
 

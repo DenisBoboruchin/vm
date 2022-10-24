@@ -5,6 +5,9 @@ namespace my_containers {
 template <>
 class stack<bool> {
 public:
+    static constexpr const size_t MIN_CAPACITY = 128;
+    static constexpr const double CAPACITY_FACTOR = 2;
+
     stack(size_t capacity = MIN_CAPACITY);
     stack(const stack &other);
     stack(stack &&other);
@@ -21,9 +24,6 @@ public:
     bool empty() const;
     size_t size() const;
     size_t capacity() const;
-
-    static constexpr const size_t MIN_CAPACITY = 128;
-    static constexpr const double CAPACITY_FACTOR = 2;
 
 private:
     void check_size_();

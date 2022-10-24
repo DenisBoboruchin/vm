@@ -10,8 +10,18 @@ include_directories(include)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCE_LIB})
 
-option(TESTING "Включить тестирование" ON)
-
+#clang-tidy
+option(CLANG_TIDY "Include clang-tidy" ON)
+find_program(CLANG_TIDY "clang-tidy")
+if(CLANG_TIDY)
+    message (clang-tidy " from " ${CMAKE_SOURCE_DIR}/.clang-tidy)
+    
+    set(CMAKE_CXX_CLANG_TIDY
+        "clang-tidy;-format-style=file:${CMAKE_SOURCE_DIR}/.clang-tidy;-checks=*"
+    )
+endif()
+ 
+option(TESTING "Include testing" ON)
 #tests
 if (TESTING)
     message ("Include testing")
@@ -23,42 +33,33 @@ if (TESTING)
     target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
     enable_testing ()
 
+    add_custom_target (run_${PROJECT_NAME}_tests 
+        COMMENT "Running ${PROJECT_NAME}_tests"
+        COMMAND ./${PROJECT_NAME}_tests
+    )
     add_dependencies (${PROJECT_NAME}_tests ${PROJECT_NAME})
+   
+    #sanitizers
+    if (ADD_SANITIZERS)
+        message ("Build with sanitizers")
+
+        add_compile_options (-fsanitize=address -fsanitize=undefined -g)
+        set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+    endif ()
 endif ()
 
 #clang-format
 find_program(CLANG_FORMAT "clang-format")
 if(CLANG_FORMAT)
-    message (clang-format)
+    message (clang-format " from " ${CMAKE_SOURCE_DIR}/.clang-format)
+
     file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.hpp)
     add_custom_target(
         clang_format
         COMMAND clang-format
-        #-style=file:${CMAKE_SOURCE_DIR}/.clang-format
         -i
-        -dump-config
+        -style=file:${CMAKE_SOURCE_DIR}/.clang-format
         ${ALL_SOURCE_FILES}
     )
 endif()
-
-#clang-tidy
-find_program(CLANG_TIDY "clang-tidy")
-if(CLANG_TIDY)
-    message (clang-tidy)
-    set(CLANG_TIDY_FLAGS
-        clang-tidy
-        -format-style=file:${CMAKE_SOURCE_DIR}/.clang-tidy 
-        -dump-config
-    )
-    set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_FLAGS}")
-endif()
-
-#sanitizers
-if (ADD_SANITIZERS)
-    message ("Build with sanitizers")
-
-    add_compile_options (-fsanitize=address -fsanitize=undefined -g)
-    set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
-endif ()
-
 
