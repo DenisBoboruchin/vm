@@ -8,7 +8,7 @@
 namespace my_containers {
 
 template <typename T>
-class stack {
+class stack final{
 public:
     static constexpr const size_t MIN_CAPACITY = 128;
     static constexpr const double CAPACITY_FACTOR = 2;

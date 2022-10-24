@@ -3,7 +3,7 @@
 namespace my_containers {
 
 template <>
-class stack<bool> {
+class stack<bool> final{
 public:
     static constexpr const size_t MIN_CAPACITY = 128;
     static constexpr const double CAPACITY_FACTOR = 2;
