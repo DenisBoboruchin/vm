@@ -1,21 +1,24 @@
 #include "stack.hpp"
+#include <string.h>
 
 namespace my_containers {
 
+const int CHAR_BIT = 8;
+
 template <>
-class stack<bool> final{
+class stack<bool> final {
 public:
     static constexpr const size_t MIN_CAPACITY = 128;
     static constexpr const double CAPACITY_FACTOR = 2;
 
-    stack(size_t capacity = MIN_CAPACITY);
+    stack();
     stack(const stack &other);
-    stack(stack &&other);
+    stack(stack &&other) noexcept;
 
     ~stack();
 
     stack &operator=(const stack &other);
-    stack &operator=(stack &&other);
+    stack &operator=(stack &&other) noexcept;
 
     void push(const bool &elem);
     void pop();
@@ -32,20 +35,22 @@ private:
     void resize_down_();
 
 private:
+    static constexpr size_t CHAR_BIT = 8;
+
     size_t capacity_ = 0;
     size_t size_ = 0;
 
-    char *data_ = nullptr;
+    char8_t *data_ = nullptr;
 };
 
-stack<bool>::stack(size_t capacity) : capacity_ {capacity}, data_ {new char[(capacity - 1) / CHAR_BIT + 1]} {}
+stack<bool>::stack() : capacity_ {MIN_CAPACITY}, data_ {new char8_t[(capacity_ - 1) / CHAR_BIT + 1]} {}
 
 void stack<bool>::push(const bool &elem)
 {
-    this->check_size_();
+    check_size_();
 
-    int num_char = size_ / CHAR_BIT;
-    int num_bit = size_ % CHAR_BIT;
+    int num_char = static_cast<int>(size_ / CHAR_BIT);
+    int num_bit = static_cast<int>(size_ % CHAR_BIT);
 
     if (elem)
         *(data_ + num_char) |= (1 << num_bit);
@@ -61,12 +66,12 @@ bool stack<bool>::top() const &
     int num_char = size / CHAR_BIT;
     int num_bit = size % CHAR_BIT;
 
-    return *(data_ + num_char) & (1 << num_bit);
+    return (*(data_ + num_char) & (1 << num_bit)) != 0;
 }
 
 void stack<bool>::resize_up_()
 {
-    char *new_data = new char[(capacity_ * 2 - 1) / CHAR_BIT + 1];
+    char8_t *new_data = new char8_t[(capacity_ * 2 - 1) / CHAR_BIT + 1];
 
     memcpy(new_data, data_, (size_ - 1) / CHAR_BIT + 1);
     delete[] data_;

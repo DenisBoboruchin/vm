@@ -3,6 +3,12 @@ cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
 set(PROJECT_NAME stack)
 project(${PROJECT_NAME} LANGUAGES CXX)
 
+enable_language(CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_COMPILER g++)
+
 set(SOURCE_TEST tests/tests.cpp)
 set(SOURCE_LIB src/stack_bool.cpp include/stack.hpp) 
 
@@ -20,7 +26,7 @@ if(CLANG_TIDY)
         "clang-tidy;-format-style=file:${CMAKE_SOURCE_DIR}/.clang-tidy;-checks=*"
     )
 endif()
- 
+
 option(TESTING "Include testing" ON)
 #tests
 if (TESTING)

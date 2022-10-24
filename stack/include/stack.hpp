@@ -2,25 +2,23 @@
 #define STACK_HPP
 
 #include <iostream>
-#include <cstring>
-#include <climits>
 
 namespace my_containers {
 
 template <typename T>
-class stack final{
+class stack final {
 public:
-    static constexpr const size_t MIN_CAPACITY = 128;
-    static constexpr const double CAPACITY_FACTOR = 2;
+    static constexpr size_t MIN_CAPACITY = 128;
+    static constexpr double CAPACITY_FACTOR = 2;
 
-    explicit stack(size_t capacity = MIN_CAPACITY);
+    stack();
     stack(const stack &other);
-    stack(stack &&other);
+    stack(stack &&other) noexcept;
 
     ~stack();
 
     stack &operator=(const stack &other);
-    stack &operator=(stack &&other);
+    stack &operator=(stack &&other) noexcept;
 
     void push(const T &elem);
     void pop();
@@ -44,29 +42,18 @@ private:
 };
 
 template <typename T>
-const size_t stack<T>::MIN_CAPACITY;
-
-template <typename T>
-const double stack<T>::CAPACITY_FACTOR;
-
-template <typename T>
-stack<T>::stack(size_t capacity) : capacity_ {capacity}, data_ {new T[capacity]}
-
+stack<T>::stack() : capacity_ {MIN_CAPACITY}, data_ {new T[capacity_]}
 {
 }
 
 template <typename T>
-stack<T>::stack(const stack &other)
+stack<T>::stack(const stack &other) : capacity_ {other.capacity_}, size_ {other.size_}, data_ {new T[capacity_]}
 {
-    capacity_ = other.capacity_;
-    size_ = other.size_;
-
-    data_ = new T[capacity_];
     memcpy(data_, other.data_, sizeof(T));
 }
 
 template <typename T>
-stack<T>::stack(stack &&other)
+stack<T>::stack(stack &&other) noexcept
 {
     *this = std::move(other);
 }
@@ -91,7 +78,7 @@ stack<T> &stack<T>::operator=(const stack &other)
 }
 
 template <typename T>
-stack<T> &stack<T>::operator=(stack &&other)
+stack<T> &stack<T>::operator=(stack &&other) noexcept
 {
     if (this != &other) {
         capacity_ = other.capacity_;
@@ -105,7 +92,7 @@ stack<T> &stack<T>::operator=(stack &&other)
 template <typename T>
 void stack<T>::push(const T &elem)
 {
-    this->check_size_();
+    check_size_();
 
     data_[size_] = elem;
     size_++;
