@@ -30,9 +30,7 @@ public:
 
 private:
     void check_size_();
-
     void resize_up_();
-    void resize_down_();
 
 private:
     size_t capacity_ = 0;
@@ -147,6 +145,42 @@ void stack<T>::resize_up_()
 
     data_ = new_data;
 }
+
+template <>
+class stack<bool> final {
+public:
+    static constexpr const size_t MIN_CAPACITY = 128;
+    static constexpr const double CAPACITY_FACTOR = 2;
+
+    stack();
+    stack(const stack &other);
+    stack(stack &&other) noexcept;
+
+    ~stack();
+
+    stack &operator=(const stack &other);
+    stack &operator=(stack &&other) noexcept;
+
+    void push(const bool &elem);
+    void pop();
+    bool top() const &;
+
+    bool empty() const;
+    size_t size() const;
+    size_t capacity() const;
+
+private:
+    void check_size_();
+    void resize_up_();
+
+private:
+    static constexpr size_t BIT_CHAR = 8;
+
+    size_t capacity_ = 0;
+    size_t size_ = 0;
+
+    char8_t *data_ = nullptr;
+};
 
 }  // namespace my_containers
 

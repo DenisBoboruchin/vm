@@ -10,7 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_COMPILER g++)
 
 set(SOURCE_TEST tests/tests.cpp)
-set(SOURCE_LIB src/stack_bool.cpp include/stack.hpp) 
+set(SOURCE_LIB src/stack_bool.cpp) 
 
 include_directories(include)
 
@@ -31,12 +31,13 @@ option(TESTING "Include testing" ON)
 #tests
 if (TESTING)
     message ("Include testing")
+
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})
 
     add_executable (${PROJECT_NAME}_tests ${SOURCE_TEST})
-
-    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
+    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main ${PROJECT_NAME})
+    
     enable_testing ()
 
     add_custom_target (run_${PROJECT_NAME}_tests 
@@ -46,6 +47,7 @@ if (TESTING)
     add_dependencies (${PROJECT_NAME}_tests ${PROJECT_NAME})
    
     #sanitizers
+    option(ADD_SANITIZERS "Build with sanitizers" ON)
     if (ADD_SANITIZERS)
         message ("Build with sanitizers")
 
