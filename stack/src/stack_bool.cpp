@@ -3,8 +3,7 @@
 
 namespace my_containers {
 
-stack<bool>::stack() : capacity_ {MIN_CAPACITY}, 
-    data_ {new char8_t[(capacity_ - 1) / BIT_CHAR + 1]} {}
+stack<bool>::stack() : capacity_ {MIN_CAPACITY}, data_ {new char8_t[(capacity_ - 1) / BIT_CHAR + 1]} {}
 
 stack<bool>::stack(const stack &other)
     : capacity_ {other.capacity_}, size_ {other.size_}, data_ {new char8_t[capacity_]}
