@@ -18,17 +18,17 @@ TEST(stack_int, constructors)
 
     stack<int> stack2 = stack0;
     ASSERT_EQ(stack2.size(), 0);
-    ASSERT_EQ(stack2.capacity(), 128);
+    ASSERT_EQ(stack2.capacity(), stack<int>::MIN_CAPACITY);
 
     stack<int> stack3 = std::move(stack2);
     ASSERT_EQ(stack3.size(), 0);
-    ASSERT_EQ(stack3.capacity(), 128);
+    ASSERT_EQ(stack3.capacity(), stack<int>::MIN_CAPACITY);
 }
 
 TEST(stack_bool, default_constructor)
 {
     stack<bool> stack0 {};
-    ASSERT_EQ(stack0.capacity(), 128);
+    ASSERT_EQ(stack0.capacity(), stack<bool>::MIN_CAPACITY);
     ASSERT_EQ(stack0.size(), 0);
 }
 
@@ -127,7 +127,7 @@ TEST(stack_int, operators_eq)
     stack1 = stack0;
 
     ASSERT_EQ(stack1.top(), 13);
-    ASSERT_EQ(stack1.capacity(), 128);
+    ASSERT_EQ(stack1.capacity(), stack<int>::MIN_CAPACITY);
 
     stack1.push(14);
     stack0 = std::move(stack1);
@@ -168,16 +168,16 @@ TEST(stack_int, empty)
 TEST(stack_int, resize)
 {
     stack<int> stack0 {};
-    ASSERT_EQ(stack0.capacity(), 128);
+    ASSERT_EQ(stack0.capacity(), stack<int>::MIN_CAPACITY);
 
     for (int i = 0; i < 16; i++)
         stack0.push(i);
 
-    ASSERT_EQ(stack0.capacity(), 128);
+    ASSERT_EQ(stack0.capacity(), stack<int>::MIN_CAPACITY);
 
     stack0.push(-100);
     ASSERT_EQ(stack0.size(), 17);
-    ASSERT_EQ(stack0.capacity(), 128);
+    ASSERT_EQ(stack0.capacity(), stack<int>::MIN_CAPACITY);
 
     for (int i = 0; i < 1000; i++)
         stack0.push(i);
