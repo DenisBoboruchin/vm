@@ -44,7 +44,7 @@ if (TESTING)
         COMMENT "Running ${PROJECT_NAME}_tests"
         COMMAND ./${PROJECT_NAME}_tests
     )
-    add_dependencies (${PROJECT_NAME}_tests ${PROJECT_NAME})
+    add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
    
     #sanitizers
     option(ADD_SANITIZERS "Build with sanitizers" ON)
