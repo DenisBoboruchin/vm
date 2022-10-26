@@ -11,7 +11,7 @@ int main()
 }
 
 TEST(stack_int, constructors)
-{
+{    
     stack<int> stack0 {};
     ASSERT_EQ(stack0.capacity(), stack<int>::MIN_CAPACITY);
     ASSERT_EQ(stack0.size(), 0);
@@ -30,7 +30,7 @@ TEST(stack_bool, default_constructor)
     stack<bool> stack0 {};
     ASSERT_EQ(stack0.capacity(), stack<bool>::MIN_CAPACITY);
     ASSERT_EQ(stack0.size(), 0);
-}
+} 
 
 TEST(stack_int, push)
 {
@@ -189,7 +189,7 @@ TEST(stack_int, check_big_data)
 {
     stack<int> stack {};
 
-    long int num = 100000000;
+    long int num = 10000000;
 
     for (int i = 1; i < num + 1; i++)
         stack.push(i);

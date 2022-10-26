@@ -17,7 +17,7 @@ include_directories(include)
 add_library(${PROJECT_NAME} STATIC ${SOURCE_LIB})
 
 #clang-tidy
-option(CLANG_TIDY "Include clang-tidy" ON)
+option(CLANG_TIDY "Include clang-tidy" OFF)
 find_program(CLANG_TIDY "clang-tidy")
 if(CLANG_TIDY)
     message (clang-tidy " from " ${CMAKE_SOURCE_DIR}/.clang-tidy)
@@ -26,6 +26,15 @@ if(CLANG_TIDY)
         "clang-tidy;-format-style=file:${CMAKE_SOURCE_DIR}/.clang-tidy;-checks=*"
     )
 endif()
+
+#sanitizers
+option(ADD_SANITIZERS "Build with sanitizers" ON)
+if (ADD_SANITIZERS)
+    message ("Build with sanitizers")
+
+    add_compile_options (-fsanitize=address -fsanitize=undefined)
+    set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+endif ()
 
 option(TESTING "Include testing" ON)
 #tests
@@ -36,6 +45,10 @@ if (TESTING)
     include_directories (${GTEST_INCLUDE_DIRS})
 
     add_executable (${PROJECT_NAME}_tests ${SOURCE_TEST})
+    
+    if (ADD_SANITIZERS)
+        set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+    endif()
     target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main ${PROJECT_NAME})
     
     enable_testing ()
@@ -46,14 +59,6 @@ if (TESTING)
     )
     add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
    
-    #sanitizers
-    option(ADD_SANITIZERS "Build with sanitizers" ON)
-    if (ADD_SANITIZERS)
-        message ("Build with sanitizers")
-
-        add_compile_options (-fsanitize=address -fsanitize=undefined -g)
-        set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
-    endif ()
 endif ()
 
 #clang-format
