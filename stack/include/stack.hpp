@@ -149,8 +149,8 @@ void stack<T>::resize_up_()
 template <>
 class stack<bool> final {
 public:
-    static constexpr const size_t MIN_CAPACITY = 128;
-    static constexpr const double CAPACITY_FACTOR = 2;
+    static constexpr size_t MIN_CAPACITY = 128;
+    static constexpr double CAPACITY_FACTOR = 2;
 
     stack();
     stack(const stack &other);
