@@ -138,9 +138,7 @@ TEST(stack_int, operators_eq)
 TEST(stack_int, size)
 {
     stack<int> stack0;
-
-    int i = 0;
-    for (; i < 10; i++)
+    for (int i = 0; i < 10; i++)
         stack0.push(i);
 
     ASSERT_EQ(stack0.size(), 10);
