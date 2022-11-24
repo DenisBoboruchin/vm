@@ -81,6 +81,7 @@ TEST(queue, copy_constructor)
 
     queue_list<int> queue2 {queue1};
 
+    ASSERT_EQ(queue2.size(), 3);
     ASSERT_EQ(queue2.back(), 35);
     ASSERT_EQ(queue2.front(), 62);
 
@@ -88,3 +89,52 @@ TEST(queue, copy_constructor)
     ASSERT_EQ(queue2.back(), 35);
     ASSERT_EQ(queue2.front(), 41);
 }
+
+TEST(queue, move_constructor)
+{
+    queue_list<int> queue1;
+
+    queue1.push(2);
+    queue1.push(4);
+    queue1.push(5);
+
+    ASSERT_EQ(queue1.back(), 5);
+    ASSERT_EQ(queue1.front(), 2);
+
+    queue_list<int> queue2 {std::move(queue1)};
+
+    ASSERT_EQ(queue2.size (), 3);
+
+    ASSERT_EQ(queue2.back(), 5);
+    ASSERT_EQ(queue2.front(), 2);
+
+    queue2.pop();
+    ASSERT_EQ(queue2.back(), 5);
+    ASSERT_EQ(queue2.front(), 4);
+}
+
+TEST(queue, copy_assigment)
+{
+    queue_list<int> queue1;
+
+    queue1.push(62);
+    queue1.push(41);
+    queue1.push(35);
+
+    ASSERT_EQ(queue1.back(), 35);
+    ASSERT_EQ(queue1.front(), 62);
+
+    queue_list<int> queue2 {};
+
+    queue2 = queue1;
+
+    ASSERT_EQ(queue2.size(), 3);
+    ASSERT_EQ(queue2.back(), 35);
+    ASSERT_EQ(queue2.front(), 62);
+
+    queue2.pop();
+    ASSERT_EQ(queue2.back(), 35);
+    ASSERT_EQ(queue2.front(), 41);
+}
+
+
