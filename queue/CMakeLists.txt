@@ -11,6 +11,9 @@ set(CMAKE_CXX_COMPILER g++)
 
 include_directories(include)
 set(SOURCE_TEST tests/tests.cpp)
+set(SOURCE_LIB src/queue.cpp)
+
+add_library (${PROJECT_NAME} STATIC ${SOURCE_LIB})
 
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)
@@ -29,7 +32,7 @@ if (ADD_SANITIZERS)
     message ("Build with sanitizers")
 
     add_compile_options (-fsanitize=address -fsanitize=undefined)
-    #set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+    set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
 endif ()
 
 option(TESTING "Include testing" ON)
@@ -45,7 +48,7 @@ if (TESTING)
     if (ADD_SANITIZERS)
         set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
     endif()
-    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
+    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main ${PROJECT_NAME})
     
     enable_testing ()
 
