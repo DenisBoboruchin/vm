@@ -137,4 +137,28 @@ TEST(queue, copy_assigment)
     ASSERT_EQ(queue2.front(), 41);
 }
 
+TEST(queue, move_assigment)
+{
+    queue_list<int> queue1;
+
+    queue1.push(10);
+    queue1.push(20);
+    queue1.push(30);
+
+    ASSERT_EQ(queue1.back(), 30);
+    ASSERT_EQ(queue1.front(), 10);
+
+    queue_list<int> queue2 {};
+
+    queue2 = std::move(queue1);
+
+    ASSERT_EQ(queue2.size(), 3);
+    ASSERT_EQ(queue2.back(), 30);
+    ASSERT_EQ(queue2.front(), 10);
+
+    queue2.pop();
+    ASSERT_EQ(queue2.back(), 30);
+    ASSERT_EQ(queue2.front(), 20);
+}
+
 

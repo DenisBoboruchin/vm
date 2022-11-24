@@ -10,6 +10,7 @@ public:
     queue_list(queue_list&& other) noexcept;
 
     queue_list& operator= (const queue_list& other);
+    queue_list& operator= (queue_list&& other) noexcept;
 
     ~queue_list();
 
@@ -75,6 +76,19 @@ queue_list<T>& queue_list<T>::operator= (const queue_list<T>& other)
 
         temp = temp->next_;
     }   
+
+    return *this;
+}
+
+template <typename T>
+queue_list<T>& queue_list<T>::operator= (queue_list<T>&& other) noexcept
+{
+    if (this != &other)
+    {
+        size_ = other.size_;
+        std::swap (rear_, other.rear_);
+        std::swap (front_, other.front_);
+    }
 
     return *this;
 }
