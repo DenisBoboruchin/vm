@@ -3,13 +3,6 @@
 namespace my_containers 
 {
 
-template <typename T>
-struct q_node
-{
-    T data_; 
-    q_node<T>* next_ = nullptr;
-};
-
 template <typename T> 
 class queue_list final
 {   
@@ -17,7 +10,8 @@ public:
     
     ~queue_list ();
     
-    void push (const T& value);
+    void push (const T& value); 
+    void push (T&& value);
     void pop ();
 
     T& front () const &;
@@ -27,6 +21,13 @@ public:
     bool empty () const;
 
 private:
+    template <typename U>
+    struct q_node
+    {
+        U data_; 
+        q_node<U>* next_ = nullptr;
+    };
+
     size_t size_ = 0;
     q_node<T>* rear_ = nullptr;
     q_node<T>* front_ = nullptr;
@@ -51,7 +52,20 @@ void queue_list<T>::push (const T& value)
 {   
     q_node<T>* node = new q_node<T> {value};
 
-    if (rear_ == nullptr)
+    if (!rear_)
+        rear_ = front_ = node;
+
+    rear_->next_ = node;
+    rear_ = node;
+    size_++;
+}
+
+template <typename T>
+void queue_list<T>::push (T&& value)
+{
+    q_node<T>* node = new q_node<T> {std::move (value)};
+
+    if (!rear_)
         rear_ = front_ = node;
 
     rear_->next_ = node;
