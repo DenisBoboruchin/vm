@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
 
-set(PROJECT_NAME queue)
-project(${PROJECT_NAME} CXX)
+set(PROJECT_NAME stack)
+project(${PROJECT_NAME} LANGUAGES CXX)
 
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 20)
@@ -9,11 +9,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_COMPILER clang++)
 
-include_directories(list/include)
-set(SOURCE_LIST_TEST list/tests/tests.cpp)
-#set(SOURCE_LIB src/queue.cpp)
+set(SOURCE_TEST tests/tests.cpp)
+set(SOURCE_LIB src/stack_bool.cpp) 
 
-#add_library (${PROJECT_NAME} STATIC ${SOURCE_LIB})
+include_directories(include)
+
+add_library(${PROJECT_NAME} STATIC ${SOURCE_LIB})
 
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)
@@ -21,7 +22,7 @@ find_program(CLANG_TIDY "clang-tidy")
 if(CLANG_TIDY)
     message (clang-tidy " from " ${CMAKE_SOURCE_DIR}/.clang-tidy)
     
-    set (CMAKE_CXX_CLANG_TIDY
+    set(CMAKE_CXX_CLANG_TIDY
         "clang-tidy;-format-style=file:${CMAKE_SOURCE_DIR}/.clang-tidy;-checks=*"
     )
 endif()
@@ -32,7 +33,7 @@ if (ADD_SANITIZERS)
     message ("Build with sanitizers")
 
     add_compile_options (-fsanitize=address -fsanitize=undefined)
-    #set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+    set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
 endif ()
 
 option(TESTING "Include testing" ON)
@@ -43,25 +44,20 @@ if (TESTING)
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})
 
-    add_executable (list_tests ${SOURCE_LIST_TEST})
-    #add_executable (${PROJECT_NAME}_tests ${SOURCE_TEST})
+    add_executable (${PROJECT_NAME}_tests ${SOURCE_TEST})
     
     if (ADD_SANITIZERS)
-        #set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
-        set_target_properties (list_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+        set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
     endif()
-    
-    target_link_libraries (list_tests PUBLIC GTest::GTest GTest::Main)
-    #target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
+    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main ${PROJECT_NAME})
     
     enable_testing ()
 
-    add_custom_target (run_list_tests 
-        COMMENT "Running list_tests"
-        COMMAND ./list_tests
+    add_custom_target (run_${PROJECT_NAME}_tests 
+        COMMENT "Running ${PROJECT_NAME}_tests"
+        COMMAND ./${PROJECT_NAME}_tests
     )
-    add_dependencies (run_list_tests list_tests)
-    #add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
+    add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
 endif ()
 
 #clang-format
@@ -78,5 +74,4 @@ if(CLANG_FORMAT)
         ${ALL_SOURCE_FILES}
     )
 endif()
-
 

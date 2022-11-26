@@ -14,9 +14,14 @@ public:
 
     ~list();
 
-    void push(const T &value);
-    void push(T &&value);
-    void pop();
+    void push_front(const T &value);
+    void push_back(const T &value);
+
+    void push_front(T &&value);
+    void push_back(T &&value);
+
+    void pop_front();
+    void pop_back();
 
     T &front() &;
     const T& front () const &;
@@ -28,25 +33,28 @@ public:
     bool empty() const;
 
 private:
-    void delete_data_ ();
-
-    template <typename U>
-    struct node {
-        U data_ {};
-        node<U> *next_ = nullptr;
+    
+    struct node final {
+        T data_ {};
+        node *next_ = nullptr;
+        node *prev_ = nullptr;
     };
 
+    void delete_data_ ();
+
+    auto push_ (const T& value);
+
     size_t size_ = 0;
-    node<T> *rear_ = nullptr;
-    node<T> *front_ = nullptr;
+    node *rear_ = nullptr;
+    node *front_ = nullptr;
 };
 
 template <typename T>
 list<T>::list(const list<T> &other) : list ()
 {
-    node<T> *temp = other.front_;
+    node *temp = other.front_;
     while (temp) {
-        push(temp->data_);
+        push_back(temp->data_);
 
         temp = temp->next_;
     }
@@ -72,10 +80,10 @@ list<T>& list<T>::operator= (const list<T>& other)
     rear_ = nullptr;
     front_ = nullptr;
 
-    node<T>* temp = other.front_;
+    node* temp = other.front_;
     while (temp)
     {
-        push(temp->data_);
+        push_back(temp->data_);
 
         temp = temp->next_;
     }   
@@ -86,12 +94,9 @@ list<T>& list<T>::operator= (const list<T>& other)
 template <typename T>
 list<T>& list<T>::operator= (list<T>&& other) noexcept
 {
-    if (this != &other)
-    {
-        size_ = other.size_;
-        std::swap (rear_, other.rear_);
-        std::swap (front_, other.front_);
-    }
+    size_ = other.size_;
+    std::swap (rear_, other.rear_);
+    std::swap (front_, other.front_);
 
     return *this;
 }
@@ -105,8 +110,10 @@ list<T>::~list()
 template <typename T>
 void list<T>::delete_data_ ()
 {
+    front_->prev_->next_ = nullptr;
+ 
     while (front_) {
-        node<T> *temp = front_->next_;
+        node *temp = front_->next_;
 
         delete front_;
         front_ = temp;
@@ -115,33 +122,74 @@ void list<T>::delete_data_ ()
 }
 
 template <typename T>
-void list<T>::push(const T &value)
+void list<T>::push_back(const T &value)
 {
-    node<T> *new_node = new node<T> {value};
+    node *new_node = push_ (value);
 
-    if (!rear_)
-        rear_ = front_ = new_node;
-
-    rear_->next_ = new_node;
     rear_ = new_node;
     size_++;
 }
 
 template <typename T>
-void list<T>::push(T &&value)
+void list<T>::push_front(const T &value)
 {
-    node<T> *new_node = new node<T> {std::move(value)};
+    node *new_node = push_ (value);
 
-    if (!rear_)
-        rear_ = front_ = new_node;
-
-    rear_->next_ = new_node;
-    rear_ = new_node;
+    front_ = new_node;
     size_++;
 }
 
 template <typename T>
-void list<T>::pop()
+auto list<T>::push_ (const T & value)
+{
+    node *new_node = new node {value};
+
+    if (!rear_)
+        rear_ = front_ = new_node;
+
+    new_node->prev_ = rear_;
+    new_node->next_ = front_;
+    front_->prev_ = new_node;
+    rear_->next_ = new_node;
+
+    return new_node;
+}
+
+template <typename T>
+void list<T>::push_back(T &&value)
+{
+    node *new_node = new node {std::move(value)};
+
+    if (!rear_)
+        rear_ = front_ = new_node;
+
+    new_node->prev_ = rear_;
+    rear_->next_ = new_node;
+    rear_ = new_node;
+    
+    size_++;
+}
+
+template <typename T>
+void list<T>::push_front(T &&value)
+{
+    node *new_node = new node {std::move(value)};
+
+    if (!rear_)
+        rear_ = front_ = new_node;
+
+    new_node->prev_ = rear_;
+    new_node->next_ = front_;
+    front_->prev_ = new_node;
+    rear_->next_ = new_node;
+
+    front_ = new_node;
+    
+    size_++;
+}
+
+template <typename T>
+void list<T>::pop_back()
 {
     if (!front_)
         return;
@@ -150,6 +198,22 @@ void list<T>::pop()
 
     delete front_;
     front_ = new_front;
+
+    size_--;
+}
+
+template <typename T>
+void list<T>::pop_front()
+{
+    if (!front_)
+        return;
+
+    auto new_front = front_->next_;
+
+    delete front_;
+    front_ = new_front;
+    front_->prev_ = rear_;
+    rear_->next_ = front_;
 
     size_--;
 }
