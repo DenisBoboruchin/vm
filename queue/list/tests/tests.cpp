@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
+#include <iostream>
 
 #include "list.hpp"
+
 using my_containers::list;
 
 int main()
@@ -210,4 +212,33 @@ TEST(list, big_test)
     }
 
     ASSERT_EQ (sum, num * (num + 1) / 2);
+}
+
+TEST(list, struct_test)
+{
+    struct S
+    {
+        int a, b;
+        double d;
+        char c;
+    };
+
+    list<S> list;
+
+    list.push_back ({1, 2, 3.5, 3});
+    
+    S t = {10, 20, 44.4, 30};
+    list.push_front (t);
+
+    ASSERT_EQ (list.front().a, 10);
+    ASSERT_EQ (list.front().d, 44.4);
+    ASSERT_EQ (list.back().b, 2);
+    ASSERT_EQ (list.back().c, 3);
+
+    list.pop_back ();
+
+    ASSERT_EQ (list.front().a, 10);
+    ASSERT_EQ (list.front().d, 44.4);
+    ASSERT_EQ (list.back().b, 20);
+    ASSERT_EQ (list.back().c, 30);
 }
