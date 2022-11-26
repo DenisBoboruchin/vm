@@ -3,3 +3,4 @@
 # course assignments
 1. [complex numbers](/complex_num)
 2. [stack](/stack)
+3. [queue](/queue)

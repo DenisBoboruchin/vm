@@ -58,7 +58,6 @@ if (TESTING)
         COMMAND ./${PROJECT_NAME}_tests
     )
     add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
-   
 endif ()
 
 #clang-format
