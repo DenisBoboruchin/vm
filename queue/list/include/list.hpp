@@ -39,6 +39,7 @@ private:
     void delete_data_ ();
 
     node* push_ (const T& value);
+    node* pop_ (node* delelable);
     void pop_last_ ();
 
     size_t size_ = 0;
@@ -155,44 +156,45 @@ typename list<T>::node* list<T>::push_ (const T & value)
 template <typename T>
 void list<T>::pop_back()
 {
-    if (!rear_)
-        return;
-
-    if (size_ == 1)
-        return pop_last_ ();
-
-    node* new_rear = rear_->prev_;
-
-    delete rear_;
-    rear_ = new_rear;
-    rear_->next_ = front_;
-    front_->prev_ = rear_;
-
-    size_--;
+    node* front_ptr = pop_ (rear_);
+    
+    if (front_ptr)
+        rear_ = front_ptr->prev_;
 }
 
 template <typename T>
 void list<T>::pop_front()
 {
-    if (!front_)
-        return;
+    front_ = pop_ (front_);
+}
 
-    if (size_ == 1)
-        return pop_last_ ();
+template <typename T>
+typename list<T>::node* list<T>::pop_ (list<T>::node* deletable)
+{
+    if (size_ <= 1)
+    {
+        pop_last_();
+        return nullptr;
+    }
+    
+    node* next = deletable->next_;
+    node* prev = deletable->prev_;
+    delete deletable;
 
-    node* new_front = front_->next_;
-
-    delete front_;
-    front_ = new_front;
-    front_->prev_ = rear_;
-    rear_->next_ = front_;
+    prev->next_ = next;
+    next->prev_ = prev;
 
     size_--;
+
+    return next;
 }
 
 template <typename T>
 void list<T>::pop_last_()
 {
+    if (!rear_)
+        return;
+
     delete front_;
     front_ = rear_ = nullptr;
 
