@@ -10,156 +10,204 @@ int main()
     return RUN_ALL_TESTS();
 }
 
-TEST(queue, front)
+TEST(list, front)
 {
-    list<int> queue;
+    list<int> list;
 
-    queue.push_back(12);
-    queue.push_back(421);
-    queue.push_back(32);
+    list.push_back(12);
+    list.push_back(421);
+    list.push_back(32);
 
-    ASSERT_EQ(queue.front(), 12);
+    ASSERT_EQ(list.front(), 12);
 }
 
-TEST(queue, back)
+TEST(list, back)
 {
-    list<int> queue;
+    list<int> list;
         
-    queue.push_back(62);
-    queue.push_back(41);
-    queue.push_back(35);
+    list.push_back(62);
+    list.push_back(41);
+    list.push_back(35);
 
-    ASSERT_EQ(queue.back(), 35);
+    ASSERT_EQ(list.back(), 35);
 }
 
-TEST(queue, size_empty)
+TEST(list, size_empty)
 {
-    list<int> queue;
+    list<int> list;
 
-    ASSERT_EQ(queue.empty(), true);
-    ASSERT_EQ(queue.size(), 0);
+    ASSERT_EQ(list.empty(), true);
+    ASSERT_EQ(list.size(), 0);
 
-    queue.push_back(62);
-    queue.push_back(41);
-    ASSERT_EQ(queue.size(), 2);
+    list.push_back(62);
+    list.push_back(41);
+    ASSERT_EQ(list.size(), 2);
 
-    queue.push_back(35);
-    ASSERT_EQ(queue.size(), 3);
+    list.push_back(35);
+    ASSERT_EQ(list.size(), 3);
 }
 
-TEST(queue, push_pop_front)
+TEST(list, push_pop_back)
 {
-    list<int> queue;
-    queue.pop_front ();
+    list<int> list;
+    list.pop_back ();
 
-    queue.push_back(1);
-    queue.push_back(2);
-    queue.push_back(3);
-    queue.push_front(0);
+    list.push_back(2);
+    list.push_front(1);
+    list.push_back(3);
+    list.push_front(0);
 
-    ASSERT_EQ(queue.back(), 3);
-    ASSERT_EQ(queue.front(), 0);
+    ASSERT_EQ(list.back(), 3);
+    ASSERT_EQ(list.front(), 0);
 
-    queue.pop_front();
-    ASSERT_EQ(queue.back(), 3);
-    ASSERT_EQ(queue.front(), 1);
+    list.pop_back();
+    ASSERT_EQ(list.size(), 3);
+    ASSERT_EQ(list.back(), 2);
+    ASSERT_EQ(list.front(), 0);
 
-    queue.push_back(4);
-    ASSERT_EQ(queue.back(), 4);
-    ASSERT_EQ(queue.front(), 1);
+    list.push_front(10);
+    ASSERT_EQ(list.back(), 2);
+    ASSERT_EQ(list.front(), 10);
 }
 
-TEST(queue, copy_constructor)
+TEST(list, push_pop_front)
 {
-    list<int> queue1;
+    list<int> list;
+    list.pop_front ();
 
-    queue1.push_back(62);
-    queue1.push_back(41);
-    queue1.push_back(35);
+    list.push_back(1);
+    list.push_back(2);
+    list.push_back(3);
+    list.push_front(0);
 
-    ASSERT_EQ(queue1.back(), 35);
-    ASSERT_EQ(queue1.front(), 62);
+    ASSERT_EQ(list.back(), 3);
+    ASSERT_EQ(list.front(), 0);
 
-    list<int> queue2 {queue1};
+    list.pop_front();
+    ASSERT_EQ(list.back(), 3);
+    ASSERT_EQ(list.front(), 1);
 
-    ASSERT_EQ(queue2.size(), 3);
-    ASSERT_EQ(queue2.back(), 35);
-    ASSERT_EQ(queue2.front(), 62);
-
-    queue2.pop_front();
-    ASSERT_EQ(queue2.back(), 35);
-    ASSERT_EQ(queue2.front(), 41);
+    list.push_back(4);
+    ASSERT_EQ(list.back(), 4);
+    ASSERT_EQ(list.front(), 1);
 }
 
-TEST(queue, move_constructor)
+TEST(list, copy_constructor)
 {
-    list<int> queue1;
+    list<int> list1;
 
-    queue1.push_back(2);
-    queue1.push_back(4);
-    queue1.push_back(5);
+    list1.push_back(62);
+    list1.push_back(41);
+    list1.push_back(35);
 
-    ASSERT_EQ(queue1.back(), 5);
-    ASSERT_EQ(queue1.front(), 2);
+    ASSERT_EQ(list1.back(), 35);
+    ASSERT_EQ(list1.front(), 62);
 
-    list<int> queue2 {std::move(queue1)};
+    list<int> list2 {list1};
 
-    ASSERT_EQ(queue2.size (), 3);
+    ASSERT_EQ(list2.size(), 3);
+    ASSERT_EQ(list2.back(), 35);
+    ASSERT_EQ(list2.front(), 62);
 
-    ASSERT_EQ(queue2.back(), 5);
-    ASSERT_EQ(queue2.front(), 2);
-
-    queue2.pop_front();
-    ASSERT_EQ(queue2.back(), 5);
-    ASSERT_EQ(queue2.front(), 4);
+    list2.pop_front();
+    ASSERT_EQ(list2.back(), 35);
+    ASSERT_EQ(list2.front(), 41);
 }
 
-TEST(queue, copy_assigment)
+TEST(list, move_constructor)
 {
-    list<int> queue1;
+    list<int> list1;
 
-    queue1.push_back(62);
-    queue1.push_back(41);
-    queue1.push_back(35);
+    list1.push_back(2);
+    list1.push_back(4);
+    list1.push_back(5);
 
-    ASSERT_EQ(queue1.back(), 35);
-    ASSERT_EQ(queue1.front(), 62);
+    ASSERT_EQ(list1.back(), 5);
+    ASSERT_EQ(list1.front(), 2);
 
-    list<int> queue2 {};
+    list<int> list2 {std::move(list1)};
 
-    queue2 = queue1;
+    ASSERT_EQ(list2.size (), 3);
 
-    ASSERT_EQ(queue2.size(), 3);
-    ASSERT_EQ(queue2.back(), 35);
-    ASSERT_EQ(queue2.front(), 62);
+    ASSERT_EQ(list2.back(), 5);
+    ASSERT_EQ(list2.front(), 2);
 
-    queue2.pop_front();
-    ASSERT_EQ(queue2.back(), 35);
-    ASSERT_EQ(queue2.front(), 41);
+    list2.pop_front();
+    ASSERT_EQ(list2.back(), 5);
+    ASSERT_EQ(list2.front(), 4);
 }
 
-TEST(queue, move_assigment)
+TEST(list, copy_assigment)
 {
-    list<int> queue1;
+    list<int> list1;
 
-    queue1.push_back(10);
-    queue1.push_back(20);
-    queue1.push_back(30);
+    list1.push_back(62);
+    list1.push_back(41);
+    list1.push_back(35);
 
-    ASSERT_EQ(queue1.back(), 30);
-    ASSERT_EQ(queue1.front(), 10);
+    ASSERT_EQ(list1.back(), 35);
+    ASSERT_EQ(list1.front(), 62);
 
-    list<int> queue2 {};
+    list<int> list2 {};
 
-    queue2 = std::move(queue1);
+    list2 = list1;
 
-    ASSERT_EQ(queue2.size(), 3);
-    ASSERT_EQ(queue2.back(), 30);
-    ASSERT_EQ(queue2.front(), 10);
+    ASSERT_EQ(list2.size(), 3);
+    ASSERT_EQ(list2.back(), 35);
+    ASSERT_EQ(list2.front(), 62);
 
-    queue2.pop_front();
-    ASSERT_EQ(queue2.back(), 30);
-    ASSERT_EQ(queue2.front(), 20);
+    list2.pop_front();
+    ASSERT_EQ(list2.back(), 35);
+    ASSERT_EQ(list2.front(), 41);
 }
 
+TEST(list, move_assigment)
+{
+    list<int> list1;
 
+    list1.push_back(10);
+    list1.push_back(20);
+    list1.push_back(30);
+
+    ASSERT_EQ(list1.back(), 30);
+    ASSERT_EQ(list1.front(), 10);
+
+    list<int> list2 {};
+
+    list2 = std::move(list1);
+
+    ASSERT_EQ(list2.size(), 3);
+    ASSERT_EQ(list2.back(), 30);
+    ASSERT_EQ(list2.front(), 10);
+
+    list2.pop_front();
+    ASSERT_EQ(list2.back(), 30);
+    ASSERT_EQ(list2.front(), 20);
+}
+
+TEST(list, big_test)
+{
+    list<int> list;
+
+    long int num = 10000000;
+    for (int i = 1; i != num + 1; ++i)
+    {
+        list.push_back (i);
+    }
+
+    ASSERT_EQ (list.size(), num);
+    ASSERT_EQ (list.back(), num);
+    ASSERT_EQ (list.front(), 1);
+
+    long int sum = 0;
+    while (!list.empty ())
+    {
+        sum += list.front ();
+        sum += list.back ();
+        
+        list.pop_back ();
+        list.pop_front ();
+    }
+
+    ASSERT_EQ (sum, num * (num + 1) / 2);
+}

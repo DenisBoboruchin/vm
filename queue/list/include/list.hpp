@@ -17,9 +17,6 @@ public:
     void push_front(const T &value);
     void push_back(const T &value);
 
-    void push_front(T &&value);
-    void push_back(T &&value);
-
     void pop_front();
     void pop_back();
 
@@ -32,8 +29,7 @@ public:
     size_t size() const;
     bool empty() const;
 
-private:
-    
+private: 
     struct node final {
         T data_ {};
         node *next_ = nullptr;
@@ -42,7 +38,8 @@ private:
 
     void delete_data_ ();
 
-    auto push_ (const T& value);
+    node* push_ (const T& value);
+    void pop_last_ ();
 
     size_t size_ = 0;
     node *rear_ = nullptr;
@@ -53,7 +50,9 @@ template <typename T>
 list<T>::list(const list<T> &other) : list ()
 {
     node *temp = other.front_;
-    while (temp) {
+    size_t full_size = other.size_;
+
+    while (size_ != full_size) {
         push_back(temp->data_);
 
         temp = temp->next_;
@@ -61,11 +60,11 @@ list<T>::list(const list<T> &other) : list ()
 }
 
 template <typename T>
-list<T>::list (list<T>&& other) noexcept : size_ {other.size_}, 
-    rear_ {std::move (other.rear_)}, front_ {std::move (other.front_)}
+list<T>::list (list<T>&& other) noexcept
 {
-    other.rear_ = nullptr;
-    other.front_ = nullptr;
+    std::swap (size_, other.size_);
+    std::swap (rear_, other.rear_);
+    std::swap (front_, other.front_);
 }
 
 template <typename T>
@@ -75,13 +74,15 @@ list<T>& list<T>::operator= (const list<T>& other)
         return *this;
 
     delete_data_ ();
-    
+ 
     size_ = 0;
     rear_ = nullptr;
     front_ = nullptr;
 
     node* temp = other.front_;
-    while (temp)
+    size_t full_size = other.size_;
+
+    while (size_ != full_size)
     {
         push_back(temp->data_);
 
@@ -94,7 +95,7 @@ list<T>& list<T>::operator= (const list<T>& other)
 template <typename T>
 list<T>& list<T>::operator= (list<T>&& other) noexcept
 {
-    size_ = other.size_;
+    std::swap (size_, other.size_);
     std::swap (rear_, other.rear_);
     std::swap (front_, other.front_);
 
@@ -110,37 +111,32 @@ list<T>::~list()
 template <typename T>
 void list<T>::delete_data_ ()
 {
+    if (!front_)
+        return;
+
     front_->prev_->next_ = nullptr;
- 
     while (front_) {
         node *temp = front_->next_;
 
         delete front_;
         front_ = temp;
     }
-
 }
 
 template <typename T>
 void list<T>::push_back(const T &value)
 {
-    node *new_node = push_ (value);
-
-    rear_ = new_node;
-    size_++;
+    rear_ = push_ (value);
 }
 
 template <typename T>
 void list<T>::push_front(const T &value)
 {
-    node *new_node = push_ (value);
-
-    front_ = new_node;
-    size_++;
+    front_ = push_ (value);
 }
 
 template <typename T>
-auto list<T>::push_ (const T & value)
+typename list<T>::node* list<T>::push_ (const T & value)
 {
     node *new_node = new node {value};
 
@@ -152,52 +148,25 @@ auto list<T>::push_ (const T & value)
     front_->prev_ = new_node;
     rear_->next_ = new_node;
 
+    size_++;
     return new_node;
-}
-
-template <typename T>
-void list<T>::push_back(T &&value)
-{
-    node *new_node = new node {std::move(value)};
-
-    if (!rear_)
-        rear_ = front_ = new_node;
-
-    new_node->prev_ = rear_;
-    rear_->next_ = new_node;
-    rear_ = new_node;
-    
-    size_++;
-}
-
-template <typename T>
-void list<T>::push_front(T &&value)
-{
-    node *new_node = new node {std::move(value)};
-
-    if (!rear_)
-        rear_ = front_ = new_node;
-
-    new_node->prev_ = rear_;
-    new_node->next_ = front_;
-    front_->prev_ = new_node;
-    rear_->next_ = new_node;
-
-    front_ = new_node;
-    
-    size_++;
 }
 
 template <typename T>
 void list<T>::pop_back()
 {
-    if (!front_)
+    if (!rear_)
         return;
 
-    auto new_front = front_->next_;
+    if (size_ == 1)
+        return pop_last_ ();
 
-    delete front_;
-    front_ = new_front;
+    node* new_rear = rear_->prev_;
+
+    delete rear_;
+    rear_ = new_rear;
+    rear_->next_ = front_;
+    front_->prev_ = rear_;
 
     size_--;
 }
@@ -208,12 +177,24 @@ void list<T>::pop_front()
     if (!front_)
         return;
 
-    auto new_front = front_->next_;
+    if (size_ == 1)
+        return pop_last_ ();
+
+    node* new_front = front_->next_;
 
     delete front_;
     front_ = new_front;
     front_->prev_ = rear_;
     rear_->next_ = front_;
+
+    size_--;
+}
+
+template <typename T>
+void list<T>::pop_last_()
+{
+    delete front_;
+    front_ = rear_ = nullptr;
 
     size_--;
 }
