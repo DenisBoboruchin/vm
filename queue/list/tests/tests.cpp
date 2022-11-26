@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "queue.hpp"
+#include "list.hpp"
 
-using my_containers::queue_list;
+using my_containers::list;
 
 int main()
 {
@@ -13,7 +13,7 @@ int main()
 
 TEST(queue, front)
 {
-    queue_list<int> queue;
+    list<int> queue;
 
     queue.push(12);
     queue.push(421);
@@ -24,8 +24,8 @@ TEST(queue, front)
 
 TEST(queue, back)
 {
-    queue_list<int> queue;
-
+    list<int> queue;
+        
     queue.push(62);
     queue.push(41);
     queue.push(35);
@@ -35,7 +35,7 @@ TEST(queue, back)
 
 TEST(queue, size_empty)
 {
-    queue_list<int> queue;
+    list<int> queue;
 
     ASSERT_EQ(queue.empty(), true);
     ASSERT_EQ(queue.size(), 0);
@@ -50,7 +50,8 @@ TEST(queue, size_empty)
 
 TEST(queue, push_pop)
 {
-    queue_list<int> queue;
+    list<int> queue;
+    queue.pop ();
 
     queue.push(1);
     queue.push(2);
@@ -70,7 +71,7 @@ TEST(queue, push_pop)
 
 TEST(queue, copy_constructor)
 {
-    queue_list<int> queue1;
+    list<int> queue1;
 
     queue1.push(62);
     queue1.push(41);
@@ -79,7 +80,7 @@ TEST(queue, copy_constructor)
     ASSERT_EQ(queue1.back(), 35);
     ASSERT_EQ(queue1.front(), 62);
 
-    queue_list<int> queue2 {queue1};
+    list<int> queue2 {queue1};
 
     ASSERT_EQ(queue2.size(), 3);
     ASSERT_EQ(queue2.back(), 35);
@@ -92,7 +93,7 @@ TEST(queue, copy_constructor)
 
 TEST(queue, move_constructor)
 {
-    queue_list<int> queue1;
+    list<int> queue1;
 
     queue1.push(2);
     queue1.push(4);
@@ -101,7 +102,7 @@ TEST(queue, move_constructor)
     ASSERT_EQ(queue1.back(), 5);
     ASSERT_EQ(queue1.front(), 2);
 
-    queue_list<int> queue2 {std::move(queue1)};
+    list<int> queue2 {std::move(queue1)};
 
     ASSERT_EQ(queue2.size (), 3);
 
@@ -115,7 +116,7 @@ TEST(queue, move_constructor)
 
 TEST(queue, copy_assigment)
 {
-    queue_list<int> queue1;
+    list<int> queue1;
 
     queue1.push(62);
     queue1.push(41);
@@ -124,7 +125,7 @@ TEST(queue, copy_assigment)
     ASSERT_EQ(queue1.back(), 35);
     ASSERT_EQ(queue1.front(), 62);
 
-    queue_list<int> queue2 {};
+    list<int> queue2 {};
 
     queue2 = queue1;
 
@@ -139,7 +140,7 @@ TEST(queue, copy_assigment)
 
 TEST(queue, move_assigment)
 {
-    queue_list<int> queue1;
+    list<int> queue1;
 
     queue1.push(10);
     queue1.push(20);
@@ -148,7 +149,7 @@ TEST(queue, move_assigment)
     ASSERT_EQ(queue1.back(), 30);
     ASSERT_EQ(queue1.front(), 10);
 
-    queue_list<int> queue2 {};
+    list<int> queue2 {};
 
     queue2 = std::move(queue1);
 

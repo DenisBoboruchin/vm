@@ -3,23 +3,26 @@
 namespace my_containers {
 
 template <typename T>
-class queue_list final {
+class list final {
 public:
-    queue_list() {};
-    queue_list(const queue_list &other);
-    queue_list(queue_list&& other) noexcept;
+    list() {};
+    list(const list &other);
+    list(list&& other) noexcept;
 
-    queue_list& operator= (const queue_list& other);
-    queue_list& operator= (queue_list&& other) noexcept;
+    list& operator= (const list& other);
+    list& operator= (list&& other) noexcept;
 
-    ~queue_list();
+    ~list();
 
     void push(const T &value);
     void push(T &&value);
     void pop();
 
-    T &front() const &;
-    T &back() const &;
+    T &front() &;
+    const T& front () const &;
+    
+    T &back() &;
+    const T& back () const &;
 
     size_t size() const;
     bool empty() const;
@@ -28,20 +31,20 @@ private:
     void delete_data_ ();
 
     template <typename U>
-    struct q_node {
-        U data_;
-        q_node<U> *next_ = nullptr;
+    struct node {
+        U data_ {};
+        node<U> *next_ = nullptr;
     };
 
     size_t size_ = 0;
-    q_node<T> *rear_ = nullptr;
-    q_node<T> *front_ = nullptr;
+    node<T> *rear_ = nullptr;
+    node<T> *front_ = nullptr;
 };
 
 template <typename T>
-queue_list<T>::queue_list(const queue_list<T> &other) : queue_list ()
+list<T>::list(const list<T> &other) : list ()
 {
-    q_node<T> *temp = other.front_;
+    node<T> *temp = other.front_;
     while (temp) {
         push(temp->data_);
 
@@ -50,7 +53,7 @@ queue_list<T>::queue_list(const queue_list<T> &other) : queue_list ()
 }
 
 template <typename T>
-queue_list<T>::queue_list (queue_list<T>&& other) noexcept : size_ {other.size_}, 
+list<T>::list (list<T>&& other) noexcept : size_ {other.size_}, 
     rear_ {std::move (other.rear_)}, front_ {std::move (other.front_)}
 {
     other.rear_ = nullptr;
@@ -58,7 +61,7 @@ queue_list<T>::queue_list (queue_list<T>&& other) noexcept : size_ {other.size_}
 }
 
 template <typename T>
-queue_list<T>& queue_list<T>::operator= (const queue_list<T>& other)
+list<T>& list<T>::operator= (const list<T>& other)
 { 
     if (this == &other)
         return *this;
@@ -69,7 +72,7 @@ queue_list<T>& queue_list<T>::operator= (const queue_list<T>& other)
     rear_ = nullptr;
     front_ = nullptr;
 
-    q_node<T>* temp = other.front_;
+    node<T>* temp = other.front_;
     while (temp)
     {
         push(temp->data_);
@@ -81,7 +84,7 @@ queue_list<T>& queue_list<T>::operator= (const queue_list<T>& other)
 }
 
 template <typename T>
-queue_list<T>& queue_list<T>::operator= (queue_list<T>&& other) noexcept
+list<T>& list<T>::operator= (list<T>&& other) noexcept
 {
     if (this != &other)
     {
@@ -94,16 +97,16 @@ queue_list<T>& queue_list<T>::operator= (queue_list<T>&& other) noexcept
 }
 
 template <typename T>
-queue_list<T>::~queue_list()
+list<T>::~list()
 {
     delete_data_ ();
 }
 
 template <typename T>
-void queue_list<T>::delete_data_ ()
+void list<T>::delete_data_ ()
 {
     while (front_) {
-        q_node<T> *temp = front_->next_;
+        node<T> *temp = front_->next_;
 
         delete front_;
         front_ = temp;
@@ -112,34 +115,37 @@ void queue_list<T>::delete_data_ ()
 }
 
 template <typename T>
-void queue_list<T>::push(const T &value)
+void list<T>::push(const T &value)
 {
-    q_node<T> *node = new q_node<T> {value};
+    node<T> *new_node = new node<T> {value};
 
     if (!rear_)
-        rear_ = front_ = node;
+        rear_ = front_ = new_node;
 
-    rear_->next_ = node;
-    rear_ = node;
+    rear_->next_ = new_node;
+    rear_ = new_node;
     size_++;
 }
 
 template <typename T>
-void queue_list<T>::push(T &&value)
+void list<T>::push(T &&value)
 {
-    q_node<T> *node = new q_node<T> {std::move(value)};
+    node<T> *new_node = new node<T> {std::move(value)};
 
     if (!rear_)
-        rear_ = front_ = node;
+        rear_ = front_ = new_node;
 
-    rear_->next_ = node;
-    rear_ = node;
+    rear_->next_ = new_node;
+    rear_ = new_node;
     size_++;
 }
 
 template <typename T>
-void queue_list<T>::pop()
+void list<T>::pop()
 {
+    if (!front_)
+        return;
+
     auto new_front = front_->next_;
 
     delete front_;
@@ -149,27 +155,37 @@ void queue_list<T>::pop()
 }
 
 template <typename T>
-T &queue_list<T>::front() const &
+T &list<T>::front() &
 {
-    if (size_)
-        return front_->data_;
+    return front_->data_;
 }
 
 template <typename T>
-T &queue_list<T>::back() const &
+const T &list<T>::front() const &
 {
-    if (size_)
-        return rear_->data_;
+    return front_->data_;
 }
 
 template <typename T>
-size_t queue_list<T>::size() const
+T &list<T>::back() &
+{
+    return rear_->data_;
+}
+
+template <typename T>
+const T &list<T>::back() const &
+{
+    return rear_->data_;
+}
+
+template <typename T>
+size_t list<T>::size() const
 {
     return size_;
 }
 
 template <typename T>
-bool queue_list<T>::empty() const
+bool list<T>::empty() const
 {
     return size_ == 0;
 }
