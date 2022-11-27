@@ -1,3 +1,6 @@
+#ifndef LIST_HPP
+#define LIST_HPP
+
 #include <iostream>
 
 namespace my_containers {
@@ -238,3 +241,5 @@ bool list<T>::empty() const
 }
 
 }  // namespace my_containers
+
+#endif

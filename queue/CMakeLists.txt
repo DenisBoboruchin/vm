@@ -9,11 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_COMPILER clang++)
 
-include_directories(list/include)
-set(SOURCE_LIST_TEST list/tests/tests.cpp)
-#set(SOURCE_LIB src/queue.cpp)
-
-#add_library (${PROJECT_NAME} STATIC ${SOURCE_LIB})
+include_directories(include)
+set(SOURCE_TEST tests/tests.cpp)
 
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)
@@ -43,25 +40,24 @@ if (TESTING)
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})
 
-    add_executable (list_tests ${SOURCE_LIST_TEST})
-    #add_executable (${PROJECT_NAME}_tests ${SOURCE_TEST})
+    add_executable (${PROJECT_NAME}_tests ${SOURCE_TEST})
     
     if (ADD_SANITIZERS)
-        #set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
-        set_target_properties (list_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+        set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
     endif()
     
-    target_link_libraries (list_tests PUBLIC GTest::GTest GTest::Main)
-    #target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
+    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
     
     enable_testing ()
 
-    add_custom_target (run_list_tests 
+    add_custom_target (run_${PROJECT_NAME}_tests 
         COMMENT "Running list_tests"
-        COMMAND ./list_tests
+        COMMAND ./queue_tests
     )
-    add_dependencies (run_list_tests list_tests)
-    #add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
+    add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
+
+    add_subdirectory (list)
+    add_subdirectory (stack)
 endif ()
 
 #clang-format
@@ -78,5 +74,4 @@ if(CLANG_FORMAT)
         ${ALL_SOURCE_FILES}
     )
 endif()
-
 
