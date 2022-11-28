@@ -4,6 +4,7 @@
 
 using my_containers::Iqueue;
 using my_containers::queue_list;
+using my_containers::queue_stacks;
 
 int main ()
 {
@@ -14,7 +15,7 @@ int main ()
 
 TEST (queue, size_empty)
 {
-    queue_list<int> queue;
+    queue_stacks<int> queue;
     ASSERT_EQ (queue.empty (), true);
 
     queue.push (13);
@@ -153,7 +154,9 @@ TEST (queue, move_assignment)
 
 TEST (queue, virtual_destructor)
 {
-    Iqueue<int>* base_ptr = new queue_list<int> {};
+    queue_list<int>* ptr = new queue_list<int> {};
+
+    Iqueue<int>* base_ptr = ptr;
 
     delete base_ptr;
 }
