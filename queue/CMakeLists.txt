@@ -42,12 +42,29 @@ if (TESTING)
 
     add_executable (${PROJECT_NAME}_tests ${SOURCE_TEST})
     
+    option(BENCHMARKING "Include benchmarking" ON)
+    #benchmarking
+    if (BENCHMARKING)
+        message ("Include benchmarking")
+        
+        set (SOURCE_BENCH benchmark/benchmark.cpp)
+        find_package (benchmark REQUIRED)
+
+        add_executable (${PROJECT_NAME}_bench ${SOURCE_BENCH})
+        target_link_libraries(${PROJECT_NAME}_bench PRIVATE benchmark::benchmark)
+    endif ()
+
     if (ADD_SANITIZERS)
         set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+        set_target_properties (${PROJECT_NAME}_bench PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
     endif()
     
     target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
     
+    if (BENCHMARKING)
+    target_link_libraries (${PROJECT_NAME}_bench PRIVATE benchmark::benchmark)
+    endif ()
+
     enable_testing ()
 
     add_custom_target (run_${PROJECT_NAME}_tests 

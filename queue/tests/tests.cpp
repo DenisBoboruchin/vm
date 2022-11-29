@@ -6,6 +6,8 @@ using my_containers::Iqueue;
 using my_containers::queue_list;
 using my_containers::queue_stacks;
 
+class queue_test : public testing::TestWithParam<const char*> {};
+
 int main ()
 {
     testing::InitGoogleTest ();
