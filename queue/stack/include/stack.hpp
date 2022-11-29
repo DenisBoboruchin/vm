@@ -47,7 +47,7 @@ stack<T>::stack() : capacity_ {MIN_CAPACITY}, data_ {new T[capacity_]}
 template <typename T>
 stack<T>::stack(const stack &other) : capacity_ {other.capacity_}, size_ {other.size_}, data_ {new T[capacity_]}
 {
-    memcpy(data_, other.data_, sizeof(T));
+    memcpy(data_, other.data_, sizeof(T) * size_);
 }
 
 template <typename T>
@@ -70,7 +70,7 @@ stack<T> &stack<T>::operator=(const stack &other)
 
     delete[] data_;
     data_ = new T[capacity_];
-    memcpy(data_, other.data_, sizeof(T));
+    memcpy(data_, other.data_, sizeof(T) * size_);
 
     return *this;
 }

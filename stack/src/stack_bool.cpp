@@ -8,7 +8,7 @@ stack<bool>::stack() : capacity_ {MIN_CAPACITY}, data_ {new char8_t[(capacity_ -
 stack<bool>::stack(const stack &other)
     : capacity_ {other.capacity_}, size_ {other.size_}, data_ {new char8_t[capacity_]}
 {
-    memcpy(data_, other.data_, sizeof(char8_t));
+    memcpy(data_, other.data_, sizeof(char8_t) * size_);
 }
 
 stack<bool>::stack(stack &&other) noexcept
@@ -28,7 +28,7 @@ stack<bool> &stack<bool>::operator=(const stack &other)
 
     delete[] data_;
     data_ = new char8_t[capacity_];
-    memcpy(data_, other.data_, sizeof(char8_t));
+    memcpy(data_, other.data_, sizeof(char8_t) * size_);
 
     return *this;
 }

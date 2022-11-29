@@ -26,7 +26,7 @@ TEST (queue, size_empty)
 
 TEST (queue, back_front)
 {
-    queue_list<int> queue;
+    queue_stacks<int> queue;
 
     queue.push (1);
     ASSERT_EQ (queue.front (), 1);
@@ -43,7 +43,7 @@ TEST (queue, back_front)
 
 TEST (queue, push_pop)
 {
-    queue_list<int> queue;
+    queue_stacks<int> queue;
     
     queue.pop ();
 
@@ -57,6 +57,8 @@ TEST (queue, push_pop)
     ASSERT_EQ (queue.back (), 2);    
     
     queue.push (3);
+    ASSERT_EQ (queue.front (), 1);
+    ASSERT_EQ (queue.back (), 3); 
 
     queue.pop ();
     queue.pop ();
@@ -72,26 +74,27 @@ TEST (queue, push_pop)
 
 TEST (queue, copy_constructor)
 {
-    queue_list<int> queue1;
+    queue_stacks<int> queue1;
     
     queue1.pop ();
 
     queue1.push (20);
+    queue1.push (15);
     queue1.push (10);
-    ASSERT_EQ (queue1.size (), 2);
+    ASSERT_EQ (queue1.size (), 3);
     ASSERT_EQ (queue1.front (), 20);
     ASSERT_EQ (queue1.back (), 10);   
     
-    queue_list<int> queue2 {queue1};
+    queue_stacks<int> queue2 {queue1};
 
-    ASSERT_EQ (queue2.size (), 2);
+    ASSERT_EQ (queue2.size (), 3);
     ASSERT_EQ (queue2.front (), 20);
     ASSERT_EQ (queue2.back (), 10);   
 }
 
 TEST (queue, move_constructor)
 {
-    queue_list<int> queue1;
+    queue_stacks<int> queue1;
     
     queue1.pop ();
 
@@ -101,7 +104,7 @@ TEST (queue, move_constructor)
     ASSERT_EQ (queue1.front (), 20);
     ASSERT_EQ (queue1.back (), 10);   
     
-    queue_list<int> queue2 {std::move(queue1)};
+    queue_stacks<int> queue2 {std::move(queue1)};
 
     ASSERT_EQ (queue2.size (), 2);
     ASSERT_EQ (queue2.front (), 20);
@@ -110,7 +113,7 @@ TEST (queue, move_constructor)
 
 TEST (queue, copy_assignment)
 {
-    queue_list<int> queue1;
+    queue_stacks<int> queue1;
     
     queue1.pop ();
 
@@ -120,7 +123,7 @@ TEST (queue, copy_assignment)
     ASSERT_EQ (queue1.front (), 20);
     ASSERT_EQ (queue1.back (), 10);   
     
-    queue_list<int> queue2 {};
+    queue_stacks<int> queue2 {};
     queue2.push (1221);
 
     queue2 = queue1;
@@ -132,7 +135,7 @@ TEST (queue, copy_assignment)
 
 TEST (queue, move_assignment)
 {
-    queue_list<int> queue1;
+    queue_stacks<int> queue1;
     
     queue1.pop ();
 
@@ -142,7 +145,7 @@ TEST (queue, move_assignment)
     ASSERT_EQ (queue1.front (), 20);
     ASSERT_EQ (queue1.back (), 10);   
     
-    queue_list<int> queue2 {};
+    queue_stacks<int> queue2 {};
     queue2.push (111);
     
     queue2 = std::move(queue1);
@@ -154,9 +157,9 @@ TEST (queue, move_assignment)
 
 TEST (queue, virtual_destructor)
 {
-    queue_list<int>* ptr = new queue_list<int> {};
+    queue_stacks<int>* derrived_ptr = new queue_stacks<int> {};
 
-    Iqueue<int>* base_ptr = ptr;
+    Iqueue<int>* base_ptr = derrived_ptr;
 
     delete base_ptr;
 }

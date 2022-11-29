@@ -20,7 +20,6 @@ public:
     virtual T& back () & = 0;
 
     virtual const T& front () const & = 0;
-    //virtual const T& back () const & = 0;
 
     virtual size_t size () const = 0;
     virtual bool empty () const = 0;
@@ -57,7 +56,6 @@ public:
     T& back () & override;
 
     const T& front () const & override;
-    //const T& back () const & override;
 
     size_t size () const override;
     bool empty () const override;
@@ -174,17 +172,7 @@ T& queue_stacks<T>::back () &
     change_used_stack1_ ();
     return back_val;
 }
-#if 0
-template <typename T>
-const T& queue_stacks<T>::back () const &
-{
-    change_used_stack2_ ();
-    const T& back_val = stack2_.top ();
 
-    change_used_stack1_ ();
-    return back_val;
-}
-#endif
 template <typename T>
 size_t queue_stacks<T>::size () const
 {
@@ -196,6 +184,7 @@ bool queue_stacks<T>::empty () const
 {
     return stack1_.empty ();
 }
+
 }
 
 #endif
