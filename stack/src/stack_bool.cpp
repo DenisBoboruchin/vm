@@ -1,5 +1,4 @@
 #include "stack.hpp"
-#include <cstring>
 
 namespace my_containers {
 
