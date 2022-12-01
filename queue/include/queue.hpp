@@ -19,8 +19,6 @@ public:
     virtual T& front () & = 0;
     virtual T& back () & = 0;
 
-    virtual const T& front () const & = 0;
-
     virtual size_t size () const = 0;
     virtual bool empty () const = 0;
 };
@@ -35,7 +33,7 @@ public:
     T& front () & override;
     T& back () & override;
 
-    const T& front () const & override;
+    const T& front () const &;
     const T& back () const &;
 
     size_t size () const override;
@@ -55,17 +53,19 @@ public:
     T& front () & override;
     T& back () & override;
 
-    const T& front () const & override;
-
     size_t size () const override;
     bool empty () const override;
 
 private:
-    void change_used_stack1_ ();
-    void change_used_stack2_ ();
+    bool push_stack_used_ ();
+    void change_used_stack_push_ ();
+    void change_used_stack_pop_ ();
 
-    stack<T> stack1_;
-    stack<T> stack2_;
+    size_t size_ = 0;
+    size_t num_pops_ = 0;
+
+    stack<T> stack_push_;
+    stack<T> stack_pop_;
 };
 
 template <typename T>
@@ -117,72 +117,103 @@ bool queue_list<T>::empty () const
 }
 
 template <typename T>
-void queue_stacks<T>::change_used_stack2_ ()
+bool queue_stacks<T>::push_stack_used_ ()
 {
-    while (!stack1_.empty ())
+    return (!stack_push_.empty ());
+}
+
+template <typename T>
+void queue_stacks<T>::change_used_stack_pop_ ()
+{
+    while (!stack_push_.empty ())
     {
-        stack2_.push (stack1_.top ());
-        stack1_.pop();
+        stack_pop_.push (stack_push_.top ());
+        stack_push_.pop();
     } 
 }
 
 template <typename T>
-void queue_stacks<T>::change_used_stack1_ ()
+void queue_stacks<T>::change_used_stack_push_ ()
 {
-    while (!stack2_.empty ())
+    while (!stack_pop_.empty ())
     {
-        stack1_.push (stack2_.top ());
-        stack2_.pop();
+        stack_push_.push (stack_pop_.top ());
+        stack_pop_.pop();
     }
 }
 
 template <typename T>
 void queue_stacks<T>::push (const T& value)
 {
-    change_used_stack2_ ();
-    stack1_.push (value);
+#if 0
+    change_used_stack_pop_ ();
+    stack_push_.push (value);
 
-    change_used_stack1_ ();
+    change_used_stack_push_ ();
+#endif 
+    if (!push_stack_used_ ())
+        change_used_stack_push_ ();
+
+    stack_push_.push (value);
+    size_++;
 }
 
 template <typename T>
 void queue_stacks<T>::pop ()
 {
-    stack1_.pop ();
+    if (push_stack_used_ ())
+        num_pops_++; 
+    else
+        stack_pop_.pop ();
+    
+    size_--;
+    //stack_push_.pop ();
 }
 
 template <typename T>
 T& queue_stacks<T>::front () &
 {
-    return stack1_.top ();
-}
+    if (push_stack_used_ ())
+        change_used_stack_pop_ ();
 
-template <typename T>
-const T& queue_stacks<T>::front () const &
-{
-    return stack1_.top ();
+    while (num_pops_)
+    {
+        stack_pop_.pop ();
+        num_pops_--;
+    }
+
+    return stack_pop_.top ();
+
+    //return stack_push_.top ();
 }
 
 template <typename T>
 T& queue_stacks<T>::back () &
 {
-    change_used_stack2_ ();
-    T& back_val = stack2_.top ();
+    if (!push_stack_used_ ())
+        change_used_stack_push_ ();
+        
+    return stack_push_.top ();
 
-    change_used_stack1_ ();
+#if 0
+    change_used_stack_pop_ ();
+    T& back_val = stack_pop_.top ();
+
+    change_used_stack_push_ ();
     return back_val;
+#endif
 }
 
 template <typename T>
 size_t queue_stacks<T>::size () const
 {
-    return stack1_.size ();
+    return size_;
 }
 
 template <typename T>
 bool queue_stacks<T>::empty () const
 {
-    return stack1_.empty ();
+    return size_ == 0;
 }
 
 }
