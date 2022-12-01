@@ -2,6 +2,7 @@
 #define STACK_HPP
 
 #include <iostream>
+#include <cstring>
 
 namespace my_containers {
 
