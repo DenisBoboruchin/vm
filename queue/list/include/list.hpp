@@ -239,5 +239,4 @@ bool list<T>::empty() const
 }
 
 }  // namespace my_containers
-
 #endif
