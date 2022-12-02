@@ -139,12 +139,6 @@ void queue_stacks<T>::change_used_stack_push_()
 template <typename T>
 void queue_stacks<T>::push(const T &value)
 {
-#if 0
-    change_used_stack_pop_ ();
-    stack_push_.push (value);
-
-    change_used_stack_push_ ();
-#endif
     if (!push_stack_used_())
         change_used_stack_push_();
 
@@ -164,8 +158,6 @@ void queue_stacks<T>::pop()
         num_pops_++;
     else
         stack_pop_.pop();
-
-    // stack_push_.pop ();
 }
 
 template <typename T>
@@ -180,8 +172,6 @@ T &queue_stacks<T>::front() &
     }
 
     return stack_pop_.top();
-
-    // return stack_push_.top ();
 }
 
 template <typename T>
@@ -191,14 +181,6 @@ T &queue_stacks<T>::back() &
         change_used_stack_push_();
 
     return stack_push_.top();
-
-#if 0
-    change_used_stack_pop_ ();
-    T& back_val = stack_pop_.top ();
-
-    change_used_stack_push_ ();
-    return back_val;
-#endif
 }
 
 template <typename T>
