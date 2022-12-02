@@ -26,7 +26,7 @@ TEST(list, front)
 TEST(list, back)
 {
     list<int> list;
-        
+
     list.push_back(62);
     list.push_back(41);
     list.push_back(35);
@@ -52,7 +52,7 @@ TEST(list, size_empty)
 TEST(list, push_pop_back)
 {
     list<int> list;
-    list.pop_back ();
+    list.pop_back();
 
     list.push_back(2);
     list.push_front(1);
@@ -75,7 +75,7 @@ TEST(list, push_pop_back)
 TEST(list, push_pop_front)
 {
     list<int> list;
-    list.pop_front ();
+    list.pop_front();
 
     list.push_back(1);
     list.push_back(2);
@@ -129,7 +129,7 @@ TEST(list, move_constructor)
 
     list<int> list2 {std::move(list1)};
 
-    ASSERT_EQ(list2.size (), 3);
+    ASSERT_EQ(list2.size(), 3);
 
     ASSERT_EQ(list2.back(), 5);
     ASSERT_EQ(list2.front(), 2);
@@ -192,32 +192,29 @@ TEST(list, big_test)
     list<int> list;
 
     long int num = 10000000;
-    for (int i = 1; i != num + 1; ++i)
-    {
-        list.push_back (i);
+    for (int i = 1; i != num + 1; ++i) {
+        list.push_back(i);
     }
 
-    ASSERT_EQ (list.size(), num);
-    ASSERT_EQ (list.back(), num);
-    ASSERT_EQ (list.front(), 1);
+    ASSERT_EQ(list.size(), num);
+    ASSERT_EQ(list.back(), num);
+    ASSERT_EQ(list.front(), 1);
 
     long int sum = 0;
-    while (!list.empty ())
-    {
-        sum += list.front ();
-        sum += list.back ();
-        
-        list.pop_back ();
-        list.pop_front ();
+    while (!list.empty()) {
+        sum += list.front();
+        sum += list.back();
+
+        list.pop_back();
+        list.pop_front();
     }
 
-    ASSERT_EQ (sum, num * (num + 1) / 2);
+    ASSERT_EQ(sum, num * (num + 1) / 2);
 }
 
 TEST(list, struct_test)
 {
-    struct S
-    {
+    struct S {
         int a, b;
         double d;
         char c;
@@ -225,20 +222,20 @@ TEST(list, struct_test)
 
     list<S> list;
 
-    list.push_back ({1, 2, 3.5, 3});
-    
+    list.push_back({1, 2, 3.5, 3});
+
     S t = {10, 20, 44.4, 30};
-    list.push_front (t);
+    list.push_front(t);
 
-    ASSERT_EQ (list.front().a, 10);
-    ASSERT_EQ (list.front().d, 44.4);
-    ASSERT_EQ (list.back().b, 2);
-    ASSERT_EQ (list.back().c, 3);
+    ASSERT_EQ(list.front().a, 10);
+    ASSERT_EQ(list.front().d, 44.4);
+    ASSERT_EQ(list.back().b, 2);
+    ASSERT_EQ(list.back().c, 3);
 
-    list.pop_back ();
+    list.pop_back();
 
-    ASSERT_EQ (list.front().a, 10);
-    ASSERT_EQ (list.front().d, 44.4);
-    ASSERT_EQ (list.back().b, 20);
-    ASSERT_EQ (list.back().c, 30);
+    ASSERT_EQ(list.front().a, 10);
+    ASSERT_EQ(list.front().d, 44.4);
+    ASSERT_EQ(list.back().b, 20);
+    ASSERT_EQ(list.back().c, 30);
 }

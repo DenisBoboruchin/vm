@@ -10,10 +10,10 @@ class list final {
 public:
     list() {};
     list(const list &other);
-    list(list&& other) noexcept;
+    list(list &&other) noexcept;
 
-    list& operator= (const list& other);
-    list& operator= (list&& other) noexcept;
+    list &operator=(const list &other);
+    list &operator=(list &&other) noexcept;
 
     ~list();
 
@@ -24,26 +24,26 @@ public:
     void pop_back();
 
     T &front() &;
-    const T& front () const &;
-    
+    const T &front() const &;
+
     T &back() &;
-    const T& back () const &;
+    const T &back() const &;
 
     size_t size() const;
     bool empty() const;
 
-private: 
+private:
     struct node final {
         T data_ {};
         node *next_ = nullptr;
         node *prev_ = nullptr;
     };
 
-    void delete_data_ ();
+    void delete_data_();
 
-    node* push_ (const T& value);
-    node* pop_ (node* delelable);
-    void pop_last_ ();
+    node *push_(const T &value);
+    node *pop_(node *delelable);
+    void pop_last_();
 
     size_t size_ = 0;
     node *rear_ = nullptr;
@@ -51,7 +51,7 @@ private:
 };
 
 template <typename T>
-list<T>::list(const list<T> &other) : list ()
+list<T>::list(const list<T> &other) : list()
 {
     node *temp = other.front_;
     size_t full_size = other.size_;
@@ -64,44 +64,43 @@ list<T>::list(const list<T> &other) : list ()
 }
 
 template <typename T>
-list<T>::list (list<T>&& other) noexcept
+list<T>::list(list<T> &&other) noexcept
 {
-    std::swap (size_, other.size_);
-    std::swap (rear_, other.rear_);
-    std::swap (front_, other.front_);
+    std::swap(size_, other.size_);
+    std::swap(rear_, other.rear_);
+    std::swap(front_, other.front_);
 }
 
 template <typename T>
-list<T>& list<T>::operator= (const list<T>& other)
-{ 
+list<T> &list<T>::operator=(const list<T> &other)
+{
     if (this == &other)
         return *this;
 
-    delete_data_ ();
- 
+    delete_data_();
+
     size_ = 0;
     rear_ = nullptr;
     front_ = nullptr;
 
-    node* temp = other.front_;
+    node *temp = other.front_;
     size_t full_size = other.size_;
 
-    while (size_ != full_size)
-    {
+    while (size_ != full_size) {
         push_back(temp->data_);
 
         temp = temp->next_;
-    }   
+    }
 
     return *this;
 }
 
 template <typename T>
-list<T>& list<T>::operator= (list<T>&& other) noexcept
+list<T> &list<T>::operator=(list<T> &&other) noexcept
 {
-    std::swap (size_, other.size_);
-    std::swap (rear_, other.rear_);
-    std::swap (front_, other.front_);
+    std::swap(size_, other.size_);
+    std::swap(rear_, other.rear_);
+    std::swap(front_, other.front_);
 
     return *this;
 }
@@ -109,11 +108,11 @@ list<T>& list<T>::operator= (list<T>&& other) noexcept
 template <typename T>
 list<T>::~list()
 {
-    delete_data_ ();
+    delete_data_();
 }
 
 template <typename T>
-void list<T>::delete_data_ ()
+void list<T>::delete_data_()
 {
     if (!front_)
         return;
@@ -130,17 +129,17 @@ void list<T>::delete_data_ ()
 template <typename T>
 void list<T>::push_back(const T &value)
 {
-    rear_ = push_ (value);
+    rear_ = push_(value);
 }
 
 template <typename T>
 void list<T>::push_front(const T &value)
 {
-    front_ = push_ (value);
+    front_ = push_(value);
 }
 
 template <typename T>
-typename list<T>::node* list<T>::push_ (const T & value)
+typename list<T>::node *list<T>::push_(const T &value)
 {
     node *new_node = new node {value};
 
@@ -159,8 +158,8 @@ typename list<T>::node* list<T>::push_ (const T & value)
 template <typename T>
 void list<T>::pop_back()
 {
-    node* front_ptr = pop_ (rear_);
-    
+    node *front_ptr = pop_(rear_);
+
     if (front_ptr)
         rear_ = front_ptr->prev_;
 }
@@ -168,20 +167,19 @@ void list<T>::pop_back()
 template <typename T>
 void list<T>::pop_front()
 {
-    front_ = pop_ (front_);
+    front_ = pop_(front_);
 }
 
 template <typename T>
-typename list<T>::node* list<T>::pop_ (list<T>::node* deletable)
+typename list<T>::node *list<T>::pop_(list<T>::node *deletable)
 {
-    if (size_ <= 1)
-    {
+    if (size_ <= 1) {
         pop_last_();
         return nullptr;
     }
-    
-    node* next = deletable->next_;
-    node* prev = deletable->prev_;
+
+    node *next = deletable->next_;
+    node *prev = deletable->prev_;
     delete deletable;
 
     prev->next_ = next;
