@@ -73,6 +73,12 @@ if (TESTING)
     )
     add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
 
+    add_custom_target (run_${PROJECT_NAME}_bench 
+        COMMENT "Running list_benchmarks"
+        COMMAND ./queue_bench
+    )
+    add_dependencies (run_${PROJECT_NAME}_bench ${PROJECT_NAME}_bench)
+
     add_subdirectory (list)
     add_subdirectory (stack)
 endif ()

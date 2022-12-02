@@ -160,13 +160,17 @@ void queue_stacks<T>::push (const T& value)
 
 template <typename T>
 void queue_stacks<T>::pop ()
-{
+{ 
+    if (size_ > 0)
+        size_--;
+    else
+        return;
+
     if (push_stack_used_ ())
         num_pops_++; 
     else
         stack_pop_.pop ();
     
-    size_--;
     //stack_push_.pop ();
 }
 
