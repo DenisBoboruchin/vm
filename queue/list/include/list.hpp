@@ -42,7 +42,7 @@ private:
     void delete_data_();
 
     node *push_(const T &value);
-    node *pop_(node *delelable);
+    node *pop_(node *deletable);
     void pop_last_();
 
     size_t size_ = 0;

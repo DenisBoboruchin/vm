@@ -6,7 +6,12 @@ using my_containers::Iqueue;
 using my_containers::queue_list;
 using my_containers::queue_stacks;
 
-class queue_test : public testing::TestWithParam<const char *> {};
+template <typename queueType>
+class queue_test : public testing::Test 
+{};
+
+using queue_types = ::testing::Types<queue_stacks<int>, queue_list<int>>;
+TYPED_TEST_SUITE(queue_test, queue_types);
 
 int main()
 {
@@ -15,9 +20,10 @@ int main()
     return RUN_ALL_TESTS();
 }
 
-TEST(queue, size_empty)
+TYPED_TEST(queue_test, size_empty)
 {
-    queue_stacks<int> queue;
+    TypeParam queue;
+    
     ASSERT_EQ(queue.empty(), true);
 
     queue.push(13);
@@ -26,9 +32,9 @@ TEST(queue, size_empty)
     ASSERT_EQ(queue.back(), 13);
 }
 
-TEST(queue, back_front)
+TYPED_TEST(queue_test, back_front)
 {
-    queue_stacks<int> queue;
+    TypeParam queue;
 
     queue.push(1);
     ASSERT_EQ(queue.front(), 1);
@@ -43,9 +49,9 @@ TEST(queue, back_front)
     ASSERT_EQ(queue.back(), 3);
 }
 
-TEST(queue, push_pop)
+TYPED_TEST(queue_test, push_pop)
 {
-    queue_stacks<int> queue;
+    TypeParam queue;
 
     queue.pop();
 
@@ -74,9 +80,9 @@ TEST(queue, push_pop)
     ASSERT_EQ(queue.back(), 20);
 }
 
-TEST(queue, copy_constructor)
+TYPED_TEST(queue_test, copy_constructor)
 {
-    queue_stacks<int> queue1;
+    TypeParam queue1;
 
     queue1.pop();
 
@@ -87,16 +93,16 @@ TEST(queue, copy_constructor)
     ASSERT_EQ(queue1.front(), 20);
     ASSERT_EQ(queue1.back(), 10);
 
-    queue_stacks<int> queue2 {queue1};
+    TypeParam queue2 {queue1};
 
     ASSERT_EQ(queue2.size(), 3);
     ASSERT_EQ(queue2.front(), 20);
     ASSERT_EQ(queue2.back(), 10);
 }
 
-TEST(queue, move_constructor)
+TYPED_TEST(queue_test, move_constructor)
 {
-    queue_stacks<int> queue1;
+    TypeParam queue1;
 
     queue1.pop();
 
@@ -106,16 +112,16 @@ TEST(queue, move_constructor)
     ASSERT_EQ(queue1.front(), 20);
     ASSERT_EQ(queue1.back(), 10);
 
-    queue_stacks<int> queue2 {std::move(queue1)};
+    TypeParam queue2 {std::move(queue1)};
 
     ASSERT_EQ(queue2.size(), 2);
     ASSERT_EQ(queue2.front(), 20);
     ASSERT_EQ(queue2.back(), 10);
 }
 
-TEST(queue, copy_assignment)
+TYPED_TEST(queue_test, copy_assignment)
 {
-    queue_stacks<int> queue1;
+    TypeParam queue1;
 
     queue1.pop();
 
@@ -125,7 +131,7 @@ TEST(queue, copy_assignment)
     ASSERT_EQ(queue1.front(), 20);
     ASSERT_EQ(queue1.back(), 10);
 
-    queue_stacks<int> queue2 {};
+    TypeParam queue2 {};
     queue2.push(1221);
 
     queue2 = queue1;
@@ -135,9 +141,9 @@ TEST(queue, copy_assignment)
     ASSERT_EQ(queue2.back(), 10);
 }
 
-TEST(queue, move_assignment)
+TYPED_TEST(queue_test, move_assignment)
 {
-    queue_stacks<int> queue1;
+    TypeParam queue1;
 
     queue1.pop();
 
@@ -147,7 +153,7 @@ TEST(queue, move_assignment)
     ASSERT_EQ(queue1.front(), 20);
     ASSERT_EQ(queue1.back(), 10);
 
-    queue_stacks<int> queue2 {};
+    TypeParam queue2 {};
     queue2.push(111);
 
     queue2 = std::move(queue1);
@@ -157,16 +163,16 @@ TEST(queue, move_assignment)
     ASSERT_EQ(queue2.back(), 10);
 }
 
-TEST(queue, virtual_destructor)
+TYPED_TEST(queue_test, virtual_destructor)
 {
-    queue_stacks<int> *derrived_ptr = new queue_stacks<int> {};
+    TypeParam *derrived_ptr = new TypeParam {};
 
     Iqueue<int> *base_ptr = derrived_ptr;
 
     delete base_ptr;
 }
 
-TEST(queue, struct_test)
+TYPED_TEST(queue_test, struct_test)
 {
     struct S {
         int a, b;
@@ -192,4 +198,22 @@ TEST(queue, struct_test)
     ASSERT_EQ(queue.front().d, 44.4);
     ASSERT_EQ(queue.back().b, 20);
     ASSERT_EQ(queue.back().c, 30);
+}
+
+TYPED_TEST(queue_test, big_test)
+{
+    TypeParam queue;
+
+    int num_elems = 10000000;
+    for (int count = 0; count != num_elems; ++count)
+        queue.push (count);
+
+    long sum = 0;
+    while (!queue.empty ())
+    {
+        sum += queue.front ();
+        queue.pop ();
+    }
+
+    ASSERT_EQ (sum, static_cast<long> (num_elems) * (num_elems - 1) / 2);
 }

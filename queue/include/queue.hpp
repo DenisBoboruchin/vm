@@ -9,7 +9,7 @@ namespace my_containers {
 template <typename T>
 class Iqueue {
 public:
-    virtual ~Iqueue() {};
+    virtual ~Iqueue() = default;
 
     virtual void push(const T &value) = 0;
     virtual void pop() = 0;
