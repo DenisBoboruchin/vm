@@ -30,16 +30,16 @@ static void BM_queue_hard(benchmark::State &state)
     for (auto _ : state) {
         queue_type queue;
 
-        std::vector<int> vector_elems;
-        vector_elems.resize(100, 0);
+        //std::vector<int> vector_elems;
+        //vector_elems.resize(100, 0);
         for (int count = 0; count != state.range(0); ++count) {
-            queue.push(vector_elems);
+            queue.push(count);
             queue.pop();
         }
     }
 }
 
-BENCHMARK(BM_queue_hard<my_containers::queue_stacks<std::vector<int>>>)->Arg(10000)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_queue_hard<my_containers::queue_list<std::vector<int>>>)->Arg(10000)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_hard<my_containers::queue_stacks<int>>)->Arg(10000)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_hard<my_containers::queue_list<int>>)->Arg(10000)->Unit(benchmark::kMillisecond);
 
 BENCHMARK_MAIN();
