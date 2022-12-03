@@ -7,8 +7,8 @@ using my_containers::queue_list;
 using my_containers::queue_stacks;
 
 template <typename queueType>
-class queue_test : public testing::Test 
-{};
+class queue_test : public testing::Test {
+};
 
 using queue_types = ::testing::Types<queue_stacks<int>, queue_list<int>>;
 TYPED_TEST_SUITE(queue_test, queue_types);
@@ -23,7 +23,7 @@ int main()
 TYPED_TEST(queue_test, size_empty)
 {
     TypeParam queue;
-    
+
     ASSERT_EQ(queue.empty(), true);
 
     queue.push(13);
@@ -206,14 +206,13 @@ TYPED_TEST(queue_test, big_test)
 
     int num_elems = 10000000;
     for (int count = 0; count != num_elems; ++count)
-        queue.push (count);
+        queue.push(count);
 
     long sum = 0;
-    while (!queue.empty ())
-    {
-        sum += queue.front ();
-        queue.pop ();
+    while (!queue.empty()) {
+        sum += queue.front();
+        queue.pop();
     }
 
-    ASSERT_EQ (sum, static_cast<long> (num_elems) * (num_elems - 1) / 2);
+    ASSERT_EQ(sum, static_cast<long>(num_elems) * (num_elems - 1) / 2);
 }

@@ -53,15 +53,13 @@ public:
     bool empty() const override;
 
 private:
-    bool push_stack_used_();
     void change_used_stack_push_();
     void change_used_stack_pop_();
 
-    size_t size_ = 0;
-    size_t num_pops_ = 0;
-
     stack<T> stack_push_;
     stack<T> stack_pop_;
+
+    T back_;
 };
 
 template <typename T>
@@ -113,12 +111,6 @@ bool queue_list<T>::empty() const
 }
 
 template <typename T>
-bool queue_stacks<T>::push_stack_used_()
-{
-    return (!stack_push_.empty());
-}
-
-template <typename T>
 void queue_stacks<T>::change_used_stack_pop_()
 {
     while (!stack_push_.empty()) {
@@ -139,36 +131,29 @@ void queue_stacks<T>::change_used_stack_push_()
 template <typename T>
 void queue_stacks<T>::push(const T &value)
 {
-    if (!push_stack_used_())
-        change_used_stack_push_();
-
     stack_push_.push(value);
-    size_++;
 }
 
 template <typename T>
 void queue_stacks<T>::pop()
 {
-    if (size_ > 0)
-        size_--;
-    else
-        return;
+    if (stack_pop_.empty() && !stack_push_.empty()) {
+        if (stack_push_.size() == 1)
+            return stack_push_.pop();
 
-    if (push_stack_used_())
-        num_pops_++;
-    else
-        stack_pop_.pop();
+        back_ = stack_push_.top();
+        change_used_stack_pop_();
+    }
+
+    stack_pop_.pop();
 }
 
 template <typename T>
 T &queue_stacks<T>::front() &
 {
-    if (push_stack_used_())
+    if (stack_pop_.empty() && !stack_push_.empty()) {
+        back_ = stack_push_.top();
         change_used_stack_pop_();
-
-    while (num_pops_) {
-        stack_pop_.pop();
-        num_pops_--;
     }
 
     return stack_pop_.top();
@@ -177,22 +162,24 @@ T &queue_stacks<T>::front() &
 template <typename T>
 T &queue_stacks<T>::back() &
 {
-    if (!push_stack_used_())
-        change_used_stack_push_();
+    if (!stack_push_.empty())
+        return stack_push_.top();
 
-    return stack_push_.top();
+    return back_;
 }
 
 template <typename T>
 size_t queue_stacks<T>::size() const
 {
-    return size_;
+    return stack_push_.size() + stack_pop_.size();
 }
 
 template <typename T>
 bool queue_stacks<T>::empty() const
 {
-    return size_ == 0;
+    bool empty = stack_push_.empty();
+    empty &= stack_pop_.empty();
+    return empty;
 }
 
 }  // namespace my_containers
