@@ -29,6 +29,8 @@ public:
     size_t size() const;
     size_t capacity() const;
 
+    T& down() const &;
+
 private:
     void check_size_();
     void resize_up_();
@@ -108,6 +110,12 @@ template <typename T>
 T &stack<T>::top() const &
 {
     return data_[size_ - 1];
+}
+
+template <typename T>
+T &stack<T>::down() const &
+{
+    return data_[0];
 }
 
 template <typename T>

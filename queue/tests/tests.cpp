@@ -40,12 +40,17 @@ TYPED_TEST(queue_test, back_front)
     ASSERT_EQ(queue.front(), 1);
     ASSERT_EQ(queue.back(), 1);
 
+    queue.back() = 6;
+    ASSERT_EQ(queue.front(), 6);
+    ASSERT_EQ(queue.back(), 6);
+    
     queue.push(2);
-    ASSERT_EQ(queue.front(), 1);
+    queue.front() = 5;
+    ASSERT_EQ(queue.front(), 5);
     ASSERT_EQ(queue.back(), 2);
 
     queue.push(3);
-    ASSERT_EQ(queue.front(), 1);
+    ASSERT_EQ(queue.front(), 5);
     ASSERT_EQ(queue.back(), 3);
 }
 
