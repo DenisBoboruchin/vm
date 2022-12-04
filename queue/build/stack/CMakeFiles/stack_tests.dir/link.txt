@@ -1,0 +1,1 @@
+clang++ -fsanitize=address -fsanitize=undefined CMakeFiles/stack_tests.dir/tests/tests.cpp.o -o stack_tests  libstack.a /usr/lib/x86_64-linux-gnu/libgtest_main.a /usr/lib/x86_64-linux-gnu/libgtest.a 

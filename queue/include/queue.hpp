@@ -145,9 +145,9 @@ template <typename T>
 const T &queue_stacks<T>::front() const &
 {
     if (!stack_pop_.empty())
-        return stack_pop_.top();    
-    
-    return stack_push_.down ();
+        return stack_pop_.top();
+
+    return stack_push_.down();
 }
 
 template <typename T>
@@ -156,17 +156,16 @@ const T &queue_stacks<T>::back() const &
     if (!stack_push_.empty())
         return stack_push_.top();
 
-    return stack_pop_.down ();
+    return stack_pop_.down();
 }
-
 
 template <typename T>
 T &queue_stacks<T>::front() &
-{ 
+{
     if (!stack_pop_.empty())
-        return stack_pop_.top();    
-    
-    return stack_push_.down ();
+        return stack_pop_.top();
+
+    return stack_push_.down();
 }
 
 template <typename T>
@@ -175,7 +174,7 @@ T &queue_stacks<T>::back() &
     if (!stack_push_.empty())
         return stack_push_.top();
 
-    return stack_pop_.down ();
+    return stack_pop_.down();
 }
 
 template <typename T>

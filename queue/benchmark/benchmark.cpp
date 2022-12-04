@@ -30,8 +30,8 @@ static void BM_queue_hard(benchmark::State &state)
     for (auto _ : state) {
         queue_type queue;
 
-        //std::vector<int> vector_elems;
-        //vector_elems.resize(100, 0);
+        // std::vector<int> vector_elems;
+        // vector_elems.resize(100, 0);
         for (int count = 0; count != state.range(0); ++count) {
             queue.push(count);
             queue.pop();

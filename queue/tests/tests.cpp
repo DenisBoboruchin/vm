@@ -43,7 +43,7 @@ TYPED_TEST(queue_test, back_front)
     queue.back() = 6;
     ASSERT_EQ(queue.front(), 6);
     ASSERT_EQ(queue.back(), 6);
-    
+
     queue.push(2);
     queue.front() = 5;
     ASSERT_EQ(queue.front(), 5);

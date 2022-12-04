@@ -23,13 +23,16 @@ public:
 
     void push(const T &elem);
     void pop();
-    T &top() const &;
+
+    T &top() &;
+    const T &top() const &;
+
+    T &down() &;
+    const T &down() const &;
 
     bool empty() const;
     size_t size() const;
     size_t capacity() const;
-
-    T& down() const &;
 
 private:
     void check_size_();
@@ -107,13 +110,25 @@ void stack<T>::pop()
 }
 
 template <typename T>
-T &stack<T>::top() const &
+T &stack<T>::top() &
 {
     return data_[size_ - 1];
 }
 
 template <typename T>
-T &stack<T>::down() const &
+const T &stack<T>::top() const &
+{
+    return data_[size_ - 1];
+}
+
+template <typename T>
+T &stack<T>::down() &
+{
+    return data_[0];
+}
+
+template <typename T>
+const T &stack<T>::down() const &
 {
     return data_[0];
 }
@@ -172,7 +187,12 @@ public:
 
     void push(const bool &elem);
     void pop();
-    bool top() const &;
+
+    bool top() &;
+    const bool top() const &;
+
+    bool down() &;
+    const bool down() const &;
 
     bool empty() const;
     size_t size() const;
@@ -192,4 +212,5 @@ private:
 };
 
 }  // namespace my_containers
+
 #endif
