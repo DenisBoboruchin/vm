@@ -64,7 +64,16 @@ void stack<bool>::pop()
         size_--;
 }
 
-bool stack<bool>::top() const &
+bool stack<bool>::top() &
+{
+    int size = size_ - 1;
+    int num_char = size / BIT_CHAR;
+    int num_bit = size % BIT_CHAR;
+
+    return (*(data_ + num_char) & (1 << num_bit)) != 0;
+}
+
+const bool stack<bool>::top() const &
 {
     int size = size_ - 1;
     int num_char = size / BIT_CHAR;

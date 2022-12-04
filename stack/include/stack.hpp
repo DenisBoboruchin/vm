@@ -23,7 +23,9 @@ public:
 
     void push(const T &elem);
     void pop();
-    T &top() const &;
+
+    T &top() &;
+    const T &top() const &;
 
     bool empty() const;
     size_t size() const;
@@ -105,7 +107,13 @@ void stack<T>::pop()
 }
 
 template <typename T>
-T &stack<T>::top() const &
+T &stack<T>::top() &
+{
+    return data_[size_ - 1];
+}
+
+template <typename T>
+const T &stack<T>::top() const &
 {
     return data_[size_ - 1];
 }
@@ -164,7 +172,9 @@ public:
 
     void push(const bool &elem);
     void pop();
-    bool top() const &;
+
+    bool top() &;
+    const bool top() const &;
 
     bool empty() const;
     size_t size() const;
