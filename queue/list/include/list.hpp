@@ -74,8 +74,9 @@ list<T>::list(list<T> &&other) noexcept
 template <typename T>
 list<T> &list<T>::operator=(const list<T> &other)
 {
-    if (this == &other)
+    if (this == &other) {
         return *this;
+    }
 
     delete_data_();
 
@@ -114,8 +115,9 @@ list<T>::~list()
 template <typename T>
 void list<T>::delete_data_()
 {
-    if (!front_)
+    if (!front_) {
         return;
+    }
 
     front_->prev_->next_ = nullptr;
     while (front_) {
@@ -143,8 +145,9 @@ typename list<T>::node *list<T>::push_(const T &value)
 {
     node *new_node = new node {value};
 
-    if (!rear_)
+    if (!rear_) {
         rear_ = front_ = new_node;
+    }
 
     new_node->prev_ = rear_;
     new_node->next_ = front_;
@@ -160,8 +163,9 @@ void list<T>::pop_back()
 {
     node *front_ptr = pop_(rear_);
 
-    if (front_ptr)
+    if (front_ptr) {
         rear_ = front_ptr->prev_;
+    }
 }
 
 template <typename T>
@@ -193,8 +197,9 @@ typename list<T>::node *list<T>::pop_(list<T>::node *deletable)
 template <typename T>
 void list<T>::pop_last_()
 {
-    if (!rear_)
+    if (!rear_) {
         return;
+    }
 
     delete front_;
     front_ = rear_ = nullptr;

@@ -132,8 +132,9 @@ template <typename T>
 void queue_stacks<T>::pop()
 {
     if (stack_pop_.empty() && !stack_push_.empty()) {
-        if (stack_push_.size() == 1)
+        if (stack_push_.size() == 1) {
             return stack_push_.pop();
+        }
 
         move_elems_to_stack_pop_();
     }
@@ -144,8 +145,9 @@ void queue_stacks<T>::pop()
 template <typename T>
 const T &queue_stacks<T>::front() const &
 {
-    if (!stack_pop_.empty())
+    if (!stack_pop_.empty()) {
         return stack_pop_.top();
+    }
 
     return stack_push_.down();
 }
@@ -153,8 +155,9 @@ const T &queue_stacks<T>::front() const &
 template <typename T>
 const T &queue_stacks<T>::back() const &
 {
-    if (!stack_push_.empty())
+    if (!stack_push_.empty()) {
         return stack_push_.top();
+    }
 
     return stack_pop_.down();
 }
@@ -162,8 +165,9 @@ const T &queue_stacks<T>::back() const &
 template <typename T>
 T &queue_stacks<T>::front() &
 {
-    if (!stack_pop_.empty())
+    if (!stack_pop_.empty()) {
         return stack_pop_.top();
+    }
 
     return stack_push_.down();
 }
@@ -171,8 +175,9 @@ T &queue_stacks<T>::front() &
 template <typename T>
 T &queue_stacks<T>::back() &
 {
-    if (!stack_push_.empty())
+    if (!stack_push_.empty()) {
         return stack_push_.top();
+    }
 
     return stack_pop_.down();
 }

@@ -1,7 +1,7 @@
+#include <vector>
 #include <benchmark/benchmark.h>
 
 #include "queue.hpp"
-#include <vector>
 
 template <typename queue_type>
 static void BM_queue_native(benchmark::State &state)
