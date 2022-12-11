@@ -3,6 +3,9 @@
 
 #include "queue.hpp"
 
+static const int RANGE_QUEUE_NATIVE = 10000000;
+static const int RANGE_QUEUE_HARD = 100000;
+
 template <typename queue_type>
 static void BM_queue_native(benchmark::State &state)
 {
@@ -21,8 +24,8 @@ static void BM_queue_native(benchmark::State &state)
     }
 }
 
-BENCHMARK(BM_queue_native<my_containers::queue_stacks<int>>)->Arg(10000000)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_queue_native<my_containers::queue_list<int>>)->Arg(10000000)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_native<my_containers::queue_stacks<int>>)->Arg(RANGE_QUEUE_NATIVE)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_native<my_containers::queue_list<int>>)->Arg(RANGE_QUEUE_NATIVE)->Unit(benchmark::kMillisecond);
 
 template <typename queue_type>
 static void BM_queue_hard(benchmark::State &state)
@@ -30,8 +33,6 @@ static void BM_queue_hard(benchmark::State &state)
     for (auto _ : state) {
         queue_type queue;
 
-        // std::vector<int> vector_elems;
-        // vector_elems.resize(100, 0);
         for (int count = 0; count != state.range(0); ++count) {
             queue.push(count);
             queue.pop();
@@ -39,7 +40,7 @@ static void BM_queue_hard(benchmark::State &state)
     }
 }
 
-BENCHMARK(BM_queue_hard<my_containers::queue_stacks<int>>)->Arg(10000)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_queue_hard<my_containers::queue_list<int>>)->Arg(10000)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_hard<my_containers::queue_stacks<int>>)->Arg(RANGE_QUEUE_HARD)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_hard<my_containers::queue_list<int>>)->Arg(RANGE_QUEUE_HARD)->Unit(benchmark::kMillisecond);
 
 BENCHMARK_MAIN();

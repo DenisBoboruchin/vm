@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_COMPILER clang++)
 
-include_directories(include list/include stack/include)
+include_directories(include list/include ../stack/include)
 set(SOURCE_TEST tests/tests.cpp)
 
 #clang-tidy
@@ -32,8 +32,8 @@ if (ADD_SANITIZERS)
     #set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
 endif ()
 
-option(TESTING "Include testing" ON)
 #tests
+option(TESTING "Include testing" ON)
 if (TESTING)
     message ("Include testing")
 
@@ -80,7 +80,7 @@ if (TESTING)
     add_dependencies (run_${PROJECT_NAME}_bench ${PROJECT_NAME}_bench)
 
     add_subdirectory (list)
-    add_subdirectory (stack)
+    #add_subdirectory (${CMAKE_SOURCE_DIR}/../stack)
 endif ()
 
 #clang-format

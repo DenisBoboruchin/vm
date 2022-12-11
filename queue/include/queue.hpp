@@ -27,6 +27,13 @@ public:
 template <typename T>
 class queue_list final : public Iqueue<T> {
 public:
+    queue_list () = default;
+    queue_list (const queue_list& other) = default;
+    queue_list (queue_list&& other) = default;
+
+    queue_list& operator= (const queue_list& other) = default;
+    queue_list& operator= (queue_list&& other) = default; 
+
     void push(const T &value) override;
     void pop() override;
 
@@ -46,6 +53,13 @@ private:
 template <typename T>
 class queue_stacks final : public Iqueue<T> {
 public:
+    queue_stacks () = default;
+    queue_stacks (const queue_stacks& other) = default;
+    queue_stacks (queue_stacks&& other) = default;
+
+    queue_stacks& operator= (const queue_stacks& other) = default;
+    queue_stacks& operator= (queue_stacks&& other) = default; 
+
     void push(const T &value) override;
     void pop() override;
 
