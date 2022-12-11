@@ -1,5 +1,5 @@
-#ifndef STACK_HPP
-#define STACK_HPP
+#ifndef STACK_STACK_HPP
+#define STACK_STACK_HPP
 
 #include <iostream>
 #include <cstring>
@@ -26,6 +26,9 @@ public:
 
     T &top() &;
     const T &top() const &;
+
+    T &down() &;
+    const T &down() const &;
 
     bool empty() const;
     size_t size() const;
@@ -103,7 +106,9 @@ template <typename T>
 void stack<T>::pop()
 {
     if (size_ > 0)
+    {
         size_--;
+    }
 }
 
 template <typename T>
@@ -116,6 +121,18 @@ template <typename T>
 const T &stack<T>::top() const &
 {
     return data_[size_ - 1];
+}
+
+template <typename T>
+T &stack<T>::down() &
+{
+    return data_[0];
+}
+
+template <typename T>
+const T &stack<T>::down() const &
+{
+    return data_[0];
 }
 
 template <typename T>
@@ -175,6 +192,9 @@ public:
 
     bool top() &;
     const bool top() const &;
+
+    bool down() &;
+    const bool down() const &;
 
     bool empty() const;
     size_t size() const;

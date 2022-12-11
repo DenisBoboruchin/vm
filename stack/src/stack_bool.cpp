@@ -61,7 +61,9 @@ void stack<bool>::push(const bool &elem)
 void stack<bool>::pop()
 {
     if (size_ > 0)
+    {
         size_--;
+    }
 }
 
 bool stack<bool>::top() &
@@ -80,6 +82,16 @@ const bool stack<bool>::top() const &
     int num_bit = size % BIT_CHAR;
 
     return (*(data_ + num_char) & (1 << num_bit)) != 0;
+}
+
+bool stack<bool>::down() &
+{
+    return (*(data_) & 1) != 0;
+}
+
+const bool stack<bool>::down() const &
+{
+    return (*(data_) & 1) != 0;
 }
 
 bool stack<bool>::empty() const
