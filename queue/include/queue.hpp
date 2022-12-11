@@ -1,5 +1,5 @@
-#ifndef QUEUE_HPP
-#define QUEUE_HPP
+#ifndef QUEUE_QUEUE_HPP
+#define QUEUE_QUEUE_HPP
 
 #include "list.hpp"
 #include "stack.hpp"
