@@ -9,7 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_COMPILER clang++)
 
-include_directories(include list/include ${PROJECT_SOURCE_DIR}/../stack/include)
+cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH STACK_PATH)
+include_directories(include list/include ${STACK_PATH}/stack/include)
 set(SOURCE_TEST tests/tests.cpp)
 
 #clang-tidy
