@@ -1,6 +1,8 @@
 #ifndef QUEUE_QUEUE_HPP
 #define QUEUE_QUEUE_HPP
 
+#include <type_traits>
+
 #include "list.hpp"
 #include "stack.hpp"
 
@@ -8,17 +10,22 @@ namespace my_containers {
 
 template <typename T>
 class Iqueue {
+protected:
+    using Accesses_ret_type = typename std::conditional<std::is_same<T, bool>::value, bool, T &>::type;
+    using Accesses_const_ret_type =
+        typename std::conditional<std::is_same<T, bool>::value, const bool, const T &>::type;
+
 public:
     virtual ~Iqueue() = default;
 
     virtual void push(const T &value) = 0;
     virtual void pop() = 0;
 
-    virtual T &front() & = 0;
-    virtual T &back() & = 0;
+    virtual typename Iqueue<T>::Accesses_ret_type front() & = 0;
+    virtual typename Iqueue<T>::Accesses_ret_type back() & = 0;
 
-    virtual const T &front() const & = 0;
-    virtual const T &back() const & = 0;
+    virtual typename Iqueue<T>::Accesses_const_ret_type front() const & = 0;
+    virtual typename Iqueue<T>::Accesses_const_ret_type back() const & = 0;
 
     virtual size_t size() const = 0;
     virtual bool empty() const = 0;
@@ -37,11 +44,11 @@ public:
     void push(const T &value) override;
     void pop() override;
 
-    T &front() & override;
-    T &back() & override;
+    typename Iqueue<T>::Accesses_ret_type front() & override;
+    typename Iqueue<T>::Accesses_ret_type back() & override;
 
-    const T &front() const & override;
-    const T &back() const & override;
+    typename Iqueue<T>::Accesses_const_ret_type front() const & override;
+    typename Iqueue<T>::Accesses_const_ret_type back() const & override;
 
     size_t size() const override;
     bool empty() const override;
@@ -63,11 +70,11 @@ public:
     void push(const T &value) override;
     void pop() override;
 
-    T &front() & override;
-    T &back() & override;
+    typename Iqueue<T>::Accesses_ret_type front() & override;
+    typename Iqueue<T>::Accesses_ret_type back() & override;
 
-    const T &front() const & override;
-    const T &back() const & override;
+    typename Iqueue<T>::Accesses_const_ret_type front() const & override;
+    typename Iqueue<T>::Accesses_const_ret_type back() const & override;
 
     size_t size() const override;
     bool empty() const override;
@@ -92,25 +99,25 @@ void queue_list<T>::pop()
 }
 
 template <typename T>
-T &queue_list<T>::front() &
+typename Iqueue<T>::Accesses_ret_type queue_list<T>::front() &
 {
     return list_.front();
 }
 
 template <typename T>
-const T &queue_list<T>::front() const &
+typename Iqueue<T>::Accesses_const_ret_type queue_list<T>::front() const &
 {
     return list_.front();
 }
 
 template <typename T>
-T &queue_list<T>::back() &
+typename Iqueue<T>::Accesses_ret_type queue_list<T>::back() &
 {
     return list_.back();
 }
 
 template <typename T>
-const T &queue_list<T>::back() const &
+typename Iqueue<T>::Accesses_const_ret_type queue_list<T>::back() const &
 {
     return list_.back();
 }
@@ -157,7 +164,7 @@ void queue_stacks<T>::pop()
 }
 
 template <typename T>
-const T &queue_stacks<T>::front() const &
+typename Iqueue<T>::Accesses_const_ret_type queue_stacks<T>::front() const &
 {
     if (!stack_pop_.empty()) {
         return stack_pop_.top();
@@ -167,7 +174,7 @@ const T &queue_stacks<T>::front() const &
 }
 
 template <typename T>
-const T &queue_stacks<T>::back() const &
+typename Iqueue<T>::Accesses_const_ret_type queue_stacks<T>::back() const &
 {
     if (!stack_push_.empty()) {
         return stack_push_.top();
@@ -177,7 +184,7 @@ const T &queue_stacks<T>::back() const &
 }
 
 template <typename T>
-T &queue_stacks<T>::front() &
+typename Iqueue<T>::Accesses_ret_type queue_stacks<T>::front() &
 {
     if (!stack_pop_.empty()) {
         return stack_pop_.top();
@@ -187,7 +194,7 @@ T &queue_stacks<T>::front() &
 }
 
 template <typename T>
-T &queue_stacks<T>::back() &
+typename Iqueue<T>::Accesses_ret_type queue_stacks<T>::back() &
 {
     if (!stack_push_.empty()) {
         return stack_push_.top();

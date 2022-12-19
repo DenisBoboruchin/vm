@@ -178,15 +178,6 @@ TYPED_TEST(queue_test, move_assignment)
     ASSERT_EQ(queue2.back(), 25);
 }
 
-TYPED_TEST(queue_test, virtual_destructor)
-{
-    TypeParam *derrived_ptr = new TypeParam {};
-
-    Iqueue<int> *base_ptr = derrived_ptr;
-
-    delete base_ptr;
-}
-
 TYPED_TEST(queue_test, struct_test)
 {
     struct S {

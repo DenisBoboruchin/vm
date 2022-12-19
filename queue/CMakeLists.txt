@@ -11,7 +11,11 @@ set(CMAKE_CXX_COMPILER clang++)
 
 cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH STACK_PATH)
 include_directories(include list/include ${STACK_PATH}/stack/include)
+
 set(SOURCE_TEST tests/tests.cpp)
+set(SOURCE_STACK ${STACK_PATH}/stack/src/stack_bool.cpp)
+
+add_library(STACK_LIB STATIC ${SOURCE_STACK})
 
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)
@@ -30,7 +34,7 @@ if (ADD_SANITIZERS)
     message ("Build with sanitizers")
 
     add_compile_options (-fsanitize=address -fsanitize=undefined)
-    #set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+    set_target_properties (STACK_LIB PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
 endif ()
 
 #tests
@@ -60,7 +64,7 @@ if (TESTING)
         set_target_properties (${PROJECT_NAME}_bench PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
     endif()
     
-    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
+    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main STACK_LIB)
     
     if (BENCHMARKING)
     target_link_libraries (${PROJECT_NAME}_bench PRIVATE benchmark::benchmark)

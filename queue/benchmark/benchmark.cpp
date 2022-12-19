@@ -29,9 +29,9 @@ BENCHMARK(BM_queue_native<my_containers::queue_list<int>>)->Arg(RANGE_QUEUE_NATI
 
 struct my_bench_class final {
     my_bench_class() noexcept {};
-    my_bench_class(const my_bench_class& other) = default;
-    my_bench_class(my_bench_class&& other) = delete;
-    
+    my_bench_class(const my_bench_class &other) = default;
+    my_bench_class(my_bench_class &&other) = delete;
+
     my_bench_class &operator=(const my_bench_class &other)
     {
         for (int i = 0; i != 10000; i++) {
