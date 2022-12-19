@@ -44,14 +44,14 @@ TYPED_TEST(queue_test, back_front)
     ASSERT_EQ(queue.front(), 6);
     ASSERT_EQ(queue.back(), 6);
 
-    queue.back () += 15;
+    queue.back() += 15;
     ASSERT_EQ(queue.back(), 21);
 
     queue.push(2);
     ASSERT_EQ(queue.back(), 2);
-    
+
     queue.front() = 5;
-    queue.front () += 15;
+    queue.front() += 15;
 
     ASSERT_EQ(queue.front(), 20);
     ASSERT_EQ(queue.back(), 2);
@@ -165,7 +165,7 @@ TYPED_TEST(queue_test, move_assignment)
     ASSERT_EQ(queue1.front(), 20);
     ASSERT_EQ(queue1.back(), 10);
 
-    queue1.back () += 15;
+    queue1.back() += 15;
     ASSERT_EQ(queue1.back(), 25);
 
     TypeParam queue2 {};

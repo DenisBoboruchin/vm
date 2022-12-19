@@ -27,17 +27,20 @@ static void BM_queue_native(benchmark::State &state)
 BENCHMARK(BM_queue_native<my_containers::queue_stacks<int>>)->Arg(RANGE_QUEUE_NATIVE)->Unit(benchmark::kMillisecond);
 BENCHMARK(BM_queue_native<my_containers::queue_list<int>>)->Arg(RANGE_QUEUE_NATIVE)->Unit(benchmark::kMillisecond);
 
-struct my_bench_class final
-{
-    my_bench_class () noexcept {};
-
-    my_bench_class& operator= (const my_bench_class& other)
-    {    
-        for (int i = 0; i != 10000; i++)
-        {}
+struct my_bench_class final {
+    my_bench_class() noexcept {};
+    my_bench_class(const my_bench_class& other) = default;
+    my_bench_class(my_bench_class&& other) = delete;
+    
+    my_bench_class &operator=(const my_bench_class &other)
+    {
+        for (int i = 0; i != 10000; i++) {
+        }
 
         return *this;
     };
+
+    my_bench_class &operator=(my_bench_class &&other) = delete;
 };
 
 template <typename queue_type>
@@ -54,7 +57,11 @@ static void BM_queue_artificial(benchmark::State &state)
     }
 }
 
-BENCHMARK(BM_queue_artificial<my_containers::queue_stacks<my_bench_class>>)->Arg(RANGE_QUEUE_HARD)->Unit(benchmark::kMillisecond);
-BENCHMARK(BM_queue_artificial<my_containers::queue_list<my_bench_class>>)->Arg(RANGE_QUEUE_HARD)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_artificial<my_containers::queue_stacks<my_bench_class>>)
+    ->Arg(RANGE_QUEUE_HARD)
+    ->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_queue_artificial<my_containers::queue_list<my_bench_class>>)
+    ->Arg(RANGE_QUEUE_HARD)
+    ->Unit(benchmark::kMillisecond);
 
 BENCHMARK_MAIN();
