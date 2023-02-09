@@ -16,7 +16,7 @@ protected:
         typename std::conditional<std::is_same<T, bool>::value, const bool, const T &>::type;
 
 public:
-    using Queue_type = T;
+    using Queue_val_type = T;
 
     virtual ~Iqueue() = default;
 
