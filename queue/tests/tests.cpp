@@ -11,8 +11,9 @@ struct queue_test : public testing::Test {
     using Val_t = typename Queue_type::Queue_val_type;
 
     static constexpr int NUM_VALUES = 8;
-    std::array<Val_t, NUM_VALUES> values {static_cast<Val_t> (13), static_cast<Val_t> (1), static_cast<Val_t> (5), static_cast<Val_t> (6),
-                                            static_cast<Val_t> (11), static_cast<Val_t> (13.4), static_cast<Val_t> (22.6), static_cast<Val_t> (18)};
+    std::array<Val_t, NUM_VALUES> values {static_cast<Val_t>(13),   static_cast<Val_t>(1),  static_cast<Val_t>(5),
+                                          static_cast<Val_t>(6),    static_cast<Val_t>(11), static_cast<Val_t>(13.4),
+                                          static_cast<Val_t>(22.6), static_cast<Val_t>(18)};
 };
 
 using queue_types = ::testing::Types<queue_stacks<int>, queue_list<int>, queue_stacks<bool>, queue_list<bool>>;
@@ -176,12 +177,9 @@ TYPED_TEST(queue_test, big_test)
         queue.pop();
     }
 
-    if (std::is_same<bool, typename TestFixture::Val_t>::value)
-    { 
+    if (std::is_same<bool, typename TestFixture::Val_t>::value) {
         ASSERT_EQ(sum, num_elems - 1);
-    }
-    else
-    {
+    } else {
         ASSERT_EQ(sum, static_cast<long>(num_elems) * (num_elems - 1) / 2);
     }
 }
@@ -241,5 +239,3 @@ TEST(queue_list_test, struct_test)
     ASSERT_EQ(queue.back().b, 20);
     ASSERT_EQ(queue.back().c, 30);
 }
-
-

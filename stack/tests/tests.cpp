@@ -201,6 +201,24 @@ TEST(stack_int, check_big_data)
     ASSERT_EQ(sum, num * (num + 1) / 2);
 }
 
+TEST(stack_bool, check_big_data)
+{
+    stack<bool> stack {};
+
+    long int num = 10000000;
+
+    for (int i = 1; i < num + 1; i++)
+        stack.push(i);
+
+    long int sum = 0;
+    for (int i = 1; i < num + 1; i++) {
+        sum += stack.top();
+        stack.pop();
+    }
+
+    ASSERT_EQ(sum, num);
+}
+
 TEST(stack_struct, functional_test)
 {
     struct T {

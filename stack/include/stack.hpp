@@ -105,8 +105,7 @@ void stack<T>::push(const T &elem)
 template <typename T>
 void stack<T>::pop()
 {
-    if (size_ > 0)
-    {
+    if (size_ > 0) {
         size_--;
     }
 }

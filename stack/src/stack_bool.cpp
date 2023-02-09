@@ -60,8 +60,7 @@ void stack<bool>::push(const bool &elem)
 
 void stack<bool>::pop()
 {
-    if (size_ > 0)
-    {
+    if (size_ > 0) {
         size_--;
     }
 }
@@ -86,12 +85,12 @@ const bool stack<bool>::top() const &
 
 bool stack<bool>::down() &
 {
-    return (*(data_) & 1) != 0;
+    return (*(data_)&1) != 0;
 }
 
 const bool stack<bool>::down() const &
 {
-    return (*(data_) & 1) != 0;
+    return (*(data_)&1) != 0;
 }
 
 bool stack<bool>::empty() const
@@ -123,6 +122,7 @@ void stack<bool>::resize_up_()
     delete[] data_;
 
     data_ = new_data;
+    capacity_ = capacity_ * 2 - 1;
 }
 
 }  // namespace my_containers
