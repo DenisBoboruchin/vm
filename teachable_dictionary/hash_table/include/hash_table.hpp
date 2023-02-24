@@ -3,15 +3,12 @@
 
 #include <iostream>
 
-namespace my_containers
-{
+namespace my_containers {
 
 template <typename T>
-class hash_table final
-{
-
+class hash_table final {
 };
 
-}
+}  // namespace my_containers
 
 #endif

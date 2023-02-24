@@ -35,4 +35,12 @@ if(CLANG_FORMAT)
     )
 endif()
 
+#sanitizers
+option(ADD_SANITIZERS "Build with sanitizers" ON)
+if (ADD_SANITIZERS)
+    message ("Build with sanitizers")
+
+    add_compile_options (-fsanitize=address -fsanitize=undefined)
+endif ()
+
 add_subdirectory (hash_table)
