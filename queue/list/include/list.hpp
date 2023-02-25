@@ -29,8 +29,11 @@ public:
     T &back() &;
     const T &back() const &;
 
-    T& find(const T& value) &;
-    const T& find (const T& value) const &;
+    T &find(const T &value) &;
+    const T &find(const T &value) const &;
+
+    bool remove(const T &value);
+
     size_t size() const;
     bool empty() const;
 
@@ -42,6 +45,8 @@ private:
     };
 
     void delete_data_();
+
+    node *find_ptr_(const T &value);
 
     node *push_(const T &value);
     node *pop_(node *deletable);
@@ -179,7 +184,7 @@ void list<T>::pop_front()
 template <typename T>
 typename list<T>::node *list<T>::pop_(list<T>::node *deletable)
 {
-    if (size_ <= 1) {
+    if (size_ < 2) {
         pop_last_();
         return nullptr;
     }
@@ -233,43 +238,60 @@ const T &list<T>::back() const &
     return rear_->data_;
 }
 
-template<typename T>
-T& list<T>::find (const T& value) &
+template <typename T>
+bool list<T>::remove(const T &value)
 {
-    if (size_ == 1 && rear_->data_ == value)
-            return rear_->data_;
+    node *elem = find_ptr_(value);
 
-    node* work_node = rear_;
-    
-    while (work_node != front_) 
-    {
-        if (work_node->data_ == value)
-            return work_node->data_;
+    if (elem) {
+        node *front_ptr = pop_(elem);
 
-        work_node = work_node->prev_;
+        if ((elem == rear_) && front_ptr) {
+            rear_ = front_ptr->prev_;
+        }
+
+        else if (elem == front_) {
+            front_ = front_ptr;
+        }
+
+        return 1;
     }
 
-    return rear_->data_;
-}   
+    return 0;
+}
 
-template<typename T>
-const T& list<T>::find (const T& value) const &
+template <typename T>
+typename list<T>::node *list<T>::find_ptr_(const T &value)
 {
-    if (size_ == 1 && rear_->data_ == value)
-            return rear_->data_;
+    node *work_node = front_;
 
-    node* work_node = rear_;
-    
-    while (work_node != front_) 
-    {
+    while (work_node != rear_) {
         if (work_node->data_ == value)
-            return work_node->data_;
+            return work_node;
 
-        work_node = work_node->prev_;
+        work_node = work_node->next_;
     }
 
-    return rear_->data_;
-} 
+    return nullptr;
+}
+
+template <typename T>
+T &list<T>::find(const T &value) &
+{
+    node *elem_ptr = find_ptr_(value);
+
+    if (elem_ptr)
+        return elem_ptr->data_;
+}
+
+template <typename T>
+const T &list<T>::find(const T &value) const &
+{
+    node *elem_ptr = find_ptr_(value);
+
+    if (elem_ptr)
+        return elem_ptr->data_;
+}
 
 template <typename T>
 size_t list<T>::size() const
