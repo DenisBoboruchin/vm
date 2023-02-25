@@ -29,6 +29,8 @@ public:
     T &back() &;
     const T &back() const &;
 
+    T& find(const T& value) &;
+    const T& find (const T& value) const &;
     size_t size() const;
     bool empty() const;
 
@@ -230,6 +232,44 @@ const T &list<T>::back() const &
 {
     return rear_->data_;
 }
+
+template<typename T>
+T& list<T>::find (const T& value) &
+{
+    if (size_ == 1 && rear_->data_ == value)
+            return rear_->data_;
+
+    node* work_node = rear_;
+    
+    while (work_node != front_) 
+    {
+        if (work_node->data_ == value)
+            return work_node->data_;
+
+        work_node = work_node->prev_;
+    }
+
+    return rear_->data_;
+}   
+
+template<typename T>
+const T& list<T>::find (const T& value) const &
+{
+    if (size_ == 1 && rear_->data_ == value)
+            return rear_->data_;
+
+    node* work_node = rear_;
+    
+    while (work_node != front_) 
+    {
+        if (work_node->data_ == value)
+            return work_node->data_;
+
+        work_node = work_node->prev_;
+    }
+
+    return rear_->data_;
+} 
 
 template <typename T>
 size_t list<T>::size() const

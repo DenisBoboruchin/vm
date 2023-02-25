@@ -35,6 +35,23 @@ TEST(list, back)
     ASSERT_EQ(list.back(), 35);
 }
 
+TEST(list, find)
+{
+    list<int> list;
+
+    list.push_back(62);
+    list.push_back(41);
+    list.push_back(35);
+    list.push_back(87);
+    
+    list.find (35) = 355;
+    
+    list.pop_back();
+
+    ASSERT_EQ(list.front(), 62);
+    ASSERT_EQ(list.back(), 355);
+}
+
 TEST(list, size_empty)
 {
     list<int> list;
