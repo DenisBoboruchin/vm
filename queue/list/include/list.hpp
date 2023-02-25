@@ -29,9 +29,8 @@ public:
     T &back() &;
     const T &back() const &;
 
-    T &find(const T &value) &;
-    const T &find(const T &value) const &;
-
+    bool find(const T &value) &;
+    
     bool remove(const T &value);
 
     size_t size() const;
@@ -276,21 +275,14 @@ typename list<T>::node *list<T>::find_ptr_(const T &value)
 }
 
 template <typename T>
-T &list<T>::find(const T &value) &
+bool list<T>::find(const T &value) &
 {
     node *elem_ptr = find_ptr_(value);
 
     if (elem_ptr)
-        return elem_ptr->data_;
-}
+        return 1;
 
-template <typename T>
-const T &list<T>::find(const T &value) const &
-{
-    node *elem_ptr = find_ptr_(value);
-
-    if (elem_ptr)
-        return elem_ptr->data_;
+    return 0;
 }
 
 template <typename T>

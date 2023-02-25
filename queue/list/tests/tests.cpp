@@ -44,12 +44,12 @@ TEST(list, find)
     list.push_back(35);
     list.push_back(87);
 
-    list.find(35) = 355;
+    ASSERT_EQ(list.find(35), 1);
 
     list.pop_back();
 
     ASSERT_EQ(list.front(), 62);
-    ASSERT_EQ(list.back(), 355);
+    ASSERT_EQ(list.back(), 35);
 }
 
 TEST(list, remove)
@@ -61,21 +61,19 @@ TEST(list, remove)
     list.push_back(35);
     list.push_back(87);
 
-    list.find(35) = 355;
-
     list.pop_back();
 
     ASSERT_EQ(list.front(), 62);
-    ASSERT_EQ(list.back(), 355);
+    ASSERT_EQ(list.back(), 35);
 
     ASSERT_EQ(list.remove(41), 1);
     ASSERT_EQ(list.front(), 62);
-    ASSERT_EQ(list.back(), 355);
+    ASSERT_EQ(list.back(), 35);
     ASSERT_EQ(list.size(), 2);
 
     ASSERT_EQ(list.remove(62), 1);
-    ASSERT_EQ(list.front(), 355);
-    ASSERT_EQ(list.back(), 355);
+    ASSERT_EQ(list.front(), 35);
+    ASSERT_EQ(list.back(), 35);
     ASSERT_EQ(list.size(), 1);
 }
 
