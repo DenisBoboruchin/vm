@@ -17,8 +17,8 @@ public:
     hash_table& operator= (const hash_table& other) = default;
     hash_table& operator= (hash_table&& other) noexcept = default;
 
-    bool insert (const Key& key, const T& elem);
-    T* find (const Key& key) const;
+//    bool insert (const Key& key, const T& elem);
+//    T* find (const Key& key) const;
 
     size_t size () const;     
     bool empty () const;
@@ -31,13 +31,14 @@ private:
     std::array<list<Pair_key_elem>, NUM_HASH_BUCKETS> data_ {}; 
 };
 
+/*
 template <typename Key, typename T, typename Hash>
 bool hash_table<Key, T, Hash>::insert (const Key& key, const T& elem) 
 {
-    int index = Hash {} (key) / NUM_HASH_BUCKETS;
+    int index = Hash {} (key) % NUM_HASH_BUCKETS;
     list<Pair_key_elem>& list_of_pairs = data_.at(index);
     
-    Pair_key_elem new_pair = {key, elem};
+    Pair_key_elem new_pair = {index, key};
     
     if (!list_of_pairs.empty ())
     {
@@ -54,10 +55,20 @@ bool hash_table<Key, T, Hash>::insert (const Key& key, const T& elem)
 }
 
 template <typename Key, typename T, typename Hash>
-T* hash_table<Key, T, Hash>::find (const Key& key) const
+bool hash_table<Key, T, Hash>::find (const Key& key) const
 {
-    //if (Hash {} (key))
-}
+    int index = Hash {} (key) % NUM_HASH_BUCKETS;
+    list<Pair_key_elem>& list_of_pairs = data_.at(index);
+    
+    Pair_key_elem new_pair = {key, elem};
+ 
+    if (list_of_pairs.find (new_pair))
+    {
+        return 1;
+    }
+   
+    return 0;
+}*/
 
 template <typename Key, typename T, typename Hash>
 size_t hash_table<Key, T, Hash>::size () const
