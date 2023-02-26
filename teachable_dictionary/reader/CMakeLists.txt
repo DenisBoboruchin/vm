@@ -1,0 +1,7 @@
+set(READER_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH PROJECT_PARRENT_PATH)
+
+set (PROJECT_NAME reader)
+
+add_subdirectory (tests)

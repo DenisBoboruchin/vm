@@ -44,3 +44,4 @@ if (ADD_SANITIZERS)
 endif ()
 
 add_subdirectory (hash_table)
+add_subdirectory (reader)

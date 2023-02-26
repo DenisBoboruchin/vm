@@ -1,16 +1,16 @@
-set (SOURCE_HASH_TABLE_TEST ${CMAKE_CURRENT_SOURCE_DIR}/tests.cpp)
+set (SOURCE_READER_TEST ${CMAKE_CURRENT_SOURCE_DIR}/tests.cpp)
 
-include_directories (${HASH_TABLE_INCLUDES})
+include_directories (${READER_INCLUDES})
 
 #tests
 option(TESTING "Include testing" ON)
 if (TESTING)
-    message ("Include hash table testing")
+    message ("Include reader testing")
 
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})
 
-    add_executable (${PROJECT_NAME}_tests ${SOURCE_HASH_TABLE_TEST})
+    add_executable (${PROJECT_NAME}_tests ${SOURCE_READER_TEST})
     
     if (ADD_SANITIZERS)
         set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
