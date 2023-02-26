@@ -52,6 +52,24 @@ TEST(list, find)
     ASSERT_EQ(list.back(), 35);
 }
 
+TEST(list, get_elem)
+{
+    list<int> list;
+
+    list.push_back(62);
+    list.push_back(41);
+    list.push_back(35);
+    list.push_back(87);
+
+    ASSERT_EQ(list.get_elem(35), 35);
+    list.get_elem (35) = 355;
+
+    list.pop_back();
+
+    ASSERT_EQ(list.front(), 62);
+    ASSERT_EQ(list.back(), 355);
+}
+
 TEST(list, remove)
 {
     list<int> list;
