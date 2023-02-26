@@ -292,8 +292,15 @@ template <typename T>
 T& list<T>::get_elem(const T& value) & 
 {
     node* elem_ptr = find_ptr_(value);
-
-    return elem_ptr->data_;
+    
+    if (elem_ptr)
+    {
+        return elem_ptr->data_;
+    }
+    else
+    {
+        return rear_->data_;
+    }
 }
 
 template <typename T>
@@ -301,7 +308,10 @@ const T& list<T>::get_elem(const T& value) const &
 {
     node* elem_ptr = find_ptr_(value);
 
-    return elem_ptr->data_;
+    if (elem_ptr)
+        return elem_ptr->data_;
+    else 
+        return rear_->data_;
 }
 
 template <typename T>
