@@ -2,9 +2,9 @@
 
 #include "reader.hpp"
 
-int main ()
+int main()
 {
     testing::InitGoogleTest();
 
-    return RUN_ALL_TESTS ();
+    return RUN_ALL_TESTS();
 }

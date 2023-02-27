@@ -9,6 +9,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_COMPILER clang++)
 
+set(TEACHABLE_DICTIONARY_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(TEACHABLE_DICTIONARY_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/teachable_dictionary.cpp)
+
+include_directories (include)
+add_definitions(-DPROJECT_DIR_PATH=\"${CMAKE_SOURCE_DIR}\")
+
+add_library (${PROJECT_NAME} STATIC ${TEACHABLE_DICTIONARY_SOURCE})
+
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)
 find_program(CLANG_TIDY "clang-tidy")
@@ -41,7 +49,10 @@ if (ADD_SANITIZERS)
     message ("Build with sanitizers")
 
     add_compile_options (-fsanitize=address -fsanitize=undefined)
+    set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
 endif ()
+
+add_subdirectory (tests)
 
 add_subdirectory (hash_table)
 add_subdirectory (reader)
