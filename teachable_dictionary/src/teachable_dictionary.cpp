@@ -1,40 +1,41 @@
 #include "teachable_dictionary.hpp"
 
-teachable_dictionary::teachable_dictionary(const std::string &data_path)
+teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_dictionary_path_ {data_path}
 {
-    dictionary_data_stream_.open(data_path, dictionary_data_stream_.in | dictionary_data_stream_.out);
-    if (!dictionary_data_stream_) {
+    std::ifstream dictionary_data_stream {data_path};
+    if (!dictionary_data_stream) {
         std::cout << "incorrect dictionary data PATH: " << data_path << std::endl;
         exit(0);
     }
 
     std::string word {};
     int freq = 0;
-    for (dictionary_data_stream_ >> word; !dictionary_data_stream_.eof(); dictionary_data_stream_ >> word) {
-        dictionary_data_stream_ >> freq;
+    for (dictionary_data_stream >> word; !dictionary_data_stream.eof(); dictionary_data_stream >> word) {
+        dictionary_data_stream >> freq;
         dictionary_.insert({word, freq});
     }
 
-    dictionary_data_stream_.seekp(0);
+    dictionary_data_stream.close();
 }
 
 teachable_dictionary::~teachable_dictionary()
 {
-    std::string word {};
-    dictionary_data_stream_ >> word;
-    std::cout << word << std::endl;
-
-    save_data_();
-    dictionary_data_stream_.close();
+    save_data(data_dictionary_path_);
 }
 
-bool teachable_dictionary::save_data_()
+bool teachable_dictionary::save_data(const std::string &path_to_save) const
 {
-    for (auto itr = dictionary_.begin(), itr_end = dictionary_.end(); itr != itr_end; ++itr) {
-        std::cout << itr->first << " " << itr->second << std::endl;
-        dictionary_data_stream_ << itr->first << " " << itr->second << std::endl;
+    std::ofstream data_save_path {path_to_save};
+    if (!data_save_path) {
+        std::cout << "incorrect data_save_path" << std::endl;
+        return 0;
     }
 
+    for (auto itr = dictionary_.begin(), itr_end = dictionary_.end(); itr != itr_end; ++itr) {
+        data_save_path << itr->first << " " << itr->second << std::endl;
+    }
+
+    data_save_path.close();
     return 1;
 }
 
@@ -50,16 +51,25 @@ bool teachable_dictionary::read_text(const std::string &text_path)
     for (teached_stream >> word; !teached_stream.eof(); teached_stream >> word) {
         auto word_itr = dictionary_.find(word);
         if (word_itr != dictionary_.end()) {
-            std::cout << "increase " << word << std::endl;
             word_itr->second++;
         } else {
-            std::cout << "insert " << word << std::endl;
             dictionary_.insert({word, 1});
         }
     }
 
     teached_stream.close();
     return 1;
+}
+
+int teachable_dictionary::get_freq(const std::string &word) const
+{
+    auto word_itr = dictionary_.find(word);
+
+    if (word_itr == dictionary_.end()) {
+        return 0;
+    } else {
+        return word_itr->second;
+    }
 }
 
 size_t teachable_dictionary::size() const

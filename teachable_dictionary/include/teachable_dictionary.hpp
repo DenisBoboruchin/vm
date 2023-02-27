@@ -7,7 +7,7 @@
 
 class teachable_dictionary final {
 public:
-    teachable_dictionary(const std::string &data_path);
+    explicit teachable_dictionary(const std::string &data_path);
     teachable_dictionary(const teachable_dictionary &other) = delete;
     teachable_dictionary(teachable_dictionary &&other) noexcept = delete;
 
@@ -19,12 +19,13 @@ public:
     size_t size() const;
     bool empty() const;
 
+    int get_freq(const std::string &word) const;
+
     bool read_text(const std::string &teachable_text);
+    bool save_data(const std::string &path_to_save) const;
 
 private:
-    bool save_data_();
-
-    std::fstream dictionary_data_stream_;
+    const std::string data_dictionary_path_;
     std::unordered_map<std::string, int> dictionary_;
 };
 
