@@ -116,17 +116,17 @@ complex_num::complex complex_num::operator+ (const double dbl, const complex_num
     return complex (dbl) + cmplx;
 }
 
-complex_num::complex operator* (const double dbl, const complex_num::complex& cmplx)
+complex_num::complex complex_num::operator* (const double dbl, const complex_num::complex& cmplx)
 {
     return complex_num::complex (dbl) * cmplx;
 }
 
-complex_num::complex operator/ (const double dbl, const complex_num::complex& cmplx)
+complex_num::complex complex_num::operator/ (const double dbl, const complex_num::complex& cmplx)
 {
     return complex_num::complex (dbl) / cmplx;
 }   
 
-std::ostream& operator<< (std::ostream& os, const complex_num::complex& cmplx)
+std::ostream& complex_num::operator<< (std::ostream& os, const complex_num::complex& cmplx)
 {
     return os << '(' << cmplx.re_ << ',' << cmplx.im_ << ')' << std::endl;
 }
