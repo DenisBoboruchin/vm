@@ -40,29 +40,29 @@ public:
     bool empty() const;
 
 private:
-    struct node final {
+    struct list_node_t final {
         T data_ {};
-        node *next_ = nullptr;
-        node *prev_ = nullptr;
+        list_node_t *next_ = nullptr;
+        list_node_t *prev_ = nullptr;
     };
 
     void delete_data_();
 
-    node *find_ptr_(const T &value);
+    list_node_t *find_ptr_(const T &value);
 
-    node *push_(const T &value);
-    node *pop_(node *deletable);
+    list_node_t *push_(const T &value);
+    list_node_t *pop_(list_node_t *deletable);
     void pop_last_();
 
     size_t size_ = 0;
-    node *rear_ = nullptr;
-    node *front_ = nullptr;
+    list_node_t *rear_ = nullptr;
+    list_node_t *front_ = nullptr;
 };
 
 template <typename T>
 list<T>::list(const list<T> &other) : list()
 {
-    node *temp = other.front_;
+    list_node_t *temp = other.front_;
     size_t full_size = other.size_;
 
     while (size_ != full_size) {
@@ -93,7 +93,7 @@ list<T> &list<T>::operator=(const list<T> &other)
     rear_ = nullptr;
     front_ = nullptr;
 
-    node *temp = other.front_;
+    list_node_t *temp = other.front_;
     size_t full_size = other.size_;
 
     while (size_ != full_size) {
@@ -130,7 +130,7 @@ void list<T>::delete_data_()
 
     front_->prev_->next_ = nullptr;
     while (front_) {
-        node *temp = front_->next_;
+        list_node_t *temp = front_->next_;
 
         delete front_;
         front_ = temp;
@@ -150,27 +150,27 @@ void list<T>::push_front(const T &value)
 }
 
 template <typename T>
-typename list<T>::node *list<T>::push_(const T &value)
+typename list<T>::list_node_t *list<T>::push_(const T &value)
 {
-    node *new_node = new node {value};
+    list_node_t *new_list_node_t = new list_node_t {value};
 
     if (!rear_) {
-        rear_ = front_ = new_node;
+        rear_ = front_ = new_list_node_t;
     }
 
-    new_node->prev_ = rear_;
-    new_node->next_ = front_;
-    front_->prev_ = new_node;
-    rear_->next_ = new_node;
+    new_list_node_t->prev_ = rear_;
+    new_list_node_t->next_ = front_;
+    front_->prev_ = new_list_node_t;
+    rear_->next_ = new_list_node_t;
 
     size_++;
-    return new_node;
+    return new_list_node_t;
 }
 
 template <typename T>
 void list<T>::pop_back()
 {
-    node *front_ptr = pop_(rear_);
+    list_node_t *front_ptr = pop_(rear_);
 
     if (front_ptr) {
         rear_ = front_ptr->prev_;
@@ -184,15 +184,15 @@ void list<T>::pop_front()
 }
 
 template <typename T>
-typename list<T>::node *list<T>::pop_(list<T>::node *deletable)
+typename list<T>::list_node_t *list<T>::pop_(list<T>::list_node_t *deletable)
 {
     if (size_ < 2) {
         pop_last_();
         return nullptr;
     }
 
-    node *next = deletable->next_;
-    node *prev = deletable->prev_;
+    list_node_t *next = deletable->next_;
+    list_node_t *prev = deletable->prev_;
     delete deletable;
 
     prev->next_ = next;
@@ -243,10 +243,10 @@ const T &list<T>::back() const &
 template <typename T>
 bool list<T>::remove(const T &value)
 {
-    node *elem = find_ptr_(value);
+    list_node_t *elem = find_ptr_(value);
 
     if (elem) {
-        node *front_ptr = pop_(elem);
+        list_node_t *front_ptr = pop_(elem);
 
         if ((elem == rear_) && front_ptr) {
             rear_ = front_ptr->prev_;
@@ -263,15 +263,15 @@ bool list<T>::remove(const T &value)
 }
 
 template <typename T>
-typename list<T>::node *list<T>::find_ptr_(const T &value)
+typename list<T>::list_node_t *list<T>::find_ptr_(const T &value)
 {
-    node *work_node = front_;
+    list_node_t *work_list_node = front_;
 
-    while (work_node != rear_) {
-        if (work_node->data_ == value)
-            return work_node;
+    while (work_list_node != rear_) {
+        if (work_list_node->data_ == value)
+            return work_list_node;
 
-        work_node = work_node->next_;
+        work_list_node = work_list_node->next_;
     }
 
     return nullptr;
@@ -280,7 +280,7 @@ typename list<T>::node *list<T>::find_ptr_(const T &value)
 template <typename T>
 bool list<T>::find(const T &value)
 {
-    node *elem_ptr = find_ptr_(value);
+    list_node_t *elem_ptr = find_ptr_(value);
 
     if (elem_ptr)
         return 1;
@@ -291,7 +291,7 @@ bool list<T>::find(const T &value)
 template <typename T>
 T& list<T>::get_elem(const T& value) & 
 {
-    node* elem_ptr = find_ptr_(value);
+    list_node_t* elem_ptr = find_ptr_(value);
     
     if (elem_ptr)
     {
@@ -306,7 +306,7 @@ T& list<T>::get_elem(const T& value) &
 template <typename T>
 const T& list<T>::get_elem(const T& value) const & 
 {
-    node* elem_ptr = find_ptr_(value);
+    list_node_t* elem_ptr = find_ptr_(value);
 
     if (elem_ptr)
         return elem_ptr->data_;
