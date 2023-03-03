@@ -22,13 +22,12 @@ TEST(list, for_auto)
     list.push_back(30);
 
     ASSERT_EQ(list.front(), 10);
-  
+
     int sum = 0;
-    for (auto itr : list)
-    {
+    for (auto itr : list) {
         sum += itr;
     }
-    
+
     ASSERT_EQ(sum, 60);
 }
 
@@ -81,7 +80,7 @@ TEST(list, get_elem)
     list.push_back(87);
 
     ASSERT_EQ(list.get_elem(35), 35);
-    list.get_elem (35) = 355;
+    list.get_elem(35) = 355;
 
     list.pop_back();
 
@@ -303,20 +302,20 @@ TEST(list, struct_test)
     list<S> list;
 
     list.push_back({1, 2, 3.5, 3});
-    ASSERT_EQ(list.size (), 1);
+    ASSERT_EQ(list.size(), 1);
 
     S t = {10, 20, 44.4, 30};
-    
+
     list.push_front(t);
-    ASSERT_EQ(list.size (), 2);
-    
+    ASSERT_EQ(list.size(), 2);
+
     ASSERT_EQ(list.front().a, 10);
     ASSERT_EQ(list.front().d, 44.4);
     ASSERT_EQ(list.back().b, 2);
     ASSERT_EQ(list.back().c, 3);
 
     list.pop_back();
-    ASSERT_EQ(list.size (), 1);
+    ASSERT_EQ(list.size(), 1);
 
     ASSERT_EQ(list.front().a, 10);
     ASSERT_EQ(list.front().d, 44.4);

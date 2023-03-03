@@ -32,8 +32,8 @@ public:
 
     bool find(const T &value);
 
-    T& get_elem (const T& value) &;
-    const T& get_elem (const T& value) const &;
+    T &get_elem(const T &value) &;
+    const T &get_elem(const T &value) const &;
 
     bool remove(const T &value);
 
@@ -41,9 +41,9 @@ public:
     bool empty() const;
 
     class iterator;
-    
-    iterator begin () const;
-    iterator end () const;
+
+    iterator begin() const;
+    iterator end() const;
 
 private:
     struct list_node_t final {
@@ -66,43 +66,43 @@ private:
 };
 
 template <typename T>
-class list<T>::iterator final
-{
+class list<T>::iterator final {
 public:
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = int;
     using value_type = T;
-    using reference = T&;
-    using pointer = T*; 
+    using reference = T &;
+    using pointer = T *;
 
-    iterator (list_node_t* node_ptr = nullptr);
+    iterator(list_node_t *node_ptr = nullptr);
 
-    iterator& operator++ (); 
-    iterator& operator++ (int);
+    iterator &operator++();
+    iterator &operator++(int);
 
-    reference operator* () const;
-    pointer operator-> () const;
+    reference operator*() const;
+    pointer operator->() const;
 
-    auto operator <=> (const iterator& other) const = default;
+    auto operator<=>(const iterator &other) const = default;
 
 private:
-    list_node_t* node_itr_;
+    list_node_t *node_itr_;
 };
 
 template <typename T>
-list<T>::iterator::iterator (list_node_t* node_ptr) : node_itr_ {node_ptr} 
-{}
+list<T>::iterator::iterator(list_node_t *node_ptr) : node_itr_ {node_ptr}
+{
+}
 
 template <typename T>
-typename list<T>::iterator& list<T>::iterator::operator++ ()
+typename list<T>::iterator &list<T>::iterator::operator++()
 {
     node_itr_ = node_itr_->next_;
-    
+
     return *this;
 }
 
 template <typename T>
-typename list<T>::iterator& list<T>::iterator::operator++ (int)
+typename list<T>::iterator &list<T>::iterator::operator++(int)
 {
     auto temp {*this};
     operator++();
@@ -111,13 +111,13 @@ typename list<T>::iterator& list<T>::iterator::operator++ (int)
 }
 
 template <typename T>
-typename list<T>::iterator::reference list<T>::iterator::operator* () const
+typename list<T>::iterator::reference list<T>::iterator::operator*() const
 {
     return node_itr_->data_;
 }
 
 template <typename T>
-typename list<T>::iterator::pointer list<T>::iterator::operator-> () const
+typename list<T>::iterator::pointer list<T>::iterator::operator->() const
 {
     return &(node_itr_->data_);
 }
@@ -198,17 +198,14 @@ void list<T>::push_back(const T &value)
 {
     list_node_t *new_list_node = new list_node_t {value};
 
-    if (empty ())
-    {
+    if (empty()) {
         front_ = new_list_node;
         new_list_node->next_ = nullptr;
-    }
-    else 
-    {
+    } else {
         new_list_node->next_ = rear_;
         rear_->prev_ = new_list_node;
     }
-    
+
     rear_ = new_list_node;
     new_list_node->prev_ = nullptr;
 
@@ -220,17 +217,14 @@ void list<T>::push_front(const T &value)
 {
     list_node_t *new_list_node = new list_node_t {value};
 
-    if (empty ())
-    {
+    if (empty()) {
         rear_ = new_list_node;
         new_list_node->prev_ = nullptr;
-    }
-    else 
-    {
+    } else {
         new_list_node->prev_ = front_;
         front_->next_ = new_list_node;
     }
-    
+
     front_ = new_list_node;
     new_list_node->next_ = nullptr;
 
@@ -241,11 +235,11 @@ template <typename T>
 void list<T>::pop_back()
 {
     if (size_ < 2) {
-        pop_last_ ();
+        pop_last_();
         return;
     }
 
-    list_node_t* new_rear = rear_->next_;
+    list_node_t *new_rear = rear_->next_;
     new_rear->prev_ = nullptr;
     delete rear_;
 
@@ -257,11 +251,11 @@ template <typename T>
 void list<T>::pop_front()
 {
     if (size_ < 2) {
-        pop_last_ ();
+        pop_last_();
         return;
     }
 
-    list_node_t* new_front = front_->prev_;
+    list_node_t *new_front = front_->prev_;
     new_front->next_ = nullptr;
     delete front_;
 
@@ -311,24 +305,18 @@ bool list<T>::remove(const T &value)
 {
     list_node_t *node_ptr = find_ptr_(value);
 
-    if (!node_ptr)
-    {
+    if (!node_ptr) {
         return 0;
     }
 
-    if (node_ptr == front_)
-    {
-        pop_front ();
-    }
-    else if (node_ptr == rear_)
-    {
-        pop_back ();
-    }
-    else
-    {
+    if (node_ptr == front_) {
+        pop_front();
+    } else if (node_ptr == rear_) {
+        pop_back();
+    } else {
         node_ptr->next_->prev_ = node_ptr->prev_;
         node_ptr->prev_->next_ = node_ptr->next_;
-           
+
         delete node_ptr;
         size_--;
     }
@@ -363,28 +351,25 @@ bool list<T>::find(const T &value)
 }
 
 template <typename T>
-T& list<T>::get_elem(const T& value) & 
+T &list<T>::get_elem(const T &value) &
 {
-    list_node_t* elem_ptr = find_ptr_(value);
-    
-    if (elem_ptr)
-    {
+    list_node_t *elem_ptr = find_ptr_(value);
+
+    if (elem_ptr) {
         return elem_ptr->data_;
-    }
-    else
-    {
+    } else {
         return rear_->data_;
     }
 }
 
 template <typename T>
-const T& list<T>::get_elem(const T& value) const & 
+const T &list<T>::get_elem(const T &value) const &
 {
-    list_node_t* elem_ptr = find_ptr_(value);
+    list_node_t *elem_ptr = find_ptr_(value);
 
     if (elem_ptr)
         return elem_ptr->data_;
-    else 
+    else
         return rear_->data_;
 }
 
@@ -400,16 +385,16 @@ bool list<T>::empty() const
     return size_ == 0;
 }
 
-template <typename T> 
-typename list<T>::iterator list<T>::begin () const
+template <typename T>
+typename list<T>::iterator list<T>::begin() const
 {
-    return iterator {list<T>::rear_}; 
+    return iterator {list<T>::rear_};
 }
 
-template <typename T> 
-typename list<T>::iterator list<T>::end () const
+template <typename T>
+typename list<T>::iterator list<T>::end() const
 {
-    return iterator {}; 
+    return iterator {};
 }
 
 }  // namespace my_containers
