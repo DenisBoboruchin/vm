@@ -2,6 +2,7 @@
 #define LIST_LIST_HPP
 
 #include <iostream>
+#include <iterator>
 
 namespace my_containers {
 
@@ -39,6 +40,11 @@ public:
     size_t size() const;
     bool empty() const;
 
+    class iterator;
+    
+    iterator begin () const;
+    iterator end () const;
+
 private:
     struct list_node_t final {
         T data_ {};
@@ -58,6 +64,63 @@ private:
     list_node_t *rear_ = nullptr;
     list_node_t *front_ = nullptr;
 };
+
+template <typename T>
+class list<T>::iterator final
+{
+public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using difference_type = int;
+    using value_type = T;
+    using reference = T&;
+    using pointer = T*; 
+
+    iterator (list_node_t* node_ptr = nullptr);
+
+    iterator& operator++ (); 
+    iterator& operator++ (int);
+
+    reference operator* () const;
+    pointer operator-> () const;
+
+    auto operator <=> (const iterator& other) const = default;
+
+private:
+    list_node_t* node_itr_;
+};
+
+template <typename T>
+list<T>::iterator::iterator (list_node_t* node_ptr) : node_itr_ {node_ptr} 
+{}
+
+template <typename T>
+typename list<T>::iterator& list<T>::iterator::operator++ ()
+{
+    node_itr_ = node_itr_->next_;
+    
+    return *this;
+}
+
+template <typename T>
+typename list<T>::iterator& list<T>::iterator::operator++ (int)
+{
+    auto temp {*this};
+    operator++();
+
+    return temp;
+}
+
+template <typename T>
+typename list<T>::iterator::reference list<T>::iterator::operator* () const
+{
+    return node_itr_->data_;
+}
+
+template <typename T>
+typename list<T>::iterator::pointer list<T>::iterator::operator-> () const
+{
+    return &(node_itr_->data_);
+}
 
 template <typename T>
 list<T>::list(const list<T> &other) : list()
@@ -324,6 +387,18 @@ template <typename T>
 bool list<T>::empty() const
 {
     return size_ == 0;
+}
+
+template <typename T> 
+typename list<T>::iterator list<T>::begin () const
+{
+    return iterator {list<T>::front_}; 
+}
+
+template <typename T> 
+typename list<T>::iterator list<T>::end () const
+{
+    return iterator {list<T>::rear_}; 
 }
 
 }  // namespace my_containers

@@ -13,6 +13,22 @@ int main()
     return RUN_ALL_TESTS();
 }
 
+TEST(list, for_auto)
+{
+    list<int> list;
+
+    list.push_back(12);
+    list.push_back(421);
+    list.push_back(32);
+
+    ASSERT_EQ(list.front(), 12);
+   
+    for (auto itr : list)
+    {
+        std::cout << itr << std::endl;
+    }
+}
+
 TEST(list, front)
 {
     list<int> list;

@@ -55,11 +55,21 @@ public:
 
 private:
     static constexpr size_t NUM_HASH_BUCKETS = 1024;
-    using Pair_key_elem = pair_wrapper<Key, T>;
 
-    size_t size_ = 0;
-    int last_insert_index = -1;
-    std::vector<list<Pair_key_elem>> data_ {NUM_HASH_BUCKETS};
+    struct hash_table_entry_t final
+    { 
+        Key key;
+        
+    };
+
+    struct hash_table_node_t final
+    {
+        hash_table_node_t* next; 
+        hash_table_entry_t entry;
+    };
+
+    list<T> data_ {};
+    std::vector<hash_table_node_t*> hash_table_nodes_ {NUM_HASH_BUCKETS};
 };
 
 /*
@@ -104,13 +114,13 @@ T& hash_table<Key, T, Hash>::find (const Key& key) const
 template <typename Key, typename T, typename Hash>
 size_t hash_table<Key, T, Hash>::size() const
 {
-    return size_;
+    return data_.size ();
 }
 
 template <typename Key, typename T, typename Hash>
 bool hash_table<Key, T, Hash>::empty() const
 {
-    return size_ == 0;
+    return data_.size() == 0;
 }
 
 }  // namespace my_containers
