@@ -17,16 +17,19 @@ TEST(list, for_auto)
 {
     list<int> list;
 
-    list.push_back(12);
-    list.push_back(421);
-    list.push_back(32);
+    list.push_back(10);
+    list.push_back(20);
+    list.push_back(30);
 
-    ASSERT_EQ(list.front(), 12);
-   
+    ASSERT_EQ(list.front(), 10);
+  
+    int sum = 0;
     for (auto itr : list)
     {
-        std::cout << itr << std::endl;
+        sum += itr;
     }
+    
+    ASSERT_EQ(sum, 60);
 }
 
 TEST(list, front)
@@ -300,16 +303,20 @@ TEST(list, struct_test)
     list<S> list;
 
     list.push_back({1, 2, 3.5, 3});
+    ASSERT_EQ(list.size (), 1);
 
     S t = {10, 20, 44.4, 30};
+    
     list.push_front(t);
-
+    ASSERT_EQ(list.size (), 2);
+    
     ASSERT_EQ(list.front().a, 10);
     ASSERT_EQ(list.front().d, 44.4);
     ASSERT_EQ(list.back().b, 2);
     ASSERT_EQ(list.back().c, 3);
 
     list.pop_back();
+    ASSERT_EQ(list.size (), 1);
 
     ASSERT_EQ(list.front().a, 10);
     ASSERT_EQ(list.front().d, 44.4);
