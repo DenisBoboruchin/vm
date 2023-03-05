@@ -24,8 +24,8 @@ TEST(list, iterators)
     ASSERT_EQ(list.front(), 10);
 
     int sum = 0;
-    for (auto itr : list) {
-        sum += itr;
+    for (auto elem : list) {
+        sum += elem;
     }
 
     ASSERT_EQ(sum, 60);
@@ -70,30 +70,12 @@ TEST(list, find)
     list.push_back(35);
     list.push_back(87);
 
-    ASSERT_EQ(list.find(35), 1);
+    ASSERT_EQ(list.find(87), list.begin ());
 
     list.pop_back();
 
     ASSERT_EQ(list.front(), 62);
     ASSERT_EQ(list.back(), 35);
-}
-
-TEST(list, get_elem)
-{
-    list<int> list;
-
-    list.push_back(62);
-    list.push_back(41);
-    list.push_back(35);
-    list.push_back(87);
-
-    ASSERT_EQ(list.get_elem(35), 35);
-    list.get_elem(35) = 355;
-
-    list.pop_back();
-
-    ASSERT_EQ(list.front(), 62);
-    ASSERT_EQ(list.back(), 355);
 }
 
 TEST(list, remove)
