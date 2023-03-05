@@ -7,36 +7,6 @@
 
 namespace my_containers {
 
-template <typename T, typename U>
-class pair_wrapper final {
-public:
-    pair_wrapper(const std::pair<T, U> &pair) : pair_ {pair} {};
-    pair_wrapper(const pair_wrapper &other) = default;
-    pair_wrapper(pair_wrapper &&other) noexcept = default;
-
-    pair_wrapper &operator=(const pair_wrapper &other) = default;
-    pair_wrapper &operator=(pair_wrapper &&other) = default;
-
-    bool operator==(const pair_wrapper &other) const;
-
-    T get_first() const;
-
-private:
-    std::pair<T, U> pair_;
-};
-
-template <typename T, typename U>
-T pair_wrapper<T, U>::get_first() const
-{
-    return pair_.first;
-}
-
-template <typename T, typename U>
-bool pair_wrapper<T, U>::operator==(const pair_wrapper &other) const
-{
-    return (pair_.first == other.get_first());
-}
-
 template <typename Key, typename T, typename Hash = std::hash<Key>>
 class hash_table final {
 public:
@@ -47,80 +17,89 @@ public:
     hash_table &operator=(const hash_table &other) = default;
     hash_table &operator=(hash_table &&other) noexcept = default;
 
-    //    bool insert (const Key& key, const T& elem);
-    //    T* find (const Key& key) const;
+    struct hash_table_node_t final {
+        Key key_;
+        T value_;
+    };
+    using iterator = typename list<hash_table_node_t>::iterator;
+    
+    iterator insert(const Key &key, const T &elem);
+    iterator find(const Key &key) const;
 
     size_t size() const;
     bool empty() const;
 
+    iterator begin() const;
+    iterator end() const;
+
 private:
     static constexpr size_t NUM_HASH_BUCKETS = 1024;
 
-    struct hash_table_entry_t final
-    { 
-        Key key;
-        
-    };
+    list<hash_table_node_t> data_ {};
 
-    struct hash_table_node_t final
-    {
-        hash_table_node_t* next; 
-        hash_table_entry_t entry;
-    };
-
-    list<T> data_ {};
-    std::vector<hash_table_node_t*> hash_table_nodes_ {NUM_HASH_BUCKETS};
+    using list_itr_t = typename list<hash_table_node_t>::iterator;
+    std::vector<list<list_itr_t>> hash_table_ {NUM_HASH_BUCKETS};
 };
 
-/*
 template <typename Key, typename T, typename Hash>
-bool hash_table<Key, T, Hash>::insert (const Key& key, const T& elem)
+typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::insert(const Key &key, const T &value)
 {
-    int index = Hash {} (key) % NUM_HASH_BUCKETS;
-    list<Pair_key_elem>& list_of_pairs = data_.at(index); Pair_key_elem new_pair = {index, key}; if
-(!list_of_pairs.empty ())
-    {
-        Pair_key_elem candidate = list_of_pairs.find (new_pair);
+    auto elem_itr = find (key);
 
-        if (candidate == new_pair)
-            return 0;
+    if (elem_itr != end ())
+    {
+        elem_itr->value_ = value;
+        return elem_itr;
     }
 
-    list_of_pairs.push_front (new_pair);
-    size_++;
+    hash_table_node_t new_elem {key, value};
+    data_.push_back (new_elem);
 
-    return 1;
+    auto insert_itr = begin ();
+    int index = Hash {}(key) % NUM_HASH_BUCKETS;
+    hash_table_.at (index).push_back (insert_itr);
+
+    return insert_itr;
 }
-*/
 
-/*
 template <typename Key, typename T, typename Hash>
-T& hash_table<Key, T, Hash>::find (const Key& key) const
+typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::find(const Key &key) const
 {
-    int index = Hash {} (key) % NUM_HASH_BUCKETS;
-    list<Pair_key_elem>& list_of_pairs = data_.at(index);
+    int index = Hash {}(key) % NUM_HASH_BUCKETS;
+    list<list_itr_t> hash_table_nodes = hash_table_.at(index);
 
-    Pair_key_elem new_pair = {key, elem};
-
-    if (!list_of_pairs.empty ())
-    {
-        if (lists_of_pairs.get_elem (new_pair)
+    for (auto list_itr : hash_table_nodes) {
+        if (list_itr->key_ == key)
+        {
+            return list_itr;
+        }
     }
 
-    return data_.at(last_insert_index).front ();
+    return data_.end ();
 }
-*/
 
 template <typename Key, typename T, typename Hash>
 size_t hash_table<Key, T, Hash>::size() const
 {
-    return data_.size ();
+    return data_.size();
 }
 
 template <typename Key, typename T, typename Hash>
 bool hash_table<Key, T, Hash>::empty() const
 {
     return data_.size() == 0;
+}
+
+template <typename Key, typename T, typename Hash>
+typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::begin() const
+{
+    return data_.begin();
+}
+
+template <typename Key, typename T, typename Hash>
+typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::end() const
+{
+    return data_.end();
 }
 
 }  // namespace my_containers
