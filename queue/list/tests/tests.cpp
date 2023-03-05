@@ -13,7 +13,7 @@ int main()
     return RUN_ALL_TESTS();
 }
 
-TEST(list, for_auto)
+TEST(list, iterators)
 {
     list<int> list;
 
@@ -29,6 +29,14 @@ TEST(list, for_auto)
     }
 
     ASSERT_EQ(sum, 60);
+
+    auto it1 = ++list.begin();
+    *it1 = 40;
+
+    ASSERT_EQ(list.front(), 10);
+    list.pop_front();
+
+    ASSERT_EQ(list.front(), 40);
 }
 
 TEST(list, front)
