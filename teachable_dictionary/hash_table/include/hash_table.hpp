@@ -33,9 +33,13 @@ public:
 
 private:
     using list_itr_t = typename list<hash_table_node_t>::iterator;
-    typename list<list_itr_t>::iterator find_hash_table_itr_(const Key &) const;
+    using hash_itr_t = typename list<list_itr_t>::iterator;
+    hash_itr_t find_hash_itr_(const Key &) const;
 
     void rehash_();
+    void clear_hash_table_();
+    void insert_in_hash_table_ (const list_itr_t& elem_itr);
+
     size_t num_hash_buckets = 1024;
 
     list<hash_table_node_t> data_ {};
@@ -68,12 +72,15 @@ typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::insert(con
 template <typename Key, typename T, typename Hash>
 typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::erase(const Key &key)
 {
-    auto hash_table_itr = find_hash_table_itr_(key);
+    auto hash_table_itr = find_hash_itr_(key);
+    
+    int index = Hash {}(key) % num_hash_buckets;
+    if (hash_table_itr == hash_table_.at(index).end ())
+        return end ();
+
     auto elem_itr = *hash_table_itr;
 
     data_.remove(elem_itr);
-
-    int index = Hash {}(key) % num_hash_buckets;
     hash_table_.at(index).remove(hash_table_itr);
 
     return elem_itr;
@@ -83,13 +90,30 @@ template <typename Key, typename T, typename Hash>
 void hash_table<Key, T, Hash>::rehash_()
 {
     if (size() >= num_hash_buckets) {
+        clear_hash_table_ ();
+
         num_hash_buckets *= 2;
-
-        // hash_table_.clear ();
-
-        for (auto elem : data_) {
-            insert(elem.first, elem.second);
+        hash_table_.resize(num_hash_buckets);
+        for (auto elem_itr = data_.begin (), elem_end_itr = data_.end ();  elem_itr != elem_end_itr; ++elem_itr) {
+            insert_in_hash_table_ (elem_itr);  
         }
+    }
+}
+
+template <typename Key, typename T, typename Hash>
+void hash_table<Key, T, Hash>::insert_in_hash_table_(const list_itr_t& elem_itr)
+{
+    int key = elem_itr->first;
+    int index = Hash {}(key) % num_hash_buckets;
+    hash_table_.at(index).push_back(elem_itr);
+}
+
+template <typename Key, typename T, typename Hash>
+void hash_table<Key, T, Hash>::clear_hash_table_()
+{   
+    for (int index = 0; index != num_hash_buckets; ++index)
+    {
+        hash_table_.at(index).clear ();
     }
 }
 
@@ -109,8 +133,7 @@ typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::find(const
 }
 
 template <typename Key, typename T, typename Hash>
-typename list<typename hash_table<Key, T, Hash>::list_itr_t>::iterator hash_table<Key, T, Hash>::find_hash_table_itr_(
-    const Key &key) const
+typename hash_table<Key, T, Hash>::hash_itr_t hash_table<Key, T, Hash>::find_hash_itr_(const Key &key) const
 {
     int index = Hash {}(key) % num_hash_buckets;
     list<list_itr_t> const &hash_table_nodes = hash_table_.at(index);

@@ -45,9 +45,16 @@ TEST(hash_table, find)
 TEST(hash_table, erase)
 {
     hash_table<int, int> table;
+    ASSERT_EQ(table.size (), 0);
 
     table.insert(1, 100);
+    ASSERT_EQ(table.size (), 1);
+    
+    table.erase(2);
+    ASSERT_EQ(table.size (), 1);
+    
     table.erase(1);
+    ASSERT_EQ(table.size (), 0);
 }
 
 TEST(hash_table, insert)
@@ -79,12 +86,12 @@ TEST(hash_table, resize)
 {
     hash_table<int, int> table;
 
-    int num_elems = 1000;
+    long int num_elems = 1000000;
     for (int i = 0; i != num_elems; ++i) {
         table.insert(i, 10 * i);
     }
 
-    int sum = 0;
+    long int sum = 0;
     for (auto elem : table) {
         sum += elem.second;
     }
