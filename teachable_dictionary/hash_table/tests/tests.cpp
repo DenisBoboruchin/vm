@@ -67,4 +67,19 @@ TEST(hash_table, insert)
     ASSERT_EQ(first_table.find (4), first_table.end ());
 }
 
+TEST(hash_table, iterator)
+{
+    hash_table<int, int> table;
+    table.insert (1, 10);
+    table.insert (2, 20);
+    table.insert (3, 100);
 
+    int sum = 0;
+    for(auto elem : table)
+    {
+        sum += elem.second; 
+    }
+
+    ASSERT_EQ(sum, 130);
+    ASSERT_EQ(table.begin()->first, 3);
+}
