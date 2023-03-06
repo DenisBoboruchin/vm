@@ -67,6 +67,25 @@ TEST(hash_table, insert)
     ASSERT_EQ(first_table.find(4), first_table.end());
 }
 
+TEST(hash_table, resize)
+{
+    hash_table <int, int> table;
+
+    int num_elems = 1000;
+    for (int i = 0; i != num_elems; ++i)
+    {
+        table.insert (i, 10*i);    
+    }
+
+    int sum = 0;
+    for (auto elem : table)
+    {
+        sum += elem.second;
+    }   
+
+    ASSERT_EQ(sum, num_elems * (num_elems - 1) * 5);
+}
+
 TEST(hash_table, iterator)
 {
     hash_table<int, int> table;

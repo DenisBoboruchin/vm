@@ -22,8 +22,9 @@ public:
     using iterator = typename list<hash_table_node_t>::iterator;
 
     iterator insert(const Key &key, const T &elem);
+    iterator erase(const Key& key);
     iterator find(const Key &key) const;
-
+    
     size_t size() const;
     bool empty() const;
 
@@ -31,12 +32,13 @@ public:
     iterator end() const;
 
 private:
-    static constexpr size_t NUM_HASH_BUCKETS = 1024;
+    void rehash_ ();
+    size_t num_hash_buckets = 1024;
 
     list<hash_table_node_t> data_ {};
 
     using list_itr_t = typename list<hash_table_node_t>::iterator;
-    std::vector<list<list_itr_t>> hash_table_ {NUM_HASH_BUCKETS};
+    std::vector<list<list_itr_t>> hash_table_ {num_hash_buckets};
 };
 
 template <typename Key, typename T, typename Hash>
@@ -49,20 +51,47 @@ typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::insert(con
         return elem_itr;
     }
 
+    rehash_ ();
+
     hash_table_node_t new_elem {key, value};
     data_.push_back(new_elem);
 
     auto insert_itr = begin();
-    int index = Hash {}(key) % NUM_HASH_BUCKETS;
+    int index = Hash {}(key) % num_hash_buckets;
     hash_table_.at(index).push_back(insert_itr);
 
     return insert_itr;
 }
 
 template <typename Key, typename T, typename Hash>
+typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::erase(const Key &key)
+{
+    auto elem_itr = find (key);
+    
+//   data_.remove (elem_itr);
+
+}
+
+template <typename Key, typename T, typename Hash>
+void hash_table<Key, T, Hash>::rehash_ ()
+{
+    if (size () >= num_hash_buckets)
+    {
+        num_hash_buckets *= 2;
+        
+        //hash_table_.clear ();
+
+        for (auto elem : data_)
+        {
+            insert (elem.first, elem.second);
+        }
+    }
+}
+
+template <typename Key, typename T, typename Hash>
 typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::find(const Key &key) const
 {
-    int index = Hash {}(key) % NUM_HASH_BUCKETS;
+    int index = Hash {}(key) % num_hash_buckets;
     list<list_itr_t> hash_table_nodes = hash_table_.at(index);
 
     for (auto list_itr : hash_table_nodes) {
