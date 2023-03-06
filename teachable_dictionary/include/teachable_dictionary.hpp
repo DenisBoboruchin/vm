@@ -6,6 +6,8 @@
 
 #include "hash_table.hpp"
 
+namespace dictionary {
+
 class teachable_dictionary final {
 public:
     explicit teachable_dictionary(const std::string &data_path);
@@ -25,9 +27,13 @@ public:
     bool read_text(const std::string &teachable_text);
     bool save_data(const std::string &path_to_save) const;
 
+    bool correct_text(const std::string &text_for_correct_path) const;
+
 private:
     std::string data_dictionary_path_;
     my_containers::hash_table<std::string, int> dictionary_;
 };
+
+}  // namespace dictionary
 
 #endif

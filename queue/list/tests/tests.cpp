@@ -92,14 +92,15 @@ TEST(list, remove)
     ASSERT_EQ(list.front(), 62);
     ASSERT_EQ(list.back(), 35);
 
-    ASSERT_EQ(list.remove(41), 1);
+    auto del_itr = list.begin ();
+    ASSERT_EQ(list.remove(del_itr), del_itr);
     ASSERT_EQ(list.front(), 62);
-    ASSERT_EQ(list.back(), 35);
+    ASSERT_EQ(list.back(), 41);
     ASSERT_EQ(list.size(), 2);
 
     ASSERT_EQ(list.remove(62), 1);
-    ASSERT_EQ(list.front(), 35);
-    ASSERT_EQ(list.back(), 35);
+    ASSERT_EQ(list.front(), 41);
+    ASSERT_EQ(list.back(), 41);
     ASSERT_EQ(list.size(), 1);
 }
 

@@ -1,5 +1,7 @@
 #include "teachable_dictionary.hpp"
 
+namespace dictionary {
+
 teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_dictionary_path_ {data_path}
 {
     std::ifstream dictionary_data_stream {data_path};
@@ -72,6 +74,11 @@ int teachable_dictionary::get_freq(const std::string &word) const
     }
 }
 
+bool teachable_dictionary::correct_text(const std::string &text_for_correct_path) const
+{
+    return 1;
+}
+
 size_t teachable_dictionary::size() const
 {
     return dictionary_.size();
@@ -81,3 +88,5 @@ bool teachable_dictionary::empty() const
 {
     return dictionary_.size() == 0;
 }
+
+}  // namespace dictionary

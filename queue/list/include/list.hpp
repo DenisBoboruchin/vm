@@ -35,6 +35,7 @@ public:
     iterator find(const T &value);
 
     bool remove(const T &value);
+    iterator remove(iterator list_itr);
 
     size_t size() const;
     bool empty() const;
@@ -345,6 +346,30 @@ bool list<T>::remove(const T &value)
     }
 
     return 1;
+}
+
+template <typename T>
+typename list<T>::iterator list<T>::remove(list<T>::iterator node_itr)
+{
+    list_node_t* node_ptr = node_itr.get_ptr_ ();
+
+    if (!node_ptr) {
+        return end ();
+    }
+
+    if (node_itr == begin ()) {
+        pop_back();
+    } else if (node_itr == static_cast<list<T>::iterator> (front_)) {
+        pop_front();
+    } else {
+        node_ptr->next_->prev_ = node_ptr->prev_;
+        node_ptr->prev_->next_ = node_ptr->next_;
+
+        delete node_ptr;
+        size_--;
+    }
+
+    return node_itr;
 }
 
 template <typename T>
