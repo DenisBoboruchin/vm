@@ -104,6 +104,21 @@ TEST(list, remove)
     ASSERT_EQ(list.size(), 1);
 }
 
+TEST(list, clear)
+{
+    list<int> list;
+    ASSERT_EQ(list.size(), 0);  
+
+    list.push_back(62);
+    list.push_back(41);
+    list.push_back(35);
+    list.push_back(87); 
+    ASSERT_EQ(list.size(), 4);
+
+    list.clear ();
+    ASSERT_EQ(list.size(), 0);  
+}
+
 TEST(list, size_empty)
 {
     list<int> list;

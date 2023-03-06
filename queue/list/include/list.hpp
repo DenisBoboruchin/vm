@@ -39,6 +39,7 @@ public:
 
     size_t size() const;
     bool empty() const;
+    void clear();
 
     iterator begin() const;
     iterator end() const;
@@ -49,8 +50,6 @@ private:
         list_node_t *next_ = nullptr;
         list_node_t *prev_ = nullptr;
     };
-
-    void delete_data_();
 
     list_node_t *push_(const T &value);
     list_node_t *pop_(list_node_t *deletable);
@@ -172,7 +171,7 @@ list<T> &list<T>::operator=(const list<T> &other)
         return *this;
     }
 
-    delete_data_();
+    clear();
 
     size_ = 0;
     rear_ = nullptr;
@@ -202,17 +201,18 @@ list<T> &list<T>::operator=(list<T> &&other) noexcept
 template <typename T>
 list<T>::~list()
 {
-    delete_data_();
+    clear();
 }
 
 template <typename T>
-void list<T>::delete_data_()
+void list<T>::clear()
 {
     while (rear_) {
         list_node_t *temp = rear_->next_;
 
         delete rear_;
         rear_ = temp;
+        size_--;
     }
 }
 
