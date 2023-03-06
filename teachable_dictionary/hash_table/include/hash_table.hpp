@@ -38,7 +38,7 @@ private:
 
     void rehash_();
     void clear_hash_table_();
-    void insert_in_hash_table_ (const list_itr_t& elem_itr);
+    void insert_in_hash_table_(const list_itr_t &elem_itr);
 
     size_t num_hash_buckets = 1024;
 
@@ -73,10 +73,10 @@ template <typename Key, typename T, typename Hash>
 typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::erase(const Key &key)
 {
     auto hash_table_itr = find_hash_itr_(key);
-    
+
     int index = Hash {}(key) % num_hash_buckets;
-    if (hash_table_itr == hash_table_.at(index).end ())
-        return end ();
+    if (hash_table_itr == hash_table_.at(index).end())
+        return end();
 
     auto elem_itr = *hash_table_itr;
 
@@ -90,18 +90,18 @@ template <typename Key, typename T, typename Hash>
 void hash_table<Key, T, Hash>::rehash_()
 {
     if (size() >= num_hash_buckets) {
-        clear_hash_table_ ();
+        clear_hash_table_();
 
         num_hash_buckets *= 2;
         hash_table_.resize(num_hash_buckets);
-        for (auto elem_itr = data_.begin (), elem_end_itr = data_.end ();  elem_itr != elem_end_itr; ++elem_itr) {
-            insert_in_hash_table_ (elem_itr);  
+        for (auto elem_itr = data_.begin(), elem_end_itr = data_.end(); elem_itr != elem_end_itr; ++elem_itr) {
+            insert_in_hash_table_(elem_itr);
         }
     }
 }
 
 template <typename Key, typename T, typename Hash>
-void hash_table<Key, T, Hash>::insert_in_hash_table_(const list_itr_t& elem_itr)
+void hash_table<Key, T, Hash>::insert_in_hash_table_(const list_itr_t &elem_itr)
 {
     int key = elem_itr->first;
     int index = Hash {}(key) % num_hash_buckets;
@@ -110,10 +110,9 @@ void hash_table<Key, T, Hash>::insert_in_hash_table_(const list_itr_t& elem_itr)
 
 template <typename Key, typename T, typename Hash>
 void hash_table<Key, T, Hash>::clear_hash_table_()
-{   
-    for (int index = 0; index != num_hash_buckets; ++index)
-    {
-        hash_table_.at(index).clear ();
+{
+    for (int index = 0; index != num_hash_buckets; ++index) {
+        hash_table_.at(index).clear();
     }
 }
 

@@ -45,16 +45,16 @@ TEST(hash_table, find)
 TEST(hash_table, erase)
 {
     hash_table<int, int> table;
-    ASSERT_EQ(table.size (), 0);
+    ASSERT_EQ(table.size(), 0);
 
     table.insert(1, 100);
-    ASSERT_EQ(table.size (), 1);
-    
+    ASSERT_EQ(table.size(), 1);
+
     table.erase(2);
-    ASSERT_EQ(table.size (), 1);
-    
+    ASSERT_EQ(table.size(), 1);
+
     table.erase(1);
-    ASSERT_EQ(table.size (), 0);
+    ASSERT_EQ(table.size(), 0);
 }
 
 TEST(hash_table, insert)
