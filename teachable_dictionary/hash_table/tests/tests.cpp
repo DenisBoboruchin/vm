@@ -42,6 +42,14 @@ TEST(hash_table, find)
     ASSERT_EQ(first_table.find(2), first_table.begin());
 }
 
+TEST(hash_table, erase)
+{
+    hash_table<int, int> table;
+
+    table.insert(1, 100);
+    table.erase(1);
+}
+
 TEST(hash_table, insert)
 {
     hash_table<int, int> first_table;
@@ -69,19 +77,17 @@ TEST(hash_table, insert)
 
 TEST(hash_table, resize)
 {
-    hash_table <int, int> table;
+    hash_table<int, int> table;
 
     int num_elems = 1000;
-    for (int i = 0; i != num_elems; ++i)
-    {
-        table.insert (i, 10*i);    
+    for (int i = 0; i != num_elems; ++i) {
+        table.insert(i, 10 * i);
     }
 
     int sum = 0;
-    for (auto elem : table)
-    {
+    for (auto elem : table) {
         sum += elem.second;
-    }   
+    }
 
     ASSERT_EQ(sum, num_elems * (num_elems - 1) * 5);
 }
