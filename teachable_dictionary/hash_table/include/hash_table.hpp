@@ -17,10 +17,7 @@ public:
     hash_table &operator=(const hash_table &other) = default;
     hash_table &operator=(hash_table &&other) noexcept = default;
 
-    struct hash_table_node_t final {
-        Key key_;
-        T value_;
-    };
+    using hash_table_node_t = typename std::pair<Key, T>;
     using iterator = typename list<hash_table_node_t>::iterator;
     
     iterator insert(const Key &key, const T &elem);
@@ -48,7 +45,7 @@ typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::insert(con
 
     if (elem_itr != end ())
     {
-        elem_itr->value_ = value;
+        elem_itr->second = value;
         return elem_itr;
     }
 
@@ -69,7 +66,7 @@ typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::find(const
     list<list_itr_t> hash_table_nodes = hash_table_.at(index);
 
     for (auto list_itr : hash_table_nodes) {
-        if (list_itr->key_ == key)
+        if (list_itr->first == key)
         {
             return list_itr;
         }
