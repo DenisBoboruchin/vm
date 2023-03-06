@@ -1,5 +1,5 @@
-am 22
-i 22
-apple 25
+am 24
+i 24
+apple 27
 tee 12
-and 41
+and 43

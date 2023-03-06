@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <unordered_map>
+
+#include "hash_table.hpp"
 
 class teachable_dictionary final {
 public:
@@ -26,7 +27,7 @@ public:
 
 private:
     std::string data_dictionary_path_;
-    std::unordered_map<std::string, int> dictionary_;
+    my_containers::hash_table<std::string, int> dictionary_;
 };
 
 #endif

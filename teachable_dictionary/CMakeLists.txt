@@ -12,7 +12,9 @@ set(CMAKE_CXX_COMPILER clang++)
 set(TEACHABLE_DICTIONARY_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(TEACHABLE_DICTIONARY_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/teachable_dictionary.cpp)
 
-include_directories (include)
+cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH PROJECT_PARRENT_PATH)
+
+include_directories (include hash_table/include ${PROJECT_PARRENT_PATH}/queue/list/include)
 add_definitions(-DPROJECT_DIR_PATH=\"${CMAKE_SOURCE_DIR}\")
 
 add_library (${PROJECT_NAME} STATIC ${TEACHABLE_DICTIONARY_SOURCE})

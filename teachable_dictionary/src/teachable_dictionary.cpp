@@ -12,7 +12,7 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_
     int freq = 0;
     for (dictionary_data_stream >> word; !dictionary_data_stream.eof(); dictionary_data_stream >> word) {
         dictionary_data_stream >> freq;
-        dictionary_.insert({word, freq});
+        dictionary_.insert(word, freq);
     }
 
     dictionary_data_stream.close();
@@ -53,7 +53,7 @@ bool teachable_dictionary::read_text(const std::string &text_path)
         if (word_itr != dictionary_.end()) {
             word_itr->second++;
         } else {
-            dictionary_.insert({word, 1});
+            dictionary_.insert(word, 1);
         }
     }
 

@@ -26,20 +26,20 @@ TEST(hash_table, find)
     ASSERT_EQ(first_table.size(), 0);
     ASSERT_EQ(first_table.empty(), 1);
 
-    ASSERT_EQ(first_table.find (4), first_table.end ());
+    ASSERT_EQ(first_table.find(4), first_table.end());
 
-    first_table.insert (1, 10);
-    
+    first_table.insert(1, 10);
+
     ASSERT_EQ(first_table.size(), 1);
     ASSERT_EQ(first_table.empty(), 0);
-    ASSERT_EQ(first_table.find (4), first_table.end ());
-    ASSERT_EQ(first_table.find (1), first_table.begin ());
+    ASSERT_EQ(first_table.find(4), first_table.end());
+    ASSERT_EQ(first_table.find(1), first_table.begin());
 
-    first_table.insert (2, 20);
+    first_table.insert(2, 20);
     ASSERT_EQ(first_table.size(), 2);
     ASSERT_EQ(first_table.empty(), 0);
-    ASSERT_EQ(first_table.find (4), first_table.end ());
-    ASSERT_EQ(first_table.find (2), first_table.begin ());
+    ASSERT_EQ(first_table.find(4), first_table.end());
+    ASSERT_EQ(first_table.find(2), first_table.begin());
 }
 
 TEST(hash_table, insert)
@@ -49,35 +49,34 @@ TEST(hash_table, insert)
     ASSERT_EQ(first_table.size(), 0);
     ASSERT_EQ(first_table.empty(), 1);
 
-    ASSERT_EQ(first_table.find (4), first_table.end ());
+    ASSERT_EQ(first_table.find(4), first_table.end());
 
-    first_table.insert (1, 10);
-    
+    first_table.insert(1, 10);
+
     ASSERT_EQ(first_table.size(), 1);
     ASSERT_EQ(first_table.empty(), 0);
 
-    int& value = first_table.find (1)->second;
+    int &value = first_table.find(1)->second;
     ASSERT_EQ(value, 10);
 
-    first_table.insert (1, 20); 
+    first_table.insert(1, 20);
     ASSERT_EQ(value, 20);
 
     ASSERT_EQ(first_table.size(), 1);
     ASSERT_EQ(first_table.empty(), 0);
-    ASSERT_EQ(first_table.find (4), first_table.end ());
+    ASSERT_EQ(first_table.find(4), first_table.end());
 }
 
 TEST(hash_table, iterator)
 {
     hash_table<int, int> table;
-    table.insert (1, 10);
-    table.insert (2, 20);
-    table.insert (3, 100);
+    table.insert(1, 10);
+    table.insert(2, 20);
+    table.insert(3, 100);
 
     int sum = 0;
-    for(auto elem : table)
-    {
-        sum += elem.second; 
+    for (auto elem : table) {
+        sum += elem.second;
     }
 
     ASSERT_EQ(sum, 130);

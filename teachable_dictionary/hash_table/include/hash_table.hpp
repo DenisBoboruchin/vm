@@ -2,6 +2,7 @@
 #define HASH_TABLE_HPP
 
 #include <iostream>
+#include <vector>
 
 #include "list.hpp"
 
@@ -19,7 +20,7 @@ public:
 
     using hash_table_node_t = typename std::pair<Key, T>;
     using iterator = typename list<hash_table_node_t>::iterator;
-    
+
     iterator insert(const Key &key, const T &elem);
     iterator find(const Key &key) const;
 
@@ -41,20 +42,19 @@ private:
 template <typename Key, typename T, typename Hash>
 typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::insert(const Key &key, const T &value)
 {
-    auto elem_itr = find (key);
+    auto elem_itr = find(key);
 
-    if (elem_itr != end ())
-    {
+    if (elem_itr != end()) {
         elem_itr->second = value;
         return elem_itr;
     }
 
     hash_table_node_t new_elem {key, value};
-    data_.push_back (new_elem);
+    data_.push_back(new_elem);
 
-    auto insert_itr = begin ();
+    auto insert_itr = begin();
     int index = Hash {}(key) % NUM_HASH_BUCKETS;
-    hash_table_.at (index).push_back (insert_itr);
+    hash_table_.at(index).push_back(insert_itr);
 
     return insert_itr;
 }
@@ -66,13 +66,12 @@ typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::find(const
     list<list_itr_t> hash_table_nodes = hash_table_.at(index);
 
     for (auto list_itr : hash_table_nodes) {
-        if (list_itr->first == key)
-        {
+        if (list_itr->first == key) {
             return list_itr;
         }
     }
 
-    return data_.end ();
+    return data_.end();
 }
 
 template <typename Key, typename T, typename Hash>
