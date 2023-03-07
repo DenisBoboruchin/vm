@@ -10,7 +10,7 @@ namespace dictionary {
 
 class teachable_dictionary final {
 public:
-    explicit teachable_dictionary(const std::string &data_path);
+    explicit teachable_dictionary(const std::string &data_path = {});
     teachable_dictionary(const teachable_dictionary &other) = default;
     teachable_dictionary(teachable_dictionary &&other) noexcept = default;
 
@@ -31,7 +31,10 @@ public:
 
 private:
     std::string data_dictionary_path_;
-    my_containers::hash_table<std::string, int> dictionary_;
+    int size_;
+
+    using numeric_hash_table = typename my_containers::hash_table<std::string, int>;
+    my_containers::hash_table<int, numeric_hash_table> dictionary_;
 };
 
 }  // namespace dictionary

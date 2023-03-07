@@ -103,7 +103,7 @@ void hash_table<Key, T, Hash>::rehash_()
 template <typename Key, typename T, typename Hash>
 void hash_table<Key, T, Hash>::insert_in_hash_table_(const list_itr_t &elem_itr)
 {
-    int key = elem_itr->first;
+    Key key = elem_itr->first;
     int index = Hash {}(key) % num_hash_buckets;
     hash_table_.at(index).push_back(elem_itr);
 }
