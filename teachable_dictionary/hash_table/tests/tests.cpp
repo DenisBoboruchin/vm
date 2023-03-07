@@ -40,6 +40,25 @@ TEST(hash_table, find)
     ASSERT_EQ(first_table.empty(), 0);
     ASSERT_EQ(first_table.find(4), first_table.end());
     ASSERT_EQ(first_table.find(2), first_table.begin());
+    
+    first_table.insert(3, 30);
+    first_table.insert(4, 40);
+    
+    auto itr = first_table.find (3);
+    ASSERT_EQ(itr->first, 3);
+    ASSERT_EQ(itr->second, 30);
+}
+
+TEST(hash_table, copy_constr)
+{
+    hash_table<int, int> table_1;
+    table_1.insert (1, 3);
+    table_1.insert (2,4);
+
+    hash_table<int, int> table_2 {table_1};
+
+    ASSERT_EQ(table_2.size (), 2);
+    ASSERT_EQ(table_2.begin()->first, 2);
 }
 
 TEST(hash_table, erase)
