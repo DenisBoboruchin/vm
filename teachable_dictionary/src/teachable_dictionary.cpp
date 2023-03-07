@@ -4,8 +4,7 @@ namespace dictionary {
 
 teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_dictionary_path_ {data_path}, size_ {0}
 {
-    if (data_path.empty())
-    {
+    if (data_path.empty()) {
         std::cout << "dictionary data is empty" << std::endl;
         return;
     }
@@ -16,35 +15,32 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_
         exit(0);
     }
 
-    std::cout << dictionary_.size () << std::endl;
-    while (!dictionary_data_stream.eof ())
-    {
+    std::cout << dictionary_.size() << std::endl;
+    while (!dictionary_data_stream.eof()) {
         std::string word {};
         int freq = 0;
         int lenth = 0;
         int num_lenth = 0;
-        
+
         dictionary_data_stream >> lenth;
-        if (!lenth)
-        {
+        if (!lenth) {
             break;
         }
         dictionary_data_stream >> num_lenth;
-    
-        dictionary_.insert (lenth, {});
-        numeric_hash_table& hash_table = dictionary_.begin ()->second;
-        for (int index = 0; index != num_lenth; ++index)
-        {
+
+        dictionary_.insert(lenth, {});
+        numeric_hash_table &hash_table = dictionary_.begin()->second;
+        for (int index = 0; index != num_lenth; ++index) {
             dictionary_data_stream >> word;
             dictionary_data_stream >> freq;
-            hash_table.insert (word, freq);
+            hash_table.insert(word, freq);
             std::cout << "instance " << word << " " << freq << std::endl;
 
             size_++;
         }
     }
 
-    std::cout << dictionary_.size () << std::endl;
+    std::cout << dictionary_.size() << std::endl;
     dictionary_data_stream.close();
 }
 
@@ -61,12 +57,12 @@ bool teachable_dictionary::save_data(const std::string &path_to_save) const
         return 0;
     }
 
-    std::cout << "sizeee" << dictionary_.size () << std::endl;
-    
+    std::cout << "sizeee" << dictionary_.size() << std::endl;
+
     for (auto dictionary_elem : dictionary_) {
         numeric_hash_table &hash_table = dictionary_elem.second;
-        data_save_path << dictionary_elem.first << " " << hash_table.size () << std::endl << std::endl;
-        std::cout << dictionary_elem.first << " " << hash_table.size () << std::endl << std::endl;
+        data_save_path << dictionary_elem.first << " " << hash_table.size() << std::endl << std::endl;
+        std::cout << dictionary_elem.first << " " << hash_table.size() << std::endl << std::endl;
 
         for (auto elem : hash_table) {
             data_save_path << elem.first << " " << elem.second << std::endl;
@@ -96,20 +92,20 @@ bool teachable_dictionary::read_text(const std::string &text_path)
         auto num_hash_table_itr = dictionary_.find(word_len);
         if (num_hash_table_itr == dictionary_.end()) {
             dictionary_.insert(word_len, {});
-            numeric_hash_table& hash_table = dictionary_.begin()->second;
+            numeric_hash_table &hash_table = dictionary_.begin()->second;
             hash_table.insert(word, 1);
 
             size_++;
-            std::cout << "insert in new " << word_len << " size " << hash_table.size () << std::endl;
+            std::cout << "insert in new " << word_len << " size " << hash_table.size() << std::endl;
         } else {
             numeric_hash_table &hash_table = num_hash_table_itr->second;
             auto elem_itr = hash_table.find(word);
             if (elem_itr != hash_table.end()) {
                 elem_itr->second = elem_itr->second + 1;
-                std::cout << "upgr " << word_len << " size " << hash_table.size () << std::endl;
+                std::cout << "upgr " << word_len << " size " << hash_table.size() << std::endl;
             } else {
                 hash_table.insert(word, 1);
-                std::cout << "insert in old " << word_len << " size " << hash_table.size () << std::endl;
+                std::cout << "insert in old " << word_len << " size " << hash_table.size() << std::endl;
                 size_++;
             }
         }
