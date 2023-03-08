@@ -1,1 +1,1 @@
-Open addressing or closed hashing is a method of collision checkcorrectonapple
+Open addressing or closed hashing is a method of collision

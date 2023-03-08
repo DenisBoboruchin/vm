@@ -1,35 +1,35 @@
 19 1
 
-checkcorrectonapple 3
+checkcorrectonapple 1
 
 9 1
 
-collision 3
+collision 4
 
 1 1
 
-a 3
+a 4
 
 7 1
 
-hashing 3
+hashing 4
 
 6 2
 
-method 3
-closed 3
+method 4
+closed 4
 
 2 3
 
-of 3
-is 3
-or 3
+of 4
+is 4
+or 4
 
 10 1
 
-addressing 3
+addressing 4
 
 4 1
 
-Open 3
+Open 4
 
