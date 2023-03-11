@@ -31,3 +31,10 @@ TEST(teachable_dictionary, read_text)
     dictionary.read_text(PROJECT_DIR_PATH + std::string("/tests/data_base/teacher.txt"));
     ASSERT_EQ(prev_size, dictionary.size());
 }
+
+TEST(teachable_dictionary, correct_text)
+{
+    teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data.txt"));
+
+    dictionary.correct_text("dsaf", 1);
+}

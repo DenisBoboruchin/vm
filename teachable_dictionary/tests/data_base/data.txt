@@ -4,32 +4,32 @@ checkcorrectonapple 1
 
 9 1
 
-collision 6
+collision 24
 
 1 1
 
-a 6
+a 24
 
 7 1
 
-hashing 6
+hashing 24
 
 6 2
 
-method 6
-closed 6
+method 24
+closed 24
 
 2 3
 
-of 6
-is 6
-or 6
+of 24
+is 24
+or 24
 
 10 1
 
-addressing 6
+addressing 24
 
 4 1
 
-Open 6
+Open 24
 
