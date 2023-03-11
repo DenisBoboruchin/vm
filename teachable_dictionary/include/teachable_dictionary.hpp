@@ -27,14 +27,15 @@ public:
     bool read_text(const std::string &teachable_text);
     bool save_data(const std::string &path_to_save) const;
 
-    bool correct_text(const std::string &text_for_correct_path) const;
+    bool correct_text(const std::string &text_for_correct_path, const int lev_const) const;
+    std::string &find_min_levenshtein_distance(std::string &word, const int lev_const) const;
 
 private:
-    std::string data_dictionary_path_;
-    int size_;
-
     using numeric_hash_table = typename my_containers::hash_table<std::string, int>;
     my_containers::hash_table<int, numeric_hash_table> dictionary_;
+
+    std::string data_dictionary_path_;
+    int size_;
 };
 
 }  // namespace dictionary

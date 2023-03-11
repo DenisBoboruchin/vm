@@ -1,6 +1,10 @@
 #include "teachable_dictionary.hpp"
 
 namespace dictionary {
+static std::pair<std::string &, int> find_min_lev_dist_in_hash_table(
+    const my_containers::hash_table<std::string, int> &hash_table, const std::string &word, const int lev_const);
+
+static int calc_lev_dist(std::string& word1, std::string& word2);
 
 teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_dictionary_path_ {data_path}, size_ {0}
 {
@@ -19,10 +23,10 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_
     if (!lenth) {
         std::cout << "dictionary data file is empty" << std::endl;
     }
-        
+
     dictionary_data_stream >> lenth;
     while (!dictionary_data_stream.eof()) {
-       std::string word {};
+        std::string word {};
         int freq = 0;
         int num_lenth = 0;
 
@@ -37,7 +41,7 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_
 
             size_++;
         }
-        
+
         dictionary_data_stream >> lenth;
     }
 
@@ -76,7 +80,7 @@ bool teachable_dictionary::read_text(const std::string &text_path)
 {
     std::ifstream teached_stream(text_path);
     if (!teached_stream) {
-        std::cout << "error teacher\n";
+        std::cout << "error in reading\n";
         return 0;
     }
 
@@ -84,15 +88,10 @@ bool teachable_dictionary::read_text(const std::string &text_path)
     for (teached_stream >> word; !teached_stream.eof(); teached_stream >> word) {
         int word_len = word.size();
 
-        auto num_hash_table_itr = dictionary_.find(word_len);
-        if (num_hash_table_itr == dictionary_.end()) {
-            dictionary_.insert(word_len, {});
-            numeric_hash_table &hash_table = dictionary_.begin()->second;
-            hash_table.insert(word, 1);
+        auto hash_table_lenth_itr = dictionary_.find(word_len);
+        if (hash_table_lenth_itr != dictionary_.end()) {
+            numeric_hash_table &hash_table = hash_table_lenth_itr->second;
 
-            size_++;
-        } else {
-            numeric_hash_table &hash_table = num_hash_table_itr->second;
             auto elem_itr = hash_table.find(word);
             if (elem_itr != hash_table.end()) {
                 elem_itr->second = elem_itr->second + 1;
@@ -100,6 +99,12 @@ bool teachable_dictionary::read_text(const std::string &text_path)
                 hash_table.insert(word, 1);
                 size_++;
             }
+        } else {
+            dictionary_.insert(word_len, {});
+            numeric_hash_table &hash_table = dictionary_.begin()->second;
+            hash_table.insert(word, 1);
+
+            size_++;
         }
     }
 
@@ -110,11 +115,13 @@ bool teachable_dictionary::read_text(const std::string &text_path)
 int teachable_dictionary::get_freq(const std::string &word) const
 {
     int word_len = word.size();
-    auto num_hash_table_itr = dictionary_.find(word_len);
+    auto hash_table_lenth_itr = dictionary_.find(word_len);
+    if (hash_table_lenth_itr == dictionary_.end())
+        return 0;
 
-    numeric_hash_table &hash_table = num_hash_table_itr->second;
+    numeric_hash_table &hash_table = hash_table_lenth_itr->second;
+
     auto elem_itr = hash_table.find(word);
-
     if (elem_itr == hash_table.end()) {
         return 0;
     } else {
@@ -122,9 +129,45 @@ int teachable_dictionary::get_freq(const std::string &word) const
     }
 }
 
-bool teachable_dictionary::correct_text(const std::string &text_for_correct_path) const
+bool teachable_dictionary::correct_text(const std::string &text_for_correct_path, const int lev_const) const
 {
+    std::ifstream text_stream {text_for_correct_path};
+    if (!text_stream) {
+        std::cout << "error reading text to correct" << std::endl;
+        return 0;
+    }
+
     return 1;
+}
+
+std::string &teachable_dictionary::find_min_levenshtein_distance(std::string &word, const int lev_const) const
+{
+    if (get_freq(word))
+        return word;
+
+    int lenth = word.size();
+
+    auto hash_table_lenth_itr_1 = dictionary_.find(lenth);
+    if (hash_table_lenth_itr_1 != dictionary_.end()) {
+        std::pair<std::string &, int> word_with_min_dist =
+            find_min_lev_dist_in_hash_table(hash_table_lenth_itr_1->second, word, lev_const);
+    }
+}
+
+std::pair<std::string &, int> find_min_lev_dist_in_hash_table(
+    const my_containers::hash_table<std::string, int> &hash_table, const std::string &word, const int lev_const)
+{
+    std::pair<std::string, int> min_dist;
+
+    min_dist.second = lev_const + 1;
+    for (auto elem : hash_table) {
+        int dist = calc_lev_dist(elem.first, word);
+    }
+}
+
+int calc_lev_dist (std::string& word1, std::string& word2)
+{
+    
 }
 
 size_t teachable_dictionary::size() const

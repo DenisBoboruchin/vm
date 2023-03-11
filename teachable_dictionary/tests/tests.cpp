@@ -27,7 +27,7 @@ TEST(teachable_dictionary, read_text)
     int freq = dictionary.get_freq("checkcorrectonapple");
     ASSERT_EQ(freq, 1);
 
-    int prev_size = dictionary.size ();
+    int prev_size = dictionary.size();
     dictionary.read_text(PROJECT_DIR_PATH + std::string("/tests/data_base/teacher.txt"));
-    ASSERT_EQ(prev_size, dictionary.size ());
+    ASSERT_EQ(prev_size, dictionary.size());
 }
