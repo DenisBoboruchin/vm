@@ -1,35 +1,40 @@
+3 1
+
+and 2
+
 19 1
 
 checkcorrectonapple 1
 
 9 1
 
-collision 24
+collision 44
 
-1 1
+1 2
 
-a 24
+b 1
+a 44
 
 7 1
 
-hashing 24
+hashing 44
 
 6 2
 
-method 24
-closed 24
+method 44
+closed 44
 
 2 3
 
-of 24
-is 24
-or 24
+of 44
+is 44
+or 44
 
 10 1
 
-addressing 24
+addressing 44
 
 4 1
 
-Open 24
+Open 44
 

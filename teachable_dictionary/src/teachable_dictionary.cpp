@@ -139,8 +139,8 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
         // return 0;
     }
 
-    std::string aha {"methkd"};
-    find_min_levenshtein_distance(aha, 1);
+    std::string aha {"uy"};
+    find_min_levenshtein_distance(aha, lev_const);
 
     return 1;
 }
@@ -152,28 +152,72 @@ std::string &teachable_dictionary::find_min_levenshtein_distance(std::string &wo
 
     int lenth = word.size();
 
-    auto hash_table_lenth_itr_1 = dictionary_.find(lenth);
-    if (hash_table_lenth_itr_1 != dictionary_.end()) {
-        std::pair<std::string &, int> word_with_min_dist =
-            find_min_lev_dist_in_hash_table(hash_table_lenth_itr_1->second, word, lev_const);
+    std::pair<std::string &, int> pair_word_with_min_dist = find_pair_word_with_min_dist_(word, lenth, lev_const);
+    if (pair_word_with_min_dist.second == 1)
+    {
+        return pair_word_with_min_dist.first;
     }
 
-    return word;
+    std::pair<std::string &, int> temp_pair = find_pair_word_with_min_dist_(word, lenth - 1, lev_const);
+    if (temp_pair.second == 1)
+    {
+        return temp_pair.first;
+    }
+
+    if (temp_pair.second < pair_word_with_min_dist.second)
+    {
+        pair_word_with_min_dist = temp_pair;
+    }
+
+    temp_pair = find_pair_word_with_min_dist_(word, lenth + 1, lev_const);
+    if (temp_pair.second == 1)
+    {
+        return temp_pair.first;
+    }
+
+    if (temp_pair.second < pair_word_with_min_dist.second)
+    {
+        pair_word_with_min_dist = temp_pair;
+    }
+
+    return pair_word_with_min_dist.first;
+}
+
+std::pair<std::string&, int> teachable_dictionary::find_pair_word_with_min_dist_ (std::string & word, const int lenth, const int lev_const) const
+{
+    auto hash_table_lenth_itr = dictionary_.find(lenth);
+    std::cout << "len: " << lenth << std::endl;
+    std::pair<std::string &, int> pair_word_with_min_dist {word, lev_const + 1};
+    
+    if (hash_table_lenth_itr != dictionary_.end()) {
+        pair_word_with_min_dist = find_min_lev_dist_in_hash_table(hash_table_lenth_itr->second, word, lev_const);
+    }
+
+    return pair_word_with_min_dist;
 }
 
 std::pair<std::string &, int> find_min_lev_dist_in_hash_table(
     const my_containers::hash_table<std::string, int> &hash_table, std::string &word, const int lev_const)
 {
-    std::pair<std::string &, int> min_dist {word, lev_const + 1};
-
+    std::pair<std::string &, int> pair_word_with_min_dist {word, lev_const + 1};
     for (auto elem : hash_table) {
-        std::cout << elem.first << std::endl;
         int dist = calc_lev_dist(elem.first, word);
-
+        std::cout << "hash: " << hash_table.size() << std::endl;
+        std::cout << elem.first << std::endl;
         std::cout << "first " << elem.first << " second " << word << " dist " << dist << std::endl;
+    
+        if (dist < pair_word_with_min_dist.second)
+        {
+            pair_word_with_min_dist.first = elem.first;
+            pair_word_with_min_dist.second = dist;
+        }
+        if (dist == 1)
+        {
+            return pair_word_with_min_dist;
+        }
     }
 
-    return min_dist;
+    return pair_word_with_min_dist;
 }
 
 int calc_lev_dist(std::string &word1, std::string &word2)
