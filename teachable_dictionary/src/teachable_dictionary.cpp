@@ -6,7 +6,7 @@ namespace dictionary {
 static std::pair<std::string &, int> find_min_lev_dist_in_hash_table(
     const my_containers::hash_table<std::string, int> &hash_table, std::string &word, const int lev_const);
 
-static int calc_lev_dist(std::string &word1, std::string &word2);
+static int calc_lev_dist(const std::string &word1, const std::string &word2);
 
 teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_dictionary_path_ {data_path}, size_ {0}
 {
@@ -139,7 +139,7 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
         // return 0;
     }
 
-    std::string aha {"uy"};
+    std::string aha {"opo"};
     find_min_levenshtein_distance(aha, lev_const);
 
     return 1;
@@ -153,45 +153,38 @@ std::string &teachable_dictionary::find_min_levenshtein_distance(std::string &wo
     int lenth = word.size();
 
     std::pair<std::string &, int> pair_word_with_min_dist = find_pair_word_with_min_dist_(word, lenth, lev_const);
-    if (pair_word_with_min_dist.second == 1)
-    {
+    if (pair_word_with_min_dist.second == 1) {
         return pair_word_with_min_dist.first;
     }
 
     std::pair<std::string &, int> temp_pair = find_pair_word_with_min_dist_(word, lenth - 1, lev_const);
-    if (temp_pair.second == 1)
-    {
+    if (temp_pair.second == 1) {
         return temp_pair.first;
     }
 
-    if (temp_pair.second < pair_word_with_min_dist.second)
-    {
+    if (temp_pair.second < pair_word_with_min_dist.second) {
         pair_word_with_min_dist = temp_pair;
     }
 
     temp_pair = find_pair_word_with_min_dist_(word, lenth + 1, lev_const);
-    if (temp_pair.second == 1)
-    {
+    if (temp_pair.second == 1) {
         return temp_pair.first;
     }
 
-    if (temp_pair.second < pair_word_with_min_dist.second)
-    {
+    if (temp_pair.second < pair_word_with_min_dist.second) {
         pair_word_with_min_dist = temp_pair;
     }
 
+    std::cout << "min distance: " << pair_word_with_min_dist.second << std::endl;
     return pair_word_with_min_dist.first;
 }
 
-std::pair<std::string&, int> teachable_dictionary::find_pair_word_with_min_dist_ (std::string & word, const int lenth, const int lev_const) const
+std::pair<std::string &, int> teachable_dictionary::find_pair_word_with_min_dist_(std::string &word, const int lenth,
+                                                                                  const int lev_const) const
 {
     auto hash_table_lenth_itr = dictionary_.find(lenth);
-    std::cout << "len: " << lenth << std::endl;
-    std::pair<std::string &, int> pair_word_with_min_dist {word, lev_const + 1};
-    
-    if (hash_table_lenth_itr != dictionary_.end()) {
-        pair_word_with_min_dist = find_min_lev_dist_in_hash_table(hash_table_lenth_itr->second, word, lev_const);
-    }
+    std::pair<std::string &, int> pair_word_with_min_dist =
+        find_min_lev_dist_in_hash_table(hash_table_lenth_itr->second, word, lev_const);
 
     return pair_word_with_min_dist;
 }
@@ -202,17 +195,13 @@ std::pair<std::string &, int> find_min_lev_dist_in_hash_table(
     std::pair<std::string &, int> pair_word_with_min_dist {word, lev_const + 1};
     for (auto elem : hash_table) {
         int dist = calc_lev_dist(elem.first, word);
-        std::cout << "hash: " << hash_table.size() << std::endl;
-        std::cout << elem.first << std::endl;
-        std::cout << "first " << elem.first << " second " << word << " dist " << dist << std::endl;
-    
-        if (dist < pair_word_with_min_dist.second)
-        {
+        std::cout << "from hash: " << elem.first << "; word: " << word << "; dist: " << dist << std::endl;
+
+        if (dist < pair_word_with_min_dist.second) {
             pair_word_with_min_dist.first = elem.first;
             pair_word_with_min_dist.second = dist;
         }
-        if (dist == 1)
-        {
+        if (dist == 1) {
             return pair_word_with_min_dist;
         }
     }
@@ -220,21 +209,18 @@ std::pair<std::string &, int> find_min_lev_dist_in_hash_table(
     return pair_word_with_min_dist;
 }
 
-int calc_lev_dist(std::string &word1, std::string &word2)
+int calc_lev_dist(const std::string &word1, const std::string &word2)
 {
     int min_len = word1.size();
     int max_len = word2.size();
-    std::string &sword = word1;
-    std::string &lword = word2;
+
+    const std::string &sword = min_len > max_len ? word2 : word1;
+    const std::string &lword = min_len > max_len ? word1 : word2;
 
     if (min_len > max_len) {
         int temp_len = max_len;
         min_len = max_len;
         max_len = temp_len;
-
-        std::string &temp_str = lword;
-        sword = lword;
-        lword = temp_str;
     }
 
     std::vector<int> curr_row(max_len + 1);
