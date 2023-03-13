@@ -28,11 +28,11 @@ public:
     bool save_data(const std::string &path_to_save) const;
 
     bool correct_text(const std::string &text_for_correct_path, const int lev_const = 1) const;
-    std::string &find_min_levenshtein_distance(std::string &word, const int lev_const) const;
+    std::string find_min_levenshtein_distance(const std::string &word, const int lev_const) const;
 
 private:
-    std::pair<std::string &, int> find_pair_word_with_min_dist_(std::string &word, const int lenth,
-                                                                const int lev_const) const;
+    std::pair<std::string, int> find_pair_word_with_min_dist_(const std::string &word, const int lenth,
+                                                              const int lev_const) const;
     using numeric_hash_table = typename my_containers::hash_table<std::string, int>;
     my_containers::hash_table<int, numeric_hash_table> dictionary_;
 

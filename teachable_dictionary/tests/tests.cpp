@@ -36,5 +36,5 @@ TEST(teachable_dictionary, correct_text)
 {
     teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data.txt"));
 
-    dictionary.correct_text("dsaf");
+    dictionary.correct_text(PROJECT_DIR_PATH + std::string("/tests/data_base/text_with_errors.txt"));
 }
