@@ -17,7 +17,10 @@ public:
     ~reader();
 
     std::string get_word();
-    std::string check_punct();
+    std::string get_punct();
+
+    size_t size() const;
+    bool empty() const;
 
 private:
     bool increase_pointer_();

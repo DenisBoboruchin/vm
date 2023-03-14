@@ -2,6 +2,7 @@
 #include <tuple>
 
 #include "teachable_dictionary.hpp"
+#include "reader.hpp"
 
 namespace dictionary {
 static std::tuple<std::string, int, int> find_min_lev_dist_in_hash_table(
@@ -114,16 +115,16 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
 
 bool teachable_dictionary::read_text(const std::string &text_path)
 {
-    std::ifstream teached_stream(text_path);
-    if (!teached_stream) {
+    my_containers::reader reader {text_path};
+    if (reader.empty()) {
         std::cout << "error in reading file for teach\n";
         return 0;
     }
 
-    std::string word {};
-    for (teached_stream >> word; !teached_stream.eof(); teached_stream >> word) {
-        int word_len = word.size();
-
+    reader.get_punct();
+    std::string word = reader.get_word();
+    int word_len = word.size();
+    while (word_len) {
         auto hash_table_lenth_itr = dictionary_.find(word_len);
         if (hash_table_lenth_itr != dictionary_.end()) {
             numeric_hash_table &hash_table = hash_table_lenth_itr->second;
@@ -142,9 +143,12 @@ bool teachable_dictionary::read_text(const std::string &text_path)
 
             size_++;
         }
+
+        reader.get_punct();
+        word = reader.get_word();
+        word_len = word.size();
     }
 
-    teached_stream.close();
     return 1;
 }
 
@@ -167,9 +171,9 @@ int teachable_dictionary::get_freq(const std::string &word) const
 
 bool teachable_dictionary::correct_text(const std::string &text_for_correct_path, const int lev_const) const
 {
-    std::ifstream text_stream {text_for_correct_path};
-    if (!text_stream) {
-        std::cout << "error reading text to correct from path: " << text_for_correct_path << std::endl;
+    my_containers::reader reader {text_for_correct_path};
+    if (reader.empty()) {
+        std::cout << "error in reading file for teach\n";
         return 0;
     }
 
@@ -179,15 +183,19 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
                                CORRECTED_STR.end());
 
     std::ofstream corrected_text_stream {corrected_text_path};
-    std::string word {};
+
     std::string text {};
-    for (text_stream >> word; !text_stream.eof(); text_stream >> word) {
+    text.append(reader.get_punct());
+    std::string word = reader.get_word();
+    while (word.size()) {
         text.append(find_min_levenshtein_distance(word, lev_const));
-        text.append(1, ' ');
+        text.append(reader.get_punct());
+
+        word = reader.get_word();
     }
+    text.append(reader.get_punct());
 
     corrected_text_stream << text;
-    text_stream.close();
     corrected_text_stream.close();
     return 1;
 }
@@ -216,6 +224,11 @@ std::string teachable_dictionary::find_min_levenshtein_distance(const std::strin
         }
     }
 
+    if (word_with_min_dist == word) {
+        std::cout << "could not find a suitable fix for \"" << word << '"' << std::endl;
+    }
+
+    std::cout << "distance: " << min_dist << std::endl;
     return word_with_min_dist;
 }
 

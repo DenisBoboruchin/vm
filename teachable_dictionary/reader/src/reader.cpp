@@ -16,6 +16,8 @@ reader::reader(const std::string &text_path)
 
     data_ = new char[size_];
     int num_readed_elem = fread(data_, sizeof(char), size_, text_stream);
+    fclose(text_stream);
+
     if (num_readed_elem != size_) {
         std::cout << "error reading, readed " << num_readed_elem << " elems" << std::endl;
         return;
@@ -33,6 +35,7 @@ std::string reader::get_word()
     char *temp_ptr = pointer_;
     char symb = tolower(*pointer_);
     while (('a' <= symb) && (symb <= 'z')) {
+        *pointer_ = symb;
         if (!increase_pointer_()) {
             break;
         }
@@ -54,13 +57,12 @@ std::string reader::get_word()
     return word;
 }
 
-std::string reader::check_punct()
+std::string reader::get_punct()
 {
     std::string punkt_str {};
     char symb = tolower(*pointer_);
     while (!(('a' <= symb) && (symb <= 'z'))) {
         punkt_str.append(1, symb);
-
         if (!increase_pointer_()) {
             return punkt_str;
         }
@@ -79,6 +81,16 @@ bool reader::increase_pointer_()
 
     pointer_++;
     return 1;
+}
+
+size_t reader::size() const
+{
+    return size_;
+}
+
+bool reader::empty() const
+{
+    return data_ == nullptr;
 }
 
 }  // namespace my_containers
