@@ -1,7 +1,5 @@
 set (SOURCE_READER_TEST ${CMAKE_CURRENT_SOURCE_DIR}/tests.cpp)
 
-include_directories (${READER_INCLUDES})
-
 #tests
 option(TESTING "Include testing" ON)
 if (TESTING)
@@ -14,14 +12,15 @@ if (TESTING)
     
     if (ADD_SANITIZERS)
         set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+        set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
     endif()
     
-    target_link_libraries (${PROJECT_NAME}_tests PUBLIC GTest::GTest GTest::Main)
+    target_link_libraries (${PROJECT_NAME}_tests PUBLIC ${PROJECT_NAME} GTest::GTest GTest::Main)
        
     enable_testing ()
 
     add_custom_target (run_${PROJECT_NAME}_tests 
-        COMMENT "Running hash_table_tests"
+        COMMENT "Running " ${PROJECT_NAME} "_tests"
         COMMAND ./${PROJECT_NAME}_tests
     )
     add_dependencies (run_${PROJECT_NAME}_tests ${PROJECT_NAME}_tests)
