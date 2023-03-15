@@ -203,7 +203,9 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 std::string teachable_dictionary::find_min_levenshtein_distance(const std::string &word, const int lev_const) const
 {
     if (get_freq(word))
+    {
         return word;
+    }
 
     int lenth_minus_one = word.size() - 1;
     std::string word_with_min_dist {word};
@@ -228,7 +230,6 @@ std::string teachable_dictionary::find_min_levenshtein_distance(const std::strin
         std::cout << "could not find a suitable fix for \"" << word << '"' << std::endl;
     }
 
-    std::cout << "distance: " << min_dist << std::endl;
     return word_with_min_dist;
 }
 
@@ -237,14 +238,11 @@ std::tuple<std::string, int, int> teachable_dictionary::find_tuple_word_with_min
                                                                                        const int lev_const) const
 {
     auto hash_table_lenth_itr = dictionary_.find(lenth);
-    std::tuple<std::string, int, int> tuple_word_with_min_dist {word, 0, lev_const + 1};
     if (hash_table_lenth_itr == dictionary_.end()) {
-        return tuple_word_with_min_dist;
+        return {word, 0, lev_const + 1};
     }
 
-    tuple_word_with_min_dist = find_min_lev_dist_in_hash_table(hash_table_lenth_itr->second, word, lev_const);
-
-    return tuple_word_with_min_dist;
+    return find_min_lev_dist_in_hash_table(hash_table_lenth_itr->second, word, lev_const);
 }
 
 std::tuple<std::string, int, int> find_min_lev_dist_in_hash_table(
@@ -253,14 +251,15 @@ std::tuple<std::string, int, int> find_min_lev_dist_in_hash_table(
     std::tuple<std::string, int, int> tuple_word_with_min_dist {word, 0, lev_const + 1};
     for (auto elem : hash_table) {
         int dist = calc_lev_dist(elem.first, word, lev_const);
-
-        if (dist <= std::get<2>(tuple_word_with_min_dist)) {
-            if (elem.second > std::get<1>(tuple_word_with_min_dist)) {
-                std::get<0>(tuple_word_with_min_dist) = elem.first;
-                std::get<1>(tuple_word_with_min_dist) = elem.second;
-                std::get<2>(tuple_word_with_min_dist) = dist;
-            }
+        int old_dist = std::get<2>(tuple_word_with_min_dist);
+        if (dist < old_dist) {
+            tuple_word_with_min_dist = {elem.first, elem.second, dist};
         }
+        else if ((dist == old_dist) && (elem.second > std::get<1>(tuple_word_with_min_dist)))
+        {
+            tuple_word_with_min_dist = {elem.first, elem.second, dist};
+        }
+        
     }
 
     return tuple_word_with_min_dist;
@@ -275,7 +274,7 @@ int calc_lev_dist(const std::string &word1, const std::string &word2, const int 
     const std::string &lword = min_len > max_len ? word1 : word2;
 
     if (min_len > max_len) {
-        int temp_len = max_len;
+        int temp_len = min_len;
         min_len = max_len;
         max_len = temp_len;
     }
@@ -283,11 +282,10 @@ int calc_lev_dist(const std::string &word1, const std::string &word2, const int 
     std::vector<int> curr_row(min_len + 1);
     std::vector<int> prev_row(min_len + 1);
     for (int i = 0; i != min_len + 1; ++i) {
-        curr_row[i] = i;
+        prev_row[i] = i;
     }
 
     for (int i = 1; i != max_len + 1; ++i) {
-        prev_row = curr_row;
         curr_row[0] = i;
         for (int j = 1; j != min_len + 1; ++j) {
             int up = prev_row[j] + 1;
@@ -298,9 +296,16 @@ int calc_lev_dist(const std::string &word1, const std::string &word2, const int 
                 diag += 1;
             }
             curr_row[j] = std::min(std::min(up, down), diag);
+   //         std::cout << curr_row[j];
         }
+  //      std::cout << std::endl;
+        prev_row = curr_row;
     }
-
+/*
+    std::cout << "word1: " << word1 << " size1: " << min_len;
+    std::cout << " word2: " << word2 << " size2: " << max_len;
+    std::cout << " dist " << curr_row[min_len] << std::endl;
+ */
     return curr_row[min_len];
 }
 
