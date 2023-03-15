@@ -202,8 +202,7 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 
 std::string teachable_dictionary::find_min_levenshtein_distance(const std::string &word, const int lev_const) const
 {
-    if (get_freq(word))
-    {
+    if (get_freq(word)) {
         return word;
     }
 
@@ -216,13 +215,17 @@ std::string teachable_dictionary::find_min_levenshtein_distance(const std::strin
             find_tuple_word_with_min_dist_(word, lenth_minus_one + index, lev_const);
 
         int dist = std::get<2>(tuple_word_with_min_dist);
-        if ((dist <= min_dist) && (dist <= lev_const)) {
+        if ((dist == min_dist) && (dist <= lev_const)) {
             int freq = std::get<1>(tuple_word_with_min_dist);
             if (freq > freq_word_with_min_dist) {
                 word_with_min_dist = std::get<0>(tuple_word_with_min_dist);
                 freq_word_with_min_dist = freq;
                 min_dist = dist;
             }
+        } else if ((dist < min_dist) && (dist <= lev_const)) {
+            word_with_min_dist = std::get<0>(tuple_word_with_min_dist);
+            freq_word_with_min_dist = std::get<1>(tuple_word_with_min_dist);
+            min_dist = dist;
         }
     }
 
@@ -254,12 +257,9 @@ std::tuple<std::string, int, int> find_min_lev_dist_in_hash_table(
         int old_dist = std::get<2>(tuple_word_with_min_dist);
         if (dist < old_dist) {
             tuple_word_with_min_dist = {elem.first, elem.second, dist};
-        }
-        else if ((dist == old_dist) && (elem.second > std::get<1>(tuple_word_with_min_dist)))
-        {
+        } else if ((dist == old_dist) && (elem.second > std::get<1>(tuple_word_with_min_dist))) {
             tuple_word_with_min_dist = {elem.first, elem.second, dist};
         }
-        
     }
 
     return tuple_word_with_min_dist;
@@ -296,16 +296,16 @@ int calc_lev_dist(const std::string &word1, const std::string &word2, const int 
                 diag += 1;
             }
             curr_row[j] = std::min(std::min(up, down), diag);
-   //         std::cout << curr_row[j];
+            //         std::cout << curr_row[j];
         }
-  //      std::cout << std::endl;
+        //      std::cout << std::endl;
         prev_row = curr_row;
     }
-/*
-    std::cout << "word1: " << word1 << " size1: " << min_len;
-    std::cout << " word2: " << word2 << " size2: " << max_len;
-    std::cout << " dist " << curr_row[min_len] << std::endl;
- */
+    /*
+        std::cout << "word1: " << word1 << " size1: " << min_len;
+        std::cout << " word2: " << word2 << " size2: " << max_len;
+        std::cout << " dist " << curr_row[min_len] << std::endl;
+     */
     return curr_row[min_len];
 }
 
