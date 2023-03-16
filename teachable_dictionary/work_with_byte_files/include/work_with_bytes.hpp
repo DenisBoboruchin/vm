@@ -1,5 +1,6 @@
 #ifndef WORK_WITH_BYTES_HPP
 #define WORK_WITH_BYTES_HPP
+
 #include <iostream>
 
 namespace work_with_bytes {
@@ -18,8 +19,13 @@ public:
     std::string get_word();
     std::string get_punct();
 
+    int get_int();
+    char get_char();
+
     size_t size() const;
     bool empty() const;
+
+    bool can_get_int() const;
 
 private:
     bool increase_pointer_();

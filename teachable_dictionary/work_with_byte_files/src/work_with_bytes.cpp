@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "work_with_bytes.hpp"
 
 namespace work_with_bytes {
@@ -30,8 +32,37 @@ reader::~reader()
     delete[] data_;
 }
 
+int reader::get_int()
+{
+    if (empty()) {
+        return {};
+    }
+
+    int number = 0;
+    memcpy(&number, pointer_, sizeof(int));
+    pointer_ += sizeof(int);
+
+    return number;
+}
+
+char reader::get_char()
+{
+    if (empty()) {
+        return {};
+    }
+
+    char number = *pointer_;
+    pointer_ += sizeof(char);
+
+    return number;
+}
+
 std::string reader::get_word()
 {
+    if (empty()) {
+        return {};
+    }
+
     char *temp_ptr = pointer_;
     char symb = tolower(*pointer_);
     while (('a' <= symb) && (symb <= 'z')) {
@@ -59,6 +90,10 @@ std::string reader::get_word()
 
 std::string reader::get_punct()
 {
+    if (empty()) {
+        return {};
+    }
+
     std::string punkt_str {};
     char symb = tolower(*pointer_);
     while (!(('a' <= symb) && (symb <= 'z'))) {
@@ -75,12 +110,17 @@ std::string reader::get_punct()
 
 bool reader::increase_pointer_()
 {
-    if (static_cast<int>(pointer_ - data_ + 1) == size_) {
+    if (empty()) {
         return 0;
     }
 
     pointer_++;
     return 1;
+}
+
+bool reader::can_get_int() const
+{
+    return (static_cast<int>(pointer_ - data_ + sizeof(int)) >= size_ - 1) || !data_;
 }
 
 size_t reader::size() const
@@ -90,7 +130,7 @@ size_t reader::size() const
 
 bool reader::empty() const
 {
-    return data_ == nullptr;
+    return (static_cast<int>(pointer_ - data_) >= size_ - 1) || !data_;
 }
 
 }  // namespace work_with_bytes

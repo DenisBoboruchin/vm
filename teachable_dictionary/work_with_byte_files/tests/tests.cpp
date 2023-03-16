@@ -13,7 +13,7 @@ int main()
 
 TEST(reader, constr)
 {
-    reader rdr {PROJECT_DIR_PATH + std::string("/reader/tests/text.txt")};
+    reader rdr {PROJECT_DIR_PATH + std::string("/work_with_byte_files/tests/text.txt")};
 
     std::cout << rdr.get_punct();
     std::cout << rdr.get_word();

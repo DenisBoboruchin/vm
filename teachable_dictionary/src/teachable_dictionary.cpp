@@ -17,11 +17,19 @@ static word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::has
 
 static int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const);
 
-teachable_dictionary::teachable_dictionary(const std::string &data_path, const int type)
+static std::string add_extension(const std::string &str, const std::string &ext);
+
+teachable_dictionary::teachable_dictionary(const std::string &data_path, const bool read_bytes)
     : data_dictionary_path_ {data_path}, size_ {0}, size_data_in_bytes_ {0}
 {
     if (data_path.empty()) {
         std::cout << "dictionary data is empty" << std::endl;
+        return;
+    }
+
+    if (read_bytes) {
+        std::cout << "read from bytes\n";
+        create_data_from_bytes_(data_path);
         return;
     }
 
@@ -35,6 +43,7 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const i
     dictionary_data_stream >> lenth;
     if (!lenth) {
         std::cout << "dictionary data file is empty" << std::endl;
+        return;
     }
 
     while (!dictionary_data_stream.eof()) {
@@ -64,6 +73,29 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const i
     dictionary_data_stream.close();
 }
 
+void teachable_dictionary::create_data_from_bytes_(const std::string &data_path)
+{
+    work_with_bytes::reader reader {data_path};
+
+    std::cout << data_dictionary_path_ << std::endl;
+    std::cout << reader.size() << std::endl;
+    while (!reader.can_get_int()) {
+        int lenth = reader.get_int();
+        int num_lenth = reader.get_int();
+        dictionary_.insert(lenth, {});
+
+        std::cout << lenth << std::endl;
+        numeric_hash_table &hash_table = dictionary_.begin()->second;
+        for (int index = 0; index != num_lenth; ++index) {
+            std::string word = reader.get_word();
+            int freq = reader.get_int();
+            hash_table.insert(word, freq);
+            size_++;
+        }
+    }
+    size_data_in_bytes_ = reader.size();
+}
+
 teachable_dictionary::~teachable_dictionary()
 {
     save_data(data_dictionary_path_);
@@ -72,7 +104,9 @@ teachable_dictionary::~teachable_dictionary()
 
 bool teachable_dictionary::save_data(const std::string &path_to_save) const
 {
-    std::ofstream data_save_stream {path_to_save};
+    std::string path_to_save_ex = add_extension (path_to_save, ".txt");
+
+    std::ofstream data_save_stream {path_to_save_ex};
     if (!data_save_stream) {
         std::cout << "incorrect data_save_path" << std::endl;
         return 0;
@@ -109,11 +143,7 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
         return 0;
     }
 
-    std::string EXTENSION = ".bt";
-    std::string path_to_save_ex {path_to_save};
-    path_to_save_ex.replace(path_to_save_ex.begin() + path_to_save_ex.find('.'), path_to_save_ex.end(),
-                            EXTENSION.begin(), EXTENSION.end());
-
+    std::string path_to_save_ex = add_extension(path_to_save, ".bt");
     FILE *data_save_stream = fopen(path_to_save_ex.c_str(), "wb");
     if (!data_save_stream) {
         std::cout << "incorrect data_save_path" << std::endl;
@@ -152,6 +182,20 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
     delete[] dictionary_data_ptr;
     fclose(data_save_stream);
     return 1;
+}
+
+std::string add_extension(const std::string &str, const std::string &ext)
+{
+    std::string res {str};
+
+    size_t offset = res.find('.');
+    if (offset == std::string::npos) {
+        res.append(ext);
+    } else {
+        res.replace(res.begin() + offset, res.end(), ext.begin(), ext.end());
+    }
+
+    return res;
 }
 
 bool teachable_dictionary::read_text(const std::string &text_path)
