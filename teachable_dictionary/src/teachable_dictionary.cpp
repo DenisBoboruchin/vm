@@ -17,7 +17,8 @@ static word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::has
 
 static int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const);
 
-teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_dictionary_path_ {data_path}, size_ {0}
+teachable_dictionary::teachable_dictionary(const std::string &data_path)
+    : data_dictionary_path_ {data_path}, size_ {0}, size_data_in_bytes_ {0}
 {
     if (data_path.empty()) {
         std::cout << "dictionary data is empty" << std::endl;
@@ -50,19 +51,23 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path) : data_
             dictionary_data_stream >> freq;
             hash_table.insert(word, freq);
 
+            size_data_in_bytes_ += word.size() + 1;  // num bytes in word
+            size_data_in_bytes_++;                   // one byte for frequency
             size_++;
         }
 
         dictionary_data_stream >> lenth;
+        size_data_in_bytes_ += 2;  // two bytes for lenth words and num word with this lenth
     }
 
+    std::cout << size_data_in_bytes_ << std::endl;
     dictionary_data_stream.close();
 }
 
 teachable_dictionary::~teachable_dictionary()
 {
     save_data(data_dictionary_path_);
-    //    save_data_binary("df");
+    save_data_binary(data_dictionary_path_);
 }
 
 bool teachable_dictionary::save_data(const std::string &path_to_save) const
@@ -99,24 +104,53 @@ bool teachable_dictionary::save_data(const std::string &path_to_save) const
 
 bool teachable_dictionary::save_data_binary(const std::string &path_to_save) const
 {
-    /*
-    FILE* data_save_stream = fopen (path_to_save.c_str(), "wb");
-    if (!data_save_stream) {
-        std::cout << "incorrect data_save_path" << std::endl;
-    //    return 0;
+    if (!path_to_save.size()) {
+        std::cout << "incorrect data_byte_save_path" << std::endl;
+        return 0;
     }
 
-    std::vector<char> data {};
-    for (auto dictionary_elem : dictionary_)
-    {
+    std::string EXTENSION = ".bt";
+    std::string path_to_save_ex {path_to_save};
+    path_to_save_ex.replace(path_to_save_ex.begin() + path_to_save_ex.find('.'), path_to_save_ex.end(),
+                            EXTENSION.begin(), EXTENSION.end());
+
+    FILE *data_save_stream = fopen(path_to_save_ex.c_str(), "wb");
+    if (!data_save_stream) {
+        std::cout << "incorrect data_save_path" << std::endl;
+        return 0;
+    }
+
+    char *dictionary_data_ptr = new char[size_data_in_bytes_];
+    char *pointer = dictionary_data_ptr;
+    for (auto dictionary_elem : dictionary_) {
         numeric_hash_table &hash_table = dictionary_elem.second;
+        int word_len = dictionary_elem.first;
+        *reinterpret_cast<int *>(pointer) = word_len;
+        pointer += sizeof(int);
+        *reinterpret_cast<int *>(pointer) = hash_table.size();
+        pointer += sizeof(int);
 
         for (auto elem : hash_table) {
+            const std::string &word = elem.first;
+            for (int index = 0; index != word_len; ++index) {
+                *pointer = word[index];
+                pointer++;
+            }
+            *pointer = '\0';
+            pointer++;
+            *reinterpret_cast<int *>(pointer) = elem.second;
+            pointer += sizeof(int);
         }
     }
 
-    data_save_stream.close ();
-    */
+    int num_writed = fwrite(dictionary_data_ptr, sizeof(char), size_data_in_bytes_, data_save_stream);
+    if (num_writed != size_data_in_bytes_) {
+        std::cout << "error saving in bytecode: saved " << num_writed << ", expected " << size_data_in_bytes_
+                  << std::endl;
+    }
+
+    delete[] dictionary_data_ptr;
+    fclose(data_save_stream);
     return 1;
 }
 
@@ -142,6 +176,7 @@ bool teachable_dictionary::read_text(const std::string &text_path)
             } else {
                 hash_table.insert(word, 1);
                 size_++;
+                size_data_in_bytes_ += word_len + 1;
             }
         } else {
             dictionary_.insert(word_len, {});
@@ -149,6 +184,8 @@ bool teachable_dictionary::read_text(const std::string &text_path)
             hash_table.insert(word, 1);
 
             size_++;
+            size_data_in_bytes_ += word_len + 1;
+            size_data_in_bytes_ += 2;
         }
 
         reader.get_punct();

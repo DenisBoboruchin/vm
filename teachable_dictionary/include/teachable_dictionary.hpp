@@ -40,6 +40,7 @@ private:
 
     std::string data_dictionary_path_;
     int size_;
+    int size_data_in_bytes_;
 };
 
 }  // namespace dictionary
