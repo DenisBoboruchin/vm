@@ -5,8 +5,15 @@
 #include "reader.hpp"
 
 namespace dictionary {
-static std::tuple<std::string, int, int> find_min_lev_dist_in_hash_table(
-    const my_containers::hash_table<std::string, int> &hash_table, const std::string &word, const int lev_const);
+
+struct word_freq_dist_t final {
+    std::string word {};
+    int freq = 0;
+    int dist = 0;
+};
+
+static word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::hash_table<std::string, int> &hash_table,
+                                                        const std::string &word, const int lev_const);
 
 static int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const);
 
@@ -208,23 +215,22 @@ std::string teachable_dictionary::find_min_levenshtein_distance(const std::strin
 
     int lenth_minus_one = word.size() - 1;
     std::string word_with_min_dist {word};
-    int freq_word_with_min_dist = 0;
+    int freq_word_freq_dist = 0;
     int min_dist = lev_const + 1;
     for (int index = 0; index != 3; ++index) {
-        std::tuple<std::string, int, int> tuple_word_with_min_dist =
-            find_tuple_word_with_min_dist_(word, lenth_minus_one + index, lev_const);
+        word_freq_dist_t word_freq_dist = find_word_freq_dist_(word, lenth_minus_one + index, lev_const);
 
-        int dist = std::get<2>(tuple_word_with_min_dist);
+        int dist = word_freq_dist.dist;
         if ((dist > lev_const) || (dist > min_dist)) {
             continue;
         } else if (dist == min_dist) {
-            int freq = std::get<1>(tuple_word_with_min_dist);
-            if (freq <= freq_word_with_min_dist) {
+            int freq = word_freq_dist.freq;
+            if (freq <= freq_word_freq_dist) {
                 continue;
             }
         }
-        word_with_min_dist = std::get<0>(tuple_word_with_min_dist);
-        freq_word_with_min_dist = std::get<1>(tuple_word_with_min_dist);
+        word_with_min_dist = word_freq_dist.word;
+        freq_word_freq_dist = word_freq_dist.freq;
         min_dist = dist;
     }
 
@@ -235,9 +241,8 @@ std::string teachable_dictionary::find_min_levenshtein_distance(const std::strin
     return word_with_min_dist;
 }
 
-std::tuple<std::string, int, int> teachable_dictionary::find_tuple_word_with_min_dist_(const std::string &word,
-                                                                                       const int lenth,
-                                                                                       const int lev_const) const
+word_freq_dist_t teachable_dictionary::find_word_freq_dist_(const std::string &word, const int lenth,
+                                                            const int lev_const) const
 {
     auto hash_table_lenth_itr = dictionary_.find(lenth);
     if (hash_table_lenth_itr == dictionary_.end()) {
@@ -247,22 +252,22 @@ std::tuple<std::string, int, int> teachable_dictionary::find_tuple_word_with_min
     return find_min_lev_dist_in_hash_table(hash_table_lenth_itr->second, word, lev_const);
 }
 
-std::tuple<std::string, int, int> find_min_lev_dist_in_hash_table(
-    const my_containers::hash_table<std::string, int> &hash_table, const std::string &word, const int lev_const)
+word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::hash_table<std::string, int> &hash_table,
+                                                 const std::string &word, const int lev_const)
 {
-    std::tuple<std::string, int, int> tuple_word_with_min_dist {word, 0, lev_const + 1};
+    word_freq_dist_t word_freq_dist {word, 0, lev_const + 1};
     for (auto elem : hash_table) {
         int dist = calc_lev_dist(elem.first, word, lev_const);
-        int old_dist = std::get<2>(tuple_word_with_min_dist);
+        int old_dist = word_freq_dist.dist;
 
         if (dist < old_dist) {
-            tuple_word_with_min_dist = {elem.first, elem.second, dist};
-        } else if ((dist == old_dist) && (elem.second > std::get<1>(tuple_word_with_min_dist))) {
-            tuple_word_with_min_dist = {elem.first, elem.second, dist};
+            word_freq_dist = {elem.first, elem.second, dist};
+        } else if ((dist == old_dist) && (elem.second > word_freq_dist.freq)) {
+            word_freq_dist = {elem.first, elem.second, dist};
         }
     }
 
-    return tuple_word_with_min_dist;
+    return word_freq_dist;
 }
 
 int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const)

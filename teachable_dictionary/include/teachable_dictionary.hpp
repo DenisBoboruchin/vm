@@ -8,6 +8,8 @@
 
 namespace dictionary {
 
+struct word_freq_dist_t;
+
 class teachable_dictionary final {
 public:
     explicit teachable_dictionary(const std::string &data_path = {});
@@ -32,8 +34,7 @@ public:
     std::string find_min_levenshtein_distance(const std::string &word, const int lev_const) const;
 
 private:
-    std::tuple<std::string, int, int> find_tuple_word_with_min_dist_(const std::string &word, const int lenth,
-                                                                     const int lev_const) const;
+    word_freq_dist_t find_word_freq_dist_(const std::string &word, const int lenth, const int lev_const) const;
     using numeric_hash_table = typename my_containers::hash_table<std::string, int>;
     my_containers::hash_table<int, numeric_hash_table> dictionary_;
 
