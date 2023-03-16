@@ -12,7 +12,7 @@ struct word_freq_dist_t;
 
 class teachable_dictionary final {
 public:
-    explicit teachable_dictionary(const std::string &data_path = {});
+    explicit teachable_dictionary(const std::string &data_path = {}, const int type = false);
     teachable_dictionary(const teachable_dictionary &other) = default;
     teachable_dictionary(teachable_dictionary &&other) noexcept = default;
 

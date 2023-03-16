@@ -16,7 +16,7 @@ add_compile_options(-Wall -g)
 
 cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH PROJECT_PARRENT_PATH)
 
-include_directories (include hash_table/include reader/include ${PROJECT_PARRENT_PATH}/queue/list/include)
+include_directories (include hash_table/include work_with_byte_files/include ${PROJECT_PARRENT_PATH}/queue/list/include)
 add_definitions(-DPROJECT_DIR_PATH=\"${CMAKE_SOURCE_DIR}\")
 
 add_library (${PROJECT_NAME} STATIC ${TEACHABLE_DICTIONARY_SOURCE})
@@ -59,4 +59,4 @@ endif ()
 add_subdirectory (tests)
 
 add_subdirectory (hash_table)
-add_subdirectory (reader)
+add_subdirectory (work_with_byte_files)

@@ -1,6 +1,6 @@
-#include "reader.hpp"
+#include "work_with_bytes.hpp"
 
-namespace my_containers {
+namespace work_with_bytes {
 
 reader::reader(const std::string &text_path)
 {
@@ -93,4 +93,4 @@ bool reader::empty() const
     return data_ == nullptr;
 }
 
-}  // namespace my_containers
+}  // namespace work_with_bytes

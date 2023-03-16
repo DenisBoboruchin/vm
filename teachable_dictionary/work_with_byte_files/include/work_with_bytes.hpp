@@ -1,9 +1,8 @@
-#ifndef READER_HPP
-#define READER_HPP
-
+#ifndef WORK_WITH_BYTES_HPP
+#define WORK_WITH_BYTES_HPP
 #include <iostream>
 
-namespace my_containers {
+namespace work_with_bytes {
 
 class reader final {
 public:
@@ -30,5 +29,6 @@ private:
     int size_ = 0;
 };
 
-}  // namespace my_containers
+}  // namespace work_with_bytes
+
 #endif

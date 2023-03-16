@@ -1,0 +1,11 @@
+set(WORK_WITH_BYTES_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(WORK_WITH_BYTES_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/work_with_bytes.cpp)
+
+cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH PROJECT_PARRENT_PATH)
+
+set (PROJECT_NAME work_with_bytes)
+
+include_directories (${WORK_WITH_BYTES_INCLUDES})
+add_library(${PROJECT_NAME} STATIC ${WORK_WITH_BYTES_SOURCE})
+
+add_subdirectory (tests)

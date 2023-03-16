@@ -1,14 +1,14 @@
-set (SOURCE_READER_TEST ${CMAKE_CURRENT_SOURCE_DIR}/tests.cpp)
+set (SOURCE_WORK_WITH_BYTES_TEST ${CMAKE_CURRENT_SOURCE_DIR}/tests.cpp)
 
 #tests
 option(TESTING "Include testing" ON)
 if (TESTING)
-    message ("Include reader testing")
+    message ("Include" ${PROJECT_NAME} "testing")
 
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})
 
-    add_executable (${PROJECT_NAME}_tests ${SOURCE_READER_TEST})
+    add_executable (${PROJECT_NAME}_tests ${SOURCE_WORK_WITH_BYTES_TEST})
     
     if (ADD_SANITIZERS)
         set_target_properties (${PROJECT_NAME}_tests PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")

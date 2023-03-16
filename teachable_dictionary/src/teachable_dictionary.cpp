@@ -2,7 +2,7 @@
 #include <tuple>
 
 #include "teachable_dictionary.hpp"
-#include "reader.hpp"
+#include "work_with_bytes.hpp"
 
 namespace dictionary {
 
@@ -17,7 +17,7 @@ static word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::has
 
 static int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const);
 
-teachable_dictionary::teachable_dictionary(const std::string &data_path)
+teachable_dictionary::teachable_dictionary(const std::string &data_path, const int type)
     : data_dictionary_path_ {data_path}, size_ {0}, size_data_in_bytes_ {0}
 {
     if (data_path.empty()) {
@@ -156,7 +156,7 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
 
 bool teachable_dictionary::read_text(const std::string &text_path)
 {
-    my_containers::reader reader {text_path};
+    work_with_bytes::reader reader {text_path};
     if (reader.empty()) {
         std::cout << "error in reading file for teach\n";
         return 0;
@@ -215,7 +215,7 @@ int teachable_dictionary::get_freq(const std::string &word) const
 
 bool teachable_dictionary::correct_text(const std::string &text_for_correct_path, const int lev_const) const
 {
-    my_containers::reader reader {text_for_correct_path};
+    work_with_bytes::reader reader {text_for_correct_path};
     if (reader.empty()) {
         std::cout << "error in reading file for teach\n";
         return 0;
