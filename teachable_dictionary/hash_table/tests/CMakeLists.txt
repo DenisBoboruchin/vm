@@ -5,7 +5,7 @@ include_directories (${HASH_TABLE_INCLUDES})
 #tests
 option(TESTING "Include testing" ON)
 if (TESTING)
-    message ("Include hash table testing")
+    message ("Include " ${PROJECT_NAME} " testing")
 
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})

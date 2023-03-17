@@ -12,6 +12,9 @@ set(CMAKE_CXX_COMPILER clang++)
 set(TEACHABLE_DICTIONARY_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(TEACHABLE_DICTIONARY_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/teachable_dictionary.cpp)
 
+set(PROGRAM_NAME dictionary_manager)
+set(MAIN_PROGRAM_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
+
 add_compile_options(-Wall -g)
 
 cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH PROJECT_PARRENT_PATH)
@@ -20,6 +23,15 @@ include_directories (include hash_table/include work_with_byte_files/include ${P
 add_definitions(-DPROJECT_DIR_PATH=\"${CMAKE_SOURCE_DIR}\")
 
 add_library (${PROJECT_NAME} STATIC ${TEACHABLE_DICTIONARY_SOURCE})
+
+#main
+add_executable (${PROGRAM_NAME} ${MAIN_PROGRAM_SOURCE})
+
+add_custom_target (run_${PROGRAM_NAME} 
+    COMMENT "Running " ${PROGRAM_NAME}
+    COMMAND ./${PROGRAM_NAME}
+)
+add_dependencies (run_${PROGRAM_NAME} ${PROGRAM_NAME})
 
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)
@@ -54,6 +66,7 @@ if (ADD_SANITIZERS)
 
     add_compile_options (-fsanitize=address -fsanitize=undefined)
     set_target_properties (${PROJECT_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+    set_target_properties (${PROGRAM_NAME} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
 endif ()
 
 add_subdirectory (tests)

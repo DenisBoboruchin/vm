@@ -3,7 +3,7 @@ set (SOURCE_WORK_WITH_BYTES_TEST ${CMAKE_CURRENT_SOURCE_DIR}/tests.cpp)
 #tests
 option(TESTING "Include testing" ON)
 if (TESTING)
-    message ("Include" ${PROJECT_NAME} "testing")
+    message ("Include " ${PROJECT_NAME} " testing")
 
     find_package (GTest REQUIRED)
     include_directories (${GTEST_INCLUDE_DIRS})
