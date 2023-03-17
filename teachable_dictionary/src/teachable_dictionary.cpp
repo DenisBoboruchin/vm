@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstring>
 #include <tuple>
 
 #include "teachable_dictionary.hpp"
@@ -28,7 +29,7 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const b
     }
 
     if (read_bytes) {
-        std::cout << "read from bytes\n";
+        std::cout << "read data from binary file: " << data_path << std::endl;
         create_data_from_bytes_(data_path);
         return;
     }
@@ -61,30 +62,25 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const b
             hash_table.insert(word, freq);
 
             size_data_in_bytes_ += word.size() + 1;  // num bytes in word
-            size_data_in_bytes_++;                   // one byte for frequency
+            size_data_in_bytes_ += sizeof(int);      // bytes for frequency
             size_++;
         }
 
         dictionary_data_stream >> lenth;
-        size_data_in_bytes_ += 2;  // two bytes for lenth words and num word with this lenth
+        size_data_in_bytes_ += 2 * sizeof(int);  // bytes for lenth words and num word with this lenth
     }
 
-    std::cout << size_data_in_bytes_ << std::endl;
     dictionary_data_stream.close();
 }
 
 void teachable_dictionary::create_data_from_bytes_(const std::string &data_path)
 {
     work_with_bytes::reader reader {data_path};
-
-    std::cout << data_dictionary_path_ << std::endl;
-    std::cout << reader.size() << std::endl;
     while (!reader.can_get_int()) {
         int lenth = reader.get_int();
         int num_lenth = reader.get_int();
         dictionary_.insert(lenth, {});
 
-        std::cout << lenth << std::endl;
         numeric_hash_table &hash_table = dictionary_.begin()->second;
         for (int index = 0; index != num_lenth; ++index) {
             std::string word = reader.get_word();
@@ -98,19 +94,23 @@ void teachable_dictionary::create_data_from_bytes_(const std::string &data_path)
 
 teachable_dictionary::~teachable_dictionary()
 {
-    save_data(data_dictionary_path_);
-    save_data_binary(data_dictionary_path_);
+    if (size_) {
+        save_data(data_dictionary_path_);
+        save_data_binary(data_dictionary_path_);
+    }
 }
 
 bool teachable_dictionary::save_data(const std::string &path_to_save) const
 {
-    std::string path_to_save_ex = add_extension (path_to_save, ".txt");
+    std::string path_to_save_ex = add_extension(path_to_save, ".txt");
 
     std::ofstream data_save_stream {path_to_save_ex};
     if (!data_save_stream) {
         std::cout << "incorrect data_save_path" << std::endl;
         return 0;
     }
+
+    std::cout << "saving in " << path_to_save_ex << std::endl;
 
     std::string save_data_text;
     for (auto dictionary_elem : dictionary_) {
@@ -150,14 +150,19 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
         return 0;
     }
 
+    std::cout << "saving binary in " << path_to_save_ex << std::endl;
+
     char *dictionary_data_ptr = new char[size_data_in_bytes_];
     char *pointer = dictionary_data_ptr;
     for (auto dictionary_elem : dictionary_) {
         numeric_hash_table &hash_table = dictionary_elem.second;
+
         int word_len = dictionary_elem.first;
-        *reinterpret_cast<int *>(pointer) = word_len;
+        memcpy(pointer, &word_len, sizeof(int));
         pointer += sizeof(int);
-        *reinterpret_cast<int *>(pointer) = hash_table.size();
+
+        int num_lenth = hash_table.size();
+        memcpy(pointer, &num_lenth, sizeof(int));
         pointer += sizeof(int);
 
         for (auto elem : hash_table) {
@@ -168,7 +173,9 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
             }
             *pointer = '\0';
             pointer++;
-            *reinterpret_cast<int *>(pointer) = elem.second;
+
+            int freq = elem.second;
+            memcpy(pointer, &freq, sizeof(int));
             pointer += sizeof(int);
         }
     }

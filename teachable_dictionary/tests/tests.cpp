@@ -13,8 +13,6 @@ int main()
 
 TEST(teachable_dictionary, constructor)
 {
-    teachable_dictionary dictionary(std::string(PROJECT_DIR_PATH + std::string("/tests/data_base/data.txt")));
-
     teachable_dictionary empty;
     ASSERT_EQ(empty.size(), 0);
     ASSERT_EQ(empty.empty(), 1);
@@ -37,10 +35,16 @@ TEST(teachable_dictionary, correct_text)
     teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data.txt"));
 
     dictionary.correct_text(PROJECT_DIR_PATH + std::string("/tests/data_base/text_with_errors.txt"));
-    dictionary.save_data_binary(PROJECT_DIR_PATH + std::string("/tests/data_base/data2."));
+}
+
+TEST(teachable_dictionary, save_data_binary)
+{
+    teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data.txt"));
+
+    dictionary.save_data_binary(PROJECT_DIR_PATH + std::string("/tests/data_base/data3.bt"));
 }
 
 TEST(teachable_dictionary, read_data_from_binary)
 {
-    teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data2.bt"), true);
+    teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data3.bt"), true);
 }
