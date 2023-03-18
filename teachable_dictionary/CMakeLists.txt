@@ -23,9 +23,12 @@ include_directories (include hash_table/include work_with_byte_files/include ${P
 add_definitions(-DPROJECT_DIR_PATH=\"${CMAKE_SOURCE_DIR}\")
 
 add_library (${PROJECT_NAME} STATIC ${TEACHABLE_DICTIONARY_SOURCE})
+add_subdirectory (work_with_byte_files)
+target_link_libraries (${PROJECT_NAME} PUBLIC work_with_bytes)
 
 #main
 add_executable (${PROGRAM_NAME} ${MAIN_PROGRAM_SOURCE})
+target_link_libraries (${PROGRAM_NAME} PUBLIC ${PROJECT_NAME})
 
 add_custom_target (run_${PROGRAM_NAME} 
     COMMENT "Running " ${PROGRAM_NAME}
@@ -70,6 +73,4 @@ if (ADD_SANITIZERS)
 endif ()
 
 add_subdirectory (tests)
-
 add_subdirectory (hash_table)
-add_subdirectory (work_with_byte_files)
