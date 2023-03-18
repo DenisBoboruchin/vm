@@ -1,4 +1,4 @@
-#Teachable dictionary
+Teachable dictionary
 ===
 - Reading texts with the formation of a database of words and their frequency
 - Correcting texts, words with typos
