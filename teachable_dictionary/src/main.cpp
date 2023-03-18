@@ -7,7 +7,7 @@ static int execute ();
 static int command_handler (const std::string& command, my_containers::hash_table<std::string, dictionary::teachable_dictionary>& dictionaries);
 static int execute_run(my_containers::hash_table<std::string, dictionary::teachable_dictionary>& dictionaries);
 enum {
-    WITHOUT_MISTAKES, 
+    WITHOUT_ERRORS, 
     ERROR
 };
 
@@ -54,12 +54,25 @@ int command_handler (const std::string& command, my_containers::hash_table<std::
         std::cout << "unknown command \"" << command << "\", please try again" << std::endl;
     }
 
-    return WITHOUT_MISTAKES;
+    return WITHOUT_ERRORS;
 }
 
 int execute_run(my_containers::hash_table<std::string, dictionary::teachable_dictionary>& dictionaries)
 {
     std::string dic_name {};
     std::cin >> dic_name;
+    std::string data_path {};
+    std::cin >> data_path; 
+
+    if (dictionaries.find (dic_name) != dictionaries.end ())
+    {
+        std::cout << "dictionary already opened" << std::endl;
+        return WITHOUT_ERRORS;
+    }
+
+    dictionary::teachable_dictionary dictionary {PROJECT_DIR_PATH + std::string{"/"} + data_path};
+    dictionaries.insert(dic_name, dictionary);
+
+    return WITHOUT_ERRORS;
 }
 

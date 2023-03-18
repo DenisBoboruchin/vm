@@ -46,5 +46,6 @@ TEST(teachable_dictionary, save_data_binary)
 
 TEST(teachable_dictionary, read_data_from_binary)
 {
-    teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data3.bt"), true);
+    teachable_dictionary dictionary1(PROJECT_DIR_PATH + std::string("/tests/data_base/data3.bt"), false);
+    teachable_dictionary dictionary2(PROJECT_DIR_PATH + std::string("/tests/data_base/data3.bt"), true);
 }

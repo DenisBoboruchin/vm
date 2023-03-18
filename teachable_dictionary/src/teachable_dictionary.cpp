@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <cstring>
-#include <tuple>
+#include <sstream>
 
 #include "teachable_dictionary.hpp"
 #include "work_with_bytes.hpp"
@@ -40,25 +40,30 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const b
         exit(0);
     }
 
+
+    std::stringstream text_string {};
+    text_string << dictionary_data_stream.rdbuf();
+    dictionary_data_stream.close();
+    
     int lenth = 0;
-    dictionary_data_stream >> lenth;
+    text_string >> lenth;
     if (!lenth) {
         std::cout << "dictionary data file is empty" << std::endl;
         return;
     }
 
-    while (!dictionary_data_stream.eof()) {
+    while (!text_string.eof()) {
         std::string word {};
         int freq = 0;
         int num_lenth = 0;
 
-        dictionary_data_stream >> num_lenth;
+        text_string >> num_lenth;
 
         dictionary_.insert(lenth, {});
         numeric_hash_table &hash_table = dictionary_.begin()->second;
         for (int index = 0; index != num_lenth; ++index) {
-            dictionary_data_stream >> word;
-            dictionary_data_stream >> freq;
+            text_string >> word;
+            text_string >> freq;
             hash_table.insert(word, freq);
 
             size_data_in_bytes_ += word.size() + 1;  // num bytes in word
@@ -66,11 +71,10 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const b
             size_++;
         }
 
-        dictionary_data_stream >> lenth;
+        text_string >> lenth;
         size_data_in_bytes_ += 2 * sizeof(int);  // bytes for lenth words and num word with this lenth
     }
 
-    dictionary_data_stream.close();
 }
 
 void teachable_dictionary::create_data_from_bytes_(const std::string &data_path)
