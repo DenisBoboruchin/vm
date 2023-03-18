@@ -1,4 +1,4 @@
-2 queue implementations and one set of tests.
+2 queue implementations and one set of tests
 ===
 - The first queue is implemented through a list
 - The second queue is implemented through 2 stacks (it uses its own stack)
