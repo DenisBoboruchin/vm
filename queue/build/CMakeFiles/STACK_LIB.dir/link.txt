@@ -1,0 +1,2 @@
+/usr/bin/ar qc libSTACK_LIB.a CMakeFiles/STACK_LIB.dir/home/denis/prog/vm/stack/src/stack_bool.cpp.o
+/usr/bin/ranlib libSTACK_LIB.a

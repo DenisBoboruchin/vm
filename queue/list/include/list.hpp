@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <iterator>
+#include <utility>
 
 namespace my_containers {
 
@@ -22,6 +23,9 @@ public:
     
     void push_front(const T &value);
     void push_back(const T &value);
+
+    void emplace_front(T &&value);
+    void emplace_back(T &&value);
 
     void pop_front();
     void pop_back();
@@ -236,6 +240,25 @@ void list<T>::push_back(const T &value)
 }
 
 template <typename T>
+void list<T>::emplace_back(T &&value)
+{
+    list_node_t *new_list_node = new list_node_t {std::forward<T> (value)};
+
+    if (empty()) {
+        front_ = new_list_node;
+        new_list_node->next_ = nullptr;
+    } else {
+        new_list_node->next_ = rear_;
+        rear_->prev_ = new_list_node;
+    }
+
+    rear_ = new_list_node;
+    new_list_node->prev_ = nullptr;
+
+    size_++;
+}
+
+template <typename T>
 void list<T>::push_front(const T &value)
 {
     list_node_t *new_list_node = new list_node_t {value};
@@ -268,6 +291,25 @@ void list<T>::pop_back()
 
     rear_ = new_rear;
     size_--;
+}
+
+template <typename T>
+void list<T>::emplace_front(T &&value)
+{
+    list_node_t *new_list_node = new list_node_t {std::forward<T> (value)};
+
+    if (empty()) {
+        rear_ = new_list_node;
+        new_list_node->prev_ = nullptr;
+    } else {
+        new_list_node->prev_ = front_;
+        front_->next_ = new_list_node;
+    }
+
+    front_ = new_list_node;
+    new_list_node->next_ = nullptr;
+
+    size_++;
 }
 
 template <typename T>
