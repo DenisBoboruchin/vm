@@ -15,7 +15,6 @@ set(TEACHABLE_DICTIONARY_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/teachable_dictio
 set(PROGRAM_NAME dictionary_manager)
 set(MAIN_PROGRAM_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
-add_compile_options(-Wall -g)
 
 cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH PROJECT_PARRENT_PATH)
 
@@ -26,6 +25,8 @@ add_library (${PROJECT_NAME} STATIC ${TEACHABLE_DICTIONARY_SOURCE})
 add_subdirectory (work_with_byte_files)
 target_link_libraries (${PROJECT_NAME} PUBLIC work_with_bytes)
 
+add_compile_options(-g -Wall)
+
 #main
 add_executable (${PROGRAM_NAME} ${MAIN_PROGRAM_SOURCE})
 target_link_libraries (${PROGRAM_NAME} PUBLIC ${PROJECT_NAME})
@@ -35,6 +36,7 @@ add_custom_target (run_${PROGRAM_NAME}
     COMMAND ./${PROGRAM_NAME}
 )
 add_dependencies (run_${PROGRAM_NAME} ${PROGRAM_NAME})
+
 
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)

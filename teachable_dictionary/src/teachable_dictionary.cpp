@@ -36,15 +36,14 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const b
 
     std::ifstream dictionary_data_stream {data_path};
     if (!dictionary_data_stream) {
-        std::cout << "incorrect dictionary data PATH: " << data_path << std::endl;
-        exit(0);
+        std::cout << "empty dictionary data PATH: " << data_path << std::endl;
+        return;
     }
-
 
     std::stringstream text_string {};
     text_string << dictionary_data_stream.rdbuf();
     dictionary_data_stream.close();
-    
+
     int lenth = 0;
     text_string >> lenth;
     if (!lenth) {
@@ -74,7 +73,6 @@ teachable_dictionary::teachable_dictionary(const std::string &data_path, const b
         text_string >> lenth;
         size_data_in_bytes_ += 2 * sizeof(int);  // bytes for lenth words and num word with this lenth
     }
-
 }
 
 void teachable_dictionary::create_data_from_bytes_(const std::string &data_path)
@@ -106,6 +104,9 @@ teachable_dictionary::~teachable_dictionary()
 
 bool teachable_dictionary::save_data(const std::string &path_to_save) const
 {
+    if (!path_to_save.size()) {
+        return 0;
+    }
     std::string path_to_save_ex = add_extension(path_to_save, ".txt");
 
     std::ofstream data_save_stream {path_to_save_ex};
@@ -143,14 +144,13 @@ bool teachable_dictionary::save_data(const std::string &path_to_save) const
 bool teachable_dictionary::save_data_binary(const std::string &path_to_save) const
 {
     if (!path_to_save.size()) {
-        std::cout << "incorrect data_byte_save_path" << std::endl;
         return 0;
     }
 
     std::string path_to_save_ex = add_extension(path_to_save, ".bt");
     FILE *data_save_stream = fopen(path_to_save_ex.c_str(), "wb");
     if (!data_save_stream) {
-        std::cout << "incorrect data_save_path" << std::endl;
+        std::cout << "incorrect data_byte_save_path" << std::endl;
         return 0;
     }
 
@@ -213,7 +213,7 @@ bool teachable_dictionary::read_text(const std::string &text_path)
 {
     work_with_bytes::reader reader {text_path};
     if (reader.empty()) {
-        std::cout << "error in reading file for teach\n";
+        std::cout << "error reading file for teach\n";
         return 0;
     }
 
@@ -296,6 +296,8 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 
     corrected_text_stream << text;
     corrected_text_stream.close();
+
+    std::cout << "corrected text path: " << corrected_text_path << std::endl;
     return 1;
 }
 

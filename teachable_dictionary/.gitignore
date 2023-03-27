@@ -1,0 +1,5 @@
+build/
+data.txt
+data.bt
+text_with_errors.txt
+text_with_errors_corrected.txt

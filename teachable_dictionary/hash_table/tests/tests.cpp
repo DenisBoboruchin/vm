@@ -15,8 +15,10 @@ TEST(hash_table, constructors)
 {
     hash_table<int, int> first_table;
 
-    ASSERT_EQ(first_table.size(), 0);
-    ASSERT_EQ(first_table.empty(), 1);
+    hash_table<int, int> table {std::move(first_table)};
+
+    ASSERT_EQ(table.size(), 0);
+    ASSERT_EQ(table.empty(), 1);
 }
 
 TEST(hash_table, find)

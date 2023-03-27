@@ -2,6 +2,7 @@
 #define HASH_TABLE_HPP
 
 #include <iostream>
+#include <utility>
 #include <vector>
 
 #include "list.hpp"
@@ -11,17 +12,22 @@ namespace my_containers {
 template <typename Key, typename T, typename Hash = std::hash<Key>>
 class hash_table final {
 public:
-    hash_table() = default;
+    hash_table() {};
+
     hash_table(const hash_table &other) = default;
-    hash_table(hash_table &&other) noexcept = default;
+    hash_table(hash_table &&other) = default;
 
     hash_table &operator=(const hash_table &other) = default;
-    hash_table &operator=(hash_table &&other) noexcept = default;
+    hash_table &operator=(hash_table &&other) = default;
+
+    ~hash_table() = default;
 
     using hash_table_node_t = typename std::pair<Key, T>;
     using iterator = typename list<hash_table_node_t>::iterator;
 
     iterator insert(const Key &key, const T &elem);
+    iterator emplace(const Key &key, T &&elem);
+
     iterator erase(const Key &key);
     iterator find(const Key &key) const;
 
@@ -59,8 +65,28 @@ typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::insert(con
 
     rehash_();
 
-    hash_table_node_t new_elem {key, value};
-    data_.push_back(new_elem);
+    data_.push_back({key, value});
+
+    auto insert_itr = begin();
+    int index = Hash {}(key) % num_hash_buckets;
+    hash_table_.at(index).push_back(insert_itr);
+
+    return insert_itr;
+}
+
+template <typename Key, typename T, typename Hash>
+typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::emplace(const Key &key, T &&value)
+{
+    auto elem_itr = find(key);
+
+    if (elem_itr != end()) {
+        elem_itr->second = std::forward<T>(value);
+        return elem_itr;
+    }
+
+    rehash_();
+
+    data_.emplace_back({key, std::forward<T>(value)});
 
     auto insert_itr = begin();
     int index = Hash {}(key) % num_hash_buckets;
