@@ -318,19 +318,20 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
         int num_words_in_bucket = words_base.size() / num_threads;
 
         std::vector<std::future<std::string>> threads_vector;
-        for (auto i = 0; i < num_threads - 1; i++) {
+        for (int index = 0; index != num_threads - 1; ++index) {
             threads_vector.push_back(std::async(std::launch::async, work_for_thread,
-                                                words_base.begin() + i * num_words_in_bucket,
-                                                words_base.begin() + (i + 1) * num_words_in_bucket));
+                                                words_base.begin() + index * num_words_in_bucket,
+                                                words_base.begin() + (index + 1) * num_words_in_bucket));
         }
 
         threads_vector.push_back(std::async(std::launch::async, work_for_thread,
                                             words_base.begin() + (num_threads - 1) * num_words_in_bucket,
                                             words_base.end()));
 
-        for (int i = 0; i < threads_vector.size(); i++) {
-            threads_vector[i].wait();
-            auto corrected_words = threads_vector[i].get();
+        for (int index = 0; index != threads_vector.size(); ++index) {
+            auto &thread = threads_vector[index];
+            thread.wait();
+            auto corrected_words = thread.get();
 
             corrected_text_stream << corrected_words;
         }
