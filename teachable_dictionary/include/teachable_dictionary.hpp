@@ -30,8 +30,9 @@ public:
     bool save_data(const std::string &path_to_save) const;
     bool save_data_binary(const std::string &path_to_save) const;
 
-    bool correct_text(const std::string &text_for_correct_path, const int lev_const = 2) const;
-    std::string find_min_levenshtein_distance(const std::string &word, const int lev_const) const;
+    bool correct_text(const std::string &text_for_correct_path, const bool is_multithread = false,
+                      const int lev_const = 2) const;
+    std::string find_min_levenshtein_distance(const std::string &word, const int lev_const = 2) const;
 
 private:
     void create_data_from_bytes_(const std::string &data_path);

@@ -37,6 +37,13 @@ TEST(teachable_dictionary, correct_text)
     dictionary.correct_text(PROJECT_DIR_PATH + std::string("/tests/data_base/text_with_errors.txt"));
 }
 
+TEST(teachable_dictionary, multithread_correct_text)
+{
+    teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data.txt"));
+
+    dictionary.correct_text(PROJECT_DIR_PATH + std::string("/tests/data_base/text_with_errors_multithread.txt"), true);
+}
+
 TEST(teachable_dictionary, save_data_binary)
 {
     teachable_dictionary dictionary(PROJECT_DIR_PATH + std::string("/tests/data_base/data.txt"));

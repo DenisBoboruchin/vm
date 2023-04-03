@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <cstring>
 #include <sstream>
+#include <thread>
+#include <future>
 
 #include "teachable_dictionary.hpp"
 #include "work_with_bytes.hpp"
@@ -17,8 +19,8 @@ static word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::has
                                                         const std::string &word, const int lev_const);
 
 static int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const);
-
 static std::string add_extension(const std::string &str, const std::string &ext);
+static std::vector<std::string> get_words(work_with_bytes::reader &reader);
 
 teachable_dictionary::teachable_dictionary(const std::string &data_path, const bool read_bytes)
     : data_dictionary_path_ {data_path}, size_ {0}, size_data_in_bytes_ {0}
@@ -268,7 +270,8 @@ int teachable_dictionary::get_freq(const std::string &word) const
     }
 }
 
-bool teachable_dictionary::correct_text(const std::string &text_for_correct_path, const int lev_const) const
+bool teachable_dictionary::correct_text(const std::string &text_for_correct_path, const bool is_multithread,
+                                        const int lev_const) const
 {
     work_with_bytes::reader reader {text_for_correct_path};
     if (reader.empty()) {
@@ -283,22 +286,74 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 
     std::ofstream corrected_text_stream {corrected_text_path};
 
-    std::string text {};
-    text.append(reader.get_punct());
-    std::string word = reader.get_word();
-    while (word.size()) {
-        text.append(find_min_levenshtein_distance(word, lev_const));
+    if (!is_multithread) {
+        std::string text {};
         text.append(reader.get_punct());
 
-        word = reader.get_word();
-    }
-    text.append(reader.get_punct());
+        std::string word = reader.get_word();
+        while (word.size()) {
+            text.append(find_min_levenshtein_distance(word, lev_const));
+            text.append(reader.get_punct());
 
-    corrected_text_stream << text;
+            word = reader.get_word();
+        }
+        text.append(reader.get_punct());
+        corrected_text_stream << text;
+    } else {
+        std::vector<std::string> words_base = get_words(reader);
+        using vector_itr = typename std::vector<std::string>::iterator;
+
+        auto &&work_for_thread = [this](vector_itr start, vector_itr end) {
+            std::string corrected_words {};
+
+            for (vector_itr index = start; index != end; ++index) {
+                corrected_words.append(find_min_levenshtein_distance(*index));
+                corrected_words.append(" ");
+            }
+
+            return corrected_words;
+        };
+
+        int num_threads = std::thread::hardware_concurrency();
+        int num_words_in_bucket = words_base.size() / num_threads;
+
+        std::vector<std::future<std::string>> threads_vector;
+        for (auto i = 0; i < num_threads - 1; i++) {
+            threads_vector.push_back(std::async(std::launch::async, work_for_thread,
+                                                words_base.begin() + i * num_words_in_bucket,
+                                                words_base.begin() + (i + 1) * num_words_in_bucket));
+        }
+
+        threads_vector.push_back(std::async(std::launch::async, work_for_thread,
+                                            words_base.begin() + (num_threads - 1) * num_words_in_bucket,
+                                            words_base.end()));
+
+        for (int i = 0; i < threads_vector.size(); i++) {
+            threads_vector[i].wait();
+            auto corrected_words = threads_vector[i].get();
+
+            corrected_text_stream << corrected_words;
+        }
+    }
+
     corrected_text_stream.close();
 
     std::cout << "corrected text path: " << corrected_text_path << std::endl;
     return 1;
+}
+
+std::vector<std::string> get_words(work_with_bytes::reader &reader)
+{
+    std::vector<std::string> words_base {};
+    std::string word = reader.get_word();
+    while (word.size()) {
+        words_base.push_back(word);
+        reader.get_punct();
+
+        word = reader.get_word();
+    }
+
+    return words_base;
 }
 
 std::string teachable_dictionary::find_min_levenshtein_distance(const std::string &word, const int lev_const) const
@@ -309,8 +364,9 @@ std::string teachable_dictionary::find_min_levenshtein_distance(const std::strin
 
     int lenth_minus_one = word.size() - 1;
     std::string word_with_min_dist {word};
-    int freq_word_freq_dist = 0;
+    int freq_word_with_min_dist = 0;
     int min_dist = lev_const + 1;
+
     for (int index = 0; index != 3; ++index) {
         word_freq_dist_t word_freq_dist = find_word_freq_dist_(word, lenth_minus_one + index, lev_const);
 
@@ -319,12 +375,12 @@ std::string teachable_dictionary::find_min_levenshtein_distance(const std::strin
             continue;
         } else if (dist == min_dist) {
             int freq = word_freq_dist.freq;
-            if (freq <= freq_word_freq_dist) {
+            if (freq <= freq_word_with_min_dist) {
                 continue;
             }
         }
         word_with_min_dist = word_freq_dist.word;
-        freq_word_freq_dist = word_freq_dist.freq;
+        freq_word_with_min_dist = word_freq_dist.freq;
         min_dist = dist;
     }
 
