@@ -9,7 +9,9 @@ static int command_handler(const std::string &command,
 static int execute_run(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
                        const bool is_byte);
 static int execute_read(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
-static int execute_correct(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
+static int execute_correct(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
+                           const bool is_multithread);
+static int execute_list(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
 
 enum { WITHOUT_ERRORS, ERROR };
 
@@ -55,7 +57,15 @@ int command_handler(const std::string &command,
             return ERROR;
         }
     } else if (command == "correct_text") {
-        if (!execute_correct(dictionaries)) {
+        if (!execute_correct(dictionaries, false)) {
+            return ERROR;
+        }
+    } else if (command == "correct_text_multi") {
+        if (!execute_correct(dictionaries, true)) {
+            return ERROR;
+        }
+    } else if (command == "ls") {
+        if (!execute_list(dictionaries)) {
             return ERROR;
         }
     }
@@ -106,7 +116,8 @@ int execute_read(my_containers::hash_table<std::string, dictionary::teachable_di
     return WITHOUT_ERRORS;
 }
 
-int execute_correct(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries)
+int execute_correct(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
+                    const bool is_multi_thread)
 {
     std::string dic_name {};
     std::cin >> dic_name;
@@ -119,8 +130,18 @@ int execute_correct(my_containers::hash_table<std::string, dictionary::teachable
         return WITHOUT_ERRORS;
     }
 
-    if (!dictionary_itr->second.correct_text(PROJECT_DIR_PATH + text_path.insert(0, 1, '/'))) {
+    if (!dictionary_itr->second.correct_text(PROJECT_DIR_PATH + text_path.insert(0, 1, '/'), is_multi_thread)) {
         return ERROR;
+    }
+
+    return WITHOUT_ERRORS;
+}
+
+int execute_list(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries)
+{
+    std::cout << "list of dictionaries:" << std::endl;
+    for (auto &&elem : dictionaries) {
+        std::cout << "name: " << elem.first << " size: " << elem.second.size() << std::endl;
     }
 
     return WITHOUT_ERRORS;

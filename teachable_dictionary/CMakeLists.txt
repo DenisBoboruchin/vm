@@ -15,7 +15,6 @@ set(TEACHABLE_DICTIONARY_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/teachable_dictio
 set(PROGRAM_NAME dictionary_manager)
 set(MAIN_PROGRAM_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
-
 cmake_path(GET PROJECT_SOURCE_DIR PARENT_PATH PROJECT_PARRENT_PATH)
 
 include_directories (include hash_table/include work_with_byte_files/include ${PROJECT_PARRENT_PATH}/queue/list/include)
