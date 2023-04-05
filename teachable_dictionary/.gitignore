@@ -2,6 +2,8 @@ build/
 data.txt
 data.bt
 text_with_errors.txt
+text_with_errors2.txt
 text_with_errors_corrected.txt
+text_with_errors2_corrected.txt
 teacher.txt
 teacher2.txt
