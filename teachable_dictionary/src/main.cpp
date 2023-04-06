@@ -3,25 +3,17 @@
 #include "teachable_dictionary.hpp"
 #include "hash_table.hpp"
 
-static int execute();
-static int command_handler(const std::string &command,
-                           my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
-static int execute_run(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
-                       const bool is_byte);
-static int execute_read(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
-static int execute_correct(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
-                           const bool is_multithread);
-static int execute_list(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
-
+namespace {
 enum { WITHOUT_ERRORS, ERROR };
 
-int main(int argc, char **argv)
-{
-    std::cout << "teachable dictionary manager executing" << std::endl;
-    std::cout << "input command (h -- for help, q -- for exit)" << std::endl;
-
-    return execute();
-}
+int command_handler(const std::string &command,
+                    my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
+int execute_run(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
+                const bool is_byte);
+int execute_read(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
+int execute_correct(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
+                    const bool is_multithread);
+int execute_list(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
 
 int execute()
 {
@@ -145,4 +137,14 @@ int execute_list(my_containers::hash_table<std::string, dictionary::teachable_di
     }
 
     return WITHOUT_ERRORS;
+}
+
+}  // namespace
+
+int main(int argc, char **argv)
+{
+    std::cout << "teachable dictionary manager executing" << std::endl;
+    std::cout << "input command (h -- for help, q -- for exit)" << std::endl;
+
+    return execute();
 }

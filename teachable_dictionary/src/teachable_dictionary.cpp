@@ -15,12 +15,93 @@ struct word_freq_dist_t final {
     int dist = 0;
 };
 
-static word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::hash_table<std::string, int> &hash_table,
-                                                        const std::string &word, const int lev_const);
+namespace {
 
-static int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const);
-static std::string add_extension(const std::string &str, const std::string &ext);
-static std::vector<std::string> get_words(work_with_bytes::reader &reader);
+int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const)
+{
+    int min_len = word1.size();
+    int max_len = word2.size();
+
+    const std::string &sword = min_len > max_len ? word2 : word1;
+    const std::string &lword = min_len > max_len ? word1 : word2;
+
+    if (min_len > max_len) {
+        int temp_len = min_len;
+        min_len = max_len;
+        max_len = temp_len;
+    }
+
+    std::vector<int> curr_row(min_len + 1);
+    std::vector<int> prev_row(min_len + 1);
+    for (int i = 0; i != min_len + 1; ++i) {
+        prev_row[i] = i;
+    }
+
+    for (int i = 1; i != max_len + 1; ++i) {
+        curr_row[0] = i;
+        for (int j = 1; j != min_len + 1; ++j) {
+            int up = prev_row[j] + 1;
+            int down = curr_row[j - 1] + 1;
+            int diag = prev_row[j - 1];
+
+            if (sword[j - 1] != lword[i - 1]) {
+                diag += 1;
+            }
+            curr_row[j] = std::min(std::min(up, down), diag);
+        }
+        prev_row = curr_row;
+    }
+
+    return curr_row[min_len];
+}
+
+word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::hash_table<std::string, int> &hash_table,
+                                                 const std::string &word, const int lev_const)
+{
+    word_freq_dist_t word_freq_dist {word, 0, lev_const + 1};
+    for (auto elem : hash_table) {
+        int dist = calc_lev_dist(elem.first, word, lev_const);
+        int old_dist = word_freq_dist.dist;
+
+        if (dist < old_dist) {
+            word_freq_dist = {elem.first, elem.second, dist};
+        } else if ((dist == old_dist) && (elem.second > word_freq_dist.freq)) {
+            word_freq_dist = {elem.first, elem.second, dist};
+        }
+    }
+
+    return word_freq_dist;
+}
+
+std::string add_extension(const std::string &str, const std::string &ext)
+{
+    std::string res {str};
+
+    size_t offset = res.find('.');
+    if (offset == std::string::npos) {
+        res.append(ext);
+    } else {
+        res.replace(res.begin() + offset, res.end(), ext.begin(), ext.end());
+    }
+
+    return res;
+}
+
+std::vector<std::string> get_words(work_with_bytes::reader &reader)
+{
+    std::vector<std::string> words_base {};
+    std::string word = reader.get_word();
+    while (word.size()) {
+        words_base.push_back(word);
+        reader.get_punct();
+
+        word = reader.get_word();
+    }
+
+    return words_base;
+}
+
+}  // namespace
 
 teachable_dictionary::teachable_dictionary(const std::string &data_path, const bool read_bytes)
     : data_dictionary_path_ {data_path}, size_ {0}, size_data_in_bytes_ {0}
@@ -197,20 +278,6 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
     return 1;
 }
 
-std::string add_extension(const std::string &str, const std::string &ext)
-{
-    std::string res {str};
-
-    size_t offset = res.find('.');
-    if (offset == std::string::npos) {
-        res.append(ext);
-    } else {
-        res.replace(res.begin() + offset, res.end(), ext.begin(), ext.end());
-    }
-
-    return res;
-}
-
 bool teachable_dictionary::read_text(const std::string &text_path)
 {
     work_with_bytes::reader reader {text_path};
@@ -303,9 +370,8 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
         std::vector<std::string> words_base = get_words(reader);
         using vector_itr = typename std::vector<std::string>::iterator;
 
-        auto &&work_for_thread = [this](vector_itr start, vector_itr end) {
+        auto work_for_thread = [this](vector_itr start, vector_itr end) {
             std::string corrected_words {};
-
             for (vector_itr index = start; index != end; ++index) {
                 corrected_words.append(find_min_levenshtein_distance(*index));
                 corrected_words.append(" ");
@@ -316,7 +382,24 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 
         int num_threads = std::thread::hardware_concurrency();
         int num_words_in_bucket = words_base.size() / num_threads;
+#if 0
+        std::vector<std::thread> threads_vector {};
+        for (int index = 0; index != num_threads - 1; ++index)
+        {
+            std::string corrected_words {};
+            threads_vector.emplace_back ({work_for_thread, words_base.begin() + index * num_words_in_bucket, words_base.begin() + (index + 1) * num_words_in_bucket, corrected_words});
+        }
+        
+        std::string corrected_words {};
+        threads_vector.emplace_back ({work_for_thread, words_base.begin() + (num_threads - 1) * num_words_in_bucket, words_base.end(), corrected_words});
 
+        for (int index = 0; index != num_threads; ++index)
+        {
+            threads_vector[index].join ();
+        }
+#endif
+
+#if 1
         std::vector<std::future<std::string>> threads_vector;
         for (int index = 0; index != num_threads - 1; ++index) {
             threads_vector.push_back(std::async(std::launch::async, work_for_thread,
@@ -335,26 +418,13 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 
             corrected_text_stream << corrected_words;
         }
+#endif
     }
 
     corrected_text_stream.close();
 
     std::cout << "corrected text path: " << corrected_text_path << std::endl;
     return 1;
-}
-
-std::vector<std::string> get_words(work_with_bytes::reader &reader)
-{
-    std::vector<std::string> words_base {};
-    std::string word = reader.get_word();
-    while (word.size()) {
-        words_base.push_back(word);
-        reader.get_punct();
-
-        word = reader.get_word();
-    }
-
-    return words_base;
 }
 
 std::string teachable_dictionary::find_min_levenshtein_distance(const std::string &word, const int lev_const) const
@@ -401,62 +471,6 @@ word_freq_dist_t teachable_dictionary::find_word_freq_dist_(const std::string &w
     }
 
     return find_min_lev_dist_in_hash_table(hash_table_lenth_itr->second, word, lev_const);
-}
-
-word_freq_dist_t find_min_lev_dist_in_hash_table(const my_containers::hash_table<std::string, int> &hash_table,
-                                                 const std::string &word, const int lev_const)
-{
-    word_freq_dist_t word_freq_dist {word, 0, lev_const + 1};
-    for (auto elem : hash_table) {
-        int dist = calc_lev_dist(elem.first, word, lev_const);
-        int old_dist = word_freq_dist.dist;
-
-        if (dist < old_dist) {
-            word_freq_dist = {elem.first, elem.second, dist};
-        } else if ((dist == old_dist) && (elem.second > word_freq_dist.freq)) {
-            word_freq_dist = {elem.first, elem.second, dist};
-        }
-    }
-
-    return word_freq_dist;
-}
-
-int calc_lev_dist(const std::string &word1, const std::string &word2, const int lev_const)
-{
-    int min_len = word1.size();
-    int max_len = word2.size();
-
-    const std::string &sword = min_len > max_len ? word2 : word1;
-    const std::string &lword = min_len > max_len ? word1 : word2;
-
-    if (min_len > max_len) {
-        int temp_len = min_len;
-        min_len = max_len;
-        max_len = temp_len;
-    }
-
-    std::vector<int> curr_row(min_len + 1);
-    std::vector<int> prev_row(min_len + 1);
-    for (int i = 0; i != min_len + 1; ++i) {
-        prev_row[i] = i;
-    }
-
-    for (int i = 1; i != max_len + 1; ++i) {
-        curr_row[0] = i;
-        for (int j = 1; j != min_len + 1; ++j) {
-            int up = prev_row[j] + 1;
-            int down = curr_row[j - 1] + 1;
-            int diag = prev_row[j - 1];
-
-            if (sword[j - 1] != lword[i - 1]) {
-                diag += 1;
-            }
-            curr_row[j] = std::min(std::min(up, down), diag);
-        }
-        prev_row = curr_row;
-    }
-
-    return curr_row[min_len];
 }
 
 size_t teachable_dictionary::size() const
