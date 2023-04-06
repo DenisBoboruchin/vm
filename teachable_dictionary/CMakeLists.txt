@@ -24,7 +24,7 @@ add_library (${PROJECT_NAME} STATIC ${TEACHABLE_DICTIONARY_SOURCE})
 add_subdirectory (work_with_byte_files)
 target_link_libraries (${PROJECT_NAME} PUBLIC work_with_bytes)
 
-add_compile_options(-g -Wall)
+add_compile_options(-g -Wall -pthread)
 
 #main
 add_executable (${PROGRAM_NAME} ${MAIN_PROGRAM_SOURCE})

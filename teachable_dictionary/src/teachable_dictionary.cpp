@@ -382,23 +382,6 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 
         int num_threads = std::thread::hardware_concurrency();
         int num_words_in_bucket = words_base.size() / num_threads;
-#if 0
-        std::vector<std::thread> threads_vector {};
-        for (int index = 0; index != num_threads - 1; ++index)
-        {
-            std::string corrected_words {};
-            threads_vector.emplace_back ({work_for_thread, words_base.begin() + index * num_words_in_bucket, words_base.begin() + (index + 1) * num_words_in_bucket, corrected_words});
-        }
-        
-        std::string corrected_words {};
-        threads_vector.emplace_back ({work_for_thread, words_base.begin() + (num_threads - 1) * num_words_in_bucket, words_base.end(), corrected_words});
-
-        for (int index = 0; index != num_threads; ++index)
-        {
-            threads_vector[index].join ();
-        }
-#endif
-
 #if 1
         std::vector<std::future<std::string>> threads_vector;
         for (int index = 0; index != num_threads - 1; ++index) {
@@ -417,6 +400,23 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
             auto corrected_words = thread.get();
 
             corrected_text_stream << corrected_words;
+        }
+#endif
+
+#if 0
+        std::vector<std::thread> threads_vector {};
+        for (int index = 0; index != num_threads - 1; ++index)
+        {
+            std::string corrected_words {};
+            threads_vector.emplace_back ({work_for_thread, words_base.begin() + index * num_words_in_bucket, words_base.begin() + (index + 1) * num_words_in_bucket, corrected_words});
+        }
+        
+        std::string corrected_words {};
+        threads_vector.emplace_back ({work_for_thread, words_base.begin() + (num_threads - 1) * num_words_in_bucket, words_base.end(), corrected_words});
+
+        for (int index = 0; index != num_threads; ++index)
+        {
+            threads_vector[index].join ();
         }
 #endif
     }
