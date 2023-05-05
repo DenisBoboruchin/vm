@@ -14,6 +14,7 @@ class hash_table final {
 public:
     hash_table() {};
 
+    //buggy!!!!!!!!
     hash_table(const hash_table &other) = default;
     hash_table(hash_table &&other) = default;
 

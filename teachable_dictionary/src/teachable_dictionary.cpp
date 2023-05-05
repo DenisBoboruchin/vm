@@ -201,7 +201,7 @@ bool teachable_dictionary::save_data(const std::string &path_to_save) const
     std::cout << "saving in " << path_to_save_ex << std::endl;
 
     std::string save_data_text;
-    for (auto dictionary_elem : dictionary_) {
+    for (auto &&dictionary_elem : dictionary_) {
         save_data_text.append(std::to_string(dictionary_elem.first));
         save_data_text.append(1, ' ');
 
@@ -241,7 +241,7 @@ bool teachable_dictionary::save_data_binary(const std::string &path_to_save) con
 
     char *dictionary_data_ptr = new char[size_data_in_bytes_];
     char *pointer = dictionary_data_ptr;
-    for (auto dictionary_elem : dictionary_) {
+    for (auto &&dictionary_elem : dictionary_) {
         numeric_hash_table &hash_table = dictionary_elem.second;
 
         int word_len = dictionary_elem.first;
@@ -370,7 +370,7 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
         std::vector<std::string> words_base = get_words(reader);
         using vector_itr = typename std::vector<std::string>::iterator;
 
-        auto work_for_thread = [this](vector_itr start, vector_itr end) {
+        auto thread_work = [this](vector_itr start, vector_itr end) {
             std::string corrected_words {};
             for (vector_itr index = start; index != end; ++index) {
                 corrected_words.append(find_min_levenshtein_distance(*index));
@@ -385,12 +385,12 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
 #if 1
         std::vector<std::future<std::string>> threads_vector;
         for (int index = 0; index != num_threads - 1; ++index) {
-            threads_vector.push_back(std::async(std::launch::async, work_for_thread,
+            threads_vector.push_back(std::async(std::launch::async, thread_work,
                                                 words_base.begin() + index * num_words_in_bucket,
                                                 words_base.begin() + (index + 1) * num_words_in_bucket));
         }
 
-        threads_vector.push_back(std::async(std::launch::async, work_for_thread,
+        threads_vector.push_back(std::async(std::launch::async, thread_work,
                                             words_base.begin() + (num_threads - 1) * num_words_in_bucket,
                                             words_base.end()));
 
@@ -408,11 +408,11 @@ bool teachable_dictionary::correct_text(const std::string &text_for_correct_path
         for (int index = 0; index != num_threads - 1; ++index)
         {
             std::string corrected_words {};
-            threads_vector.emplace_back ({work_for_thread, words_base.begin() + index * num_words_in_bucket, words_base.begin() + (index + 1) * num_words_in_bucket, corrected_words});
+            threads_vector.emplace_back ({thread_work, words_base.begin() + index * num_words_in_bucket, words_base.begin() + (index + 1) * num_words_in_bucket, corrected_words});
         }
         
         std::string corrected_words {};
-        threads_vector.emplace_back ({work_for_thread, words_base.begin() + (num_threads - 1) * num_words_in_bucket, words_base.end(), corrected_words});
+        threads_vector.emplace_back ({thread_work, words_base.begin() + (num_threads - 1) * num_words_in_bucket, words_base.end(), corrected_words});
 
         for (int index = 0; index != num_threads; ++index)
         {
