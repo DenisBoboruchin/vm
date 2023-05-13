@@ -87,7 +87,7 @@ hash_table<Key, T, Hash> &hash_table<Key, T, Hash>::operator=(hash_table &&other
 template <typename Key, typename T, typename Hash>
 hash_table<Key, T, Hash>::hash_table(hash_table<Key, T, Hash> &&other) noexcept
 {
-    *this = other;
+    *this = std::move(other);
 }
 
 template <typename Key, typename T, typename Hash>

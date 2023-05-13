@@ -70,7 +70,7 @@ TEST(hash_table, move_constructor)
     move_table.erase(1);
     ASSERT_EQ(move_table.size(), 3);
 
-    ASSERT_EQ(move_table.find(2), move_table.begin());
+    ASSERT_EQ(move_table.find(4), move_table.begin());
     ASSERT_EQ(move_table.find(5), move_table.end());
     ASSERT_EQ(move_table.find(1), move_table.end());
 }
