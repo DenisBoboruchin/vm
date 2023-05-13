@@ -36,7 +36,6 @@ add_custom_target (run_${PROGRAM_NAME}
 )
 add_dependencies (run_${PROGRAM_NAME} ${PROGRAM_NAME})
 
-
 #clang-tidy
 option(CLANG_TIDY "Include clang-tidy" OFF)
 find_program(CLANG_TIDY "clang-tidy")

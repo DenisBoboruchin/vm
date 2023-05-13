@@ -11,12 +11,68 @@ int main()
     return RUN_ALL_TESTS();
 }
 
-TEST(hash_table, constructors)
+TEST(hash_table, default_constructor)
 {
     hash_table<int, int> table;
 
     ASSERT_EQ(table.size(), 0);
     ASSERT_EQ(table.empty(), 1);
+}
+
+TEST(hash_table, copy_constructor)
+{
+    hash_table<int, int> table;
+
+    ASSERT_EQ(table.size(), 0);
+    ASSERT_EQ(table.empty(), true);
+
+    table.insert(1, 10);
+    table.insert(2, 20);
+    table.insert(3, 30);
+    table.insert(4, 40);
+    ASSERT_EQ(table.size(), 4);
+    ASSERT_EQ(table.empty(), false);
+
+    hash_table<int, int> copy_table = table;
+    ASSERT_EQ(copy_table.size(), 4);
+    ASSERT_EQ(copy_table.empty(), false);
+
+    table.erase(3);
+    ASSERT_EQ(table.size(), 3);
+    ASSERT_EQ(copy_table.size(), 4);
+
+    table.erase(1);
+    ASSERT_EQ(table.size(), 2);
+    ASSERT_EQ(copy_table.size(), 4);
+
+    ASSERT_EQ(copy_table.find(5), copy_table.end());
+    ASSERT_EQ(copy_table.find(1), copy_table.begin());
+}
+
+TEST(hash_table, move_constructor)
+{
+    hash_table<int, int> table;
+
+    ASSERT_EQ(table.size(), 0);
+    ASSERT_EQ(table.empty(), true);
+
+    table.insert(1, 10);
+    table.insert(2, 20);
+    table.insert(3, 30);
+    table.insert(4, 40);
+    ASSERT_EQ(table.size(), 4);
+    ASSERT_EQ(table.empty(), false);
+
+    hash_table<int, int> move_table(std::move(table));
+    ASSERT_EQ(move_table.size(), 4);
+    ASSERT_EQ(move_table.empty(), false);
+
+    move_table.erase(1);
+    ASSERT_EQ(move_table.size(), 3);
+
+    ASSERT_EQ(move_table.find(2), move_table.begin());
+    ASSERT_EQ(move_table.find(5), move_table.end());
+    ASSERT_EQ(move_table.find(1), move_table.end());
 }
 
 TEST(hash_table, find)

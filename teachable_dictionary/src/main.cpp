@@ -8,6 +8,7 @@ enum { WITHOUT_ERRORS, ERROR };
 
 int command_handler(const std::string &command,
                     my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
+int execute_help();
 int execute_run(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries,
                 const bool is_byte);
 int execute_read(my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries);
@@ -35,7 +36,9 @@ int command_handler(const std::string &command,
                     my_containers::hash_table<std::string, dictionary::teachable_dictionary> &dictionaries)
 {
     if (command == "h" || command == "help") {
-        std::cout << "dictionary manager help menu" << std::endl;
+        if (!execute_help()) {
+            return ERROR;
+        }
     } else if (command == "r" || command == "run") {
         if (!execute_run(dictionaries, false)) {
             return ERROR;
@@ -65,6 +68,25 @@ int command_handler(const std::string &command,
     else {
         std::cout << "unknown command \"" << command << "\", please try again" << std::endl;
     }
+
+    return WITHOUT_ERRORS;
+}
+
+int execute_help()
+{
+    std::cout << "dictionary manager help menu" << std::endl;
+    std::cout << "\"r\\run\"                     [dictinary name] [dictionary path]        -- to run exsisting or new "
+                 "dictionary\n";
+    std::cout << "\"rb\\runb\"                   [dictinary name] [dictionary binary path] -- to run exsisting or new "
+                 "dictionary from binary data format\n";
+    std::cout << "\"read_text\"                 [dictinary name] [text path]              -- to add new words in "
+                 "exsisting dictionary\n";
+    std::cout << "\"correct_text\"              [dictinary name] [text path]              -- to correct text by "
+                 "exsisting dictionary\n";
+    std::cout << "\"correct_text_multi\"        [dictinary name] [text path]              -- to correct text by "
+                 "exsisting dictionary with multithreading\n";
+    std::cout << "\"ls\"                                                                  -- to show all exsisting "
+                 "dictionaries\n";
 
     return WITHOUT_ERRORS;
 }

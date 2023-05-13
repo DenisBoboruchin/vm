@@ -13,11 +13,11 @@ struct word_freq_dist_t;
 class teachable_dictionary final {
 public:
     explicit teachable_dictionary(const std::string &data_path = {}, const bool read_bytes = false);
-    teachable_dictionary(const teachable_dictionary &other) = delete;
-    teachable_dictionary(teachable_dictionary &&other) noexcept = delete;
+    teachable_dictionary(const teachable_dictionary &other) = default;
+    teachable_dictionary(teachable_dictionary &&other) noexcept = default;
 
-    teachable_dictionary &operator=(const teachable_dictionary &other) = delete;
-    teachable_dictionary &operator=(teachable_dictionary &&other) noexcept = delete;
+    teachable_dictionary &operator=(const teachable_dictionary &other) = default;
+    teachable_dictionary &operator=(teachable_dictionary &&other) noexcept = default;
 
     ~teachable_dictionary();
 

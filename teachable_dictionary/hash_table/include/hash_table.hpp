@@ -14,12 +14,11 @@ class hash_table final {
 public:
     hash_table() {};
 
-    //buggy!!!!!!!!
-    hash_table(const hash_table &other) = default;
-    hash_table(hash_table &&other) = default;
+    hash_table(const hash_table &other);
+    hash_table(hash_table &&other) noexcept;
 
-    hash_table &operator=(const hash_table &other) = default;
-    hash_table &operator=(hash_table &&other) = default;
+    hash_table &operator=(const hash_table &other);
+    hash_table &operator=(hash_table &&other) noexcept;
 
     ~hash_table() = default;
 
@@ -53,6 +52,43 @@ private:
 
     std::vector<list<list_itr_t>> hash_table_ {num_hash_buckets};
 };
+
+template <typename Key, typename T, typename Hash>
+hash_table<Key, T, Hash> &hash_table<Key, T, Hash>::operator=(const hash_table &other)
+{
+    if (this == &other)
+        return *this;
+
+    clear_hash_table_();
+    for (auto elem : other)
+        insert(elem.first, elem.second);
+
+    return *this;
+}
+
+template <typename Key, typename T, typename Hash>
+hash_table<Key, T, Hash>::hash_table(const hash_table<Key, T, Hash> &other)
+{
+    *this = other;
+}
+
+template <typename Key, typename T, typename Hash>
+hash_table<Key, T, Hash> &hash_table<Key, T, Hash>::operator=(hash_table &&other) noexcept
+{
+    if (this == &other)
+        return *this;
+
+    std::swap(data_, other.data_);
+    std::swap(hash_table_, other.hash_table_);
+
+    return *this;
+}
+
+template <typename Key, typename T, typename Hash>
+hash_table<Key, T, Hash>::hash_table(hash_table<Key, T, Hash> &&other) noexcept
+{
+    *this = other;
+}
 
 template <typename Key, typename T, typename Hash>
 typename hash_table<Key, T, Hash>::iterator hash_table<Key, T, Hash>::insert(const Key &key, const T &value)
